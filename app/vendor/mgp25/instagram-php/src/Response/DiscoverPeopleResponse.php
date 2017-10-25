@@ -2,41 +2,32 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * DiscoverPeopleResponse.
- *
  * @method Model\Groups[] getGroups()
  * @method string getMaxId()
- * @method mixed getMessage()
  * @method mixed getMoreAvailable()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
  * @method bool isGroups()
  * @method bool isMaxId()
- * @method bool isMessage()
  * @method bool isMoreAvailable()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setGroups(Model\Groups[] $value)
- * @method $this setMaxId(string $value)
- * @method $this setMessage(mixed $value)
- * @method $this setMoreAvailable(mixed $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetGroups()
- * @method $this unsetMaxId()
- * @method $this unsetMessage()
- * @method $this unsetMoreAvailable()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setGroups(Model\Groups[] $value)
+ * @method setMaxId(string $value)
+ * @method setMoreAvailable(mixed $value)
  */
-class DiscoverPeopleResponse extends Response
+class DiscoverPeopleResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'groups'         => 'Model\Groups[]',
-        'more_available' => '',
-        'max_id'         => 'string',
-    ];
+    use ResponseTrait;
+
+    /**
+     * @var Model\Groups[]
+     */
+    public $groups;
+    public $more_available;
+    /**
+     * @var string
+     */
+    public $max_id;
 }

@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectReaction.
- *
  * @method string getClientContext()
  * @method string getItemId()
  * @method string getNodeType()
@@ -21,30 +19,28 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isReactionType()
  * @method bool isSenderId()
  * @method bool isTimestamp()
- * @method $this setClientContext(string $value)
- * @method $this setItemId(string $value)
- * @method $this setNodeType(string $value)
- * @method $this setReactionStatus(string $value)
- * @method $this setReactionType(string $value)
- * @method $this setSenderId(string $value)
- * @method $this setTimestamp(string $value)
- * @method $this unsetClientContext()
- * @method $this unsetItemId()
- * @method $this unsetNodeType()
- * @method $this unsetReactionStatus()
- * @method $this unsetReactionType()
- * @method $this unsetSenderId()
- * @method $this unsetTimestamp()
+ * @method setClientContext(string $value)
+ * @method setItemId(string $value)
+ * @method setNodeType(string $value)
+ * @method setReactionStatus(string $value)
+ * @method setReactionType(string $value)
+ * @method setSenderId(string $value)
+ * @method setTimestamp(string $value)
  */
-class DirectReaction extends AutoPropertyMapper
+class DirectReaction extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'reaction_type'   => 'string',
-        'timestamp'       => 'string',
-        'sender_id'       => 'string',
-        'client_context'  => 'string',
-        'reaction_status' => 'string',
-        'node_type'       => 'string',
-        'item_id'         => 'string',
-    ];
+    /** @var string */
+    public $reaction_type;
+    /** @var string */
+    public $timestamp;
+    /** @var string */
+    public $sender_id;
+    /** @var string */
+    public $client_context;
+    /** @var string */
+    public $reaction_status;
+    /** @var string */
+    public $node_type;
+    /** @var string */
+    public $item_id;
 }

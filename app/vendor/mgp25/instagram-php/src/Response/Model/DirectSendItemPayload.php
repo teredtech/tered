@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectSendItemPayload.
- *
  * @method string getClientContext()
  * @method string getClientRequestId()
  * @method string getItemId()
@@ -19,27 +17,25 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isMessage()
  * @method bool isThreadId()
  * @method bool isTimestamp()
- * @method $this setClientContext(string $value)
- * @method $this setClientRequestId(string $value)
- * @method $this setItemId(string $value)
- * @method $this setMessage(string $value)
- * @method $this setThreadId(string $value)
- * @method $this setTimestamp(string $value)
- * @method $this unsetClientContext()
- * @method $this unsetClientRequestId()
- * @method $this unsetItemId()
- * @method $this unsetMessage()
- * @method $this unsetThreadId()
- * @method $this unsetTimestamp()
+ * @method setClientContext(string $value)
+ * @method setClientRequestId(string $value)
+ * @method setItemId(string $value)
+ * @method setMessage(string $value)
+ * @method setThreadId(string $value)
+ * @method setTimestamp(string $value)
  */
-class DirectSendItemPayload extends AutoPropertyMapper
+class DirectSendItemPayload extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'client_request_id' => 'string',
-        'client_context'    => 'string',
-        'message'           => 'string',
-        'item_id'           => 'string',
-        'timestamp'         => 'string',
-        'thread_id'         => 'string',
-    ];
+    /** @var string */
+    public $client_request_id;
+    /** @var string */
+    public $client_context;
+    /** @var string */
+    public $message;
+    /** @var string */
+    public $item_id;
+    /** @var string */
+    public $timestamp;
+    /** @var string */
+    public $thread_id;
 }

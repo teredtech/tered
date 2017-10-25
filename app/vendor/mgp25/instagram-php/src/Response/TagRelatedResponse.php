@@ -2,31 +2,21 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * TagRelatedResponse.
- *
- * @method mixed getMessage()
  * @method Model\Related[] getRelated()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
- * @method bool isMessage()
  * @method bool isRelated()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setMessage(mixed $value)
- * @method $this setRelated(Model\Related[] $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetMessage()
- * @method $this unsetRelated()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setRelated(Model\Related[] $value)
  */
-class TagRelatedResponse extends Response
+class TagRelatedResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'related' => 'Model\Related[]',
-    ];
+    use ResponseTrait;
+
+    /**
+     * @var Model\Related[]
+     */
+    public $related;
 }

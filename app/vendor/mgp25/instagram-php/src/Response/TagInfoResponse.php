@@ -2,36 +2,22 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * TagInfoResponse.
- *
- * @method int getMediaCount()
- * @method mixed getMessage()
+ * @method mixed getMediaCount()
  * @method mixed getProfile()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
  * @method bool isMediaCount()
- * @method bool isMessage()
  * @method bool isProfile()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setMediaCount(int $value)
- * @method $this setMessage(mixed $value)
- * @method $this setProfile(mixed $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetMediaCount()
- * @method $this unsetMessage()
- * @method $this unsetProfile()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setMediaCount(mixed $value)
+ * @method setProfile(mixed $value)
  */
-class TagInfoResponse extends Response
+class TagInfoResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'profile'     => '',
-        'media_count' => 'int',
-    ];
+    use ResponseTrait;
+
+    public $profile;
+    public $media_count;
 }

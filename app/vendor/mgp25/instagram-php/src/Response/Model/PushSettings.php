@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * PushSettings.
- *
  * @method mixed getChecked()
  * @method mixed getEligible()
  * @method mixed getExample()
@@ -19,27 +17,19 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isName()
  * @method bool isOptions()
  * @method bool isTitle()
- * @method $this setChecked(mixed $value)
- * @method $this setEligible(mixed $value)
- * @method $this setExample(mixed $value)
- * @method $this setName(mixed $value)
- * @method $this setOptions(mixed $value)
- * @method $this setTitle(mixed $value)
- * @method $this unsetChecked()
- * @method $this unsetEligible()
- * @method $this unsetExample()
- * @method $this unsetName()
- * @method $this unsetOptions()
- * @method $this unsetTitle()
+ * @method setChecked(mixed $value)
+ * @method setEligible(mixed $value)
+ * @method setExample(mixed $value)
+ * @method setName(mixed $value)
+ * @method setOptions(mixed $value)
+ * @method setTitle(mixed $value)
  */
-class PushSettings extends AutoPropertyMapper
+class PushSettings extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'name'     => '',
-        'eligible' => '',
-        'title'    => '',
-        'example'  => '',
-        'options'  => '',
-        'checked'  => '',
-    ];
+    public $name;
+    public $eligible;
+    public $title;
+    public $example;
+    public $options;
+    public $checked;
 }

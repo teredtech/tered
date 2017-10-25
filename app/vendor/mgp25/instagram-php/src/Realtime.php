@@ -4,11 +4,12 @@ namespace InstagramAPI;
 
 use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
-use InstagramAPI\React\Connector;
-use InstagramAPI\Realtime\Mqtt\Auth;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use InstagramAPI\Realtime\Client as RealtimeClient;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\TimerInterface;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+use React\Promise\RejectedPromise;
 
 /**
  * The following events are emitted:
@@ -34,78 +35,176 @@ class Realtime implements EventEmitterInterface
 {
     use EventEmitterTrait;
 
+    const LOGIN_INTERVAL_MIN = 1800;
+    const LOGIN_INTERVAL_MAX = 3600;
+
+    /** @var RealtimeClient\Mqtt */
+    protected $_mqttClient;
+
     /** @var Instagram */
     protected $_instagram;
 
     /** @var LoopInterface */
     protected $_loop;
 
-    /** @var LoggerInterface */
-    protected $_logger;
+    /** @var TimerInterface */
+    protected $_reloginTimer;
 
-    /** @var Realtime\Mqtt */
-    protected $_client;
+    /** @var bool */
+    public $debug;
 
     /**
      * Constructor.
      *
-     * @param Instagram            $instagram
-     * @param LoopInterface        $loop
-     * @param LoggerInterface|null $logger
-     *
-     * @throws \RuntimeException
+     * @param Instagram     $instagram
+     * @param LoopInterface $loop
+     * @param null|bool     $debug
      */
     public function __construct(
         Instagram $instagram,
         LoopInterface $loop,
-        LoggerInterface $logger = null)
+        $debug = null)
     {
-        if (PHP_SAPI !== 'cli') {
-            throw new \RuntimeException('The Realtime client can only run from the command line.');
-        }
-
         $this->_instagram = $instagram;
         $this->_loop = $loop;
-        $this->_logger = $logger;
-        if ($this->_logger === null) {
-            $this->_logger = new NullLogger();
+        // Inherit debug flag from Instagram if not supplied.
+        if ($debug === null) {
+            $this->debug = $instagram->debug;
+        } else {
+            $this->debug = $debug;
+        }
+    }
+
+    /**
+     * Return main loop.
+     *
+     * @return LoopInterface
+     */
+    public function getLoop()
+    {
+        return $this->_loop;
+    }
+
+    /**
+     * Return Instagram object.
+     *
+     * @return Instagram
+     */
+    public function getInstagram()
+    {
+        return $this->_instagram;
+    }
+
+    /**
+     * Print debug message.
+     *
+     * @param string $message
+     */
+    public function debug(
+        $message)
+    {
+        if (!$this->debug) {
+            return;
         }
 
-        $this->_client = $this->_getClient();
+        echo date('[H:i:s] ');
+        if (func_num_args() > 1) {
+            call_user_func_array('printf', func_get_args());
+        } else {
+            echo $message;
+        }
+        echo PHP_EOL;
     }
 
     /**
-     * Create a new MQTT client.
+     * Fires periodically to refresh session state.
      *
-     * @return Realtime\Mqtt
+     * @param bool $doLogin
      */
-    protected function _getClient()
+    public function onReloginTimer(
+        $doLogin = true)
     {
-        return new Realtime\Mqtt(
-            $this,
-            new Connector($this->_instagram, $this->_loop),
-            new Auth($this->_instagram),
-            $this->_instagram->device,
-            $this->_instagram->experiments,
-            $this->_loop,
-            $this->_logger
-        );
+        if ($doLogin) {
+            $this->debug('[rtc] Calling login()');
+            try {
+                $this->_instagram->login();
+            } catch (\Exception $e) {
+                $this->emit('error', [$e]);
+            }
+        }
+
+        $interval = mt_rand(self::LOGIN_INTERVAL_MIN, self::LOGIN_INTERVAL_MAX);
+        $this->debug('[rtc] Setting up timer for login() to %d seconds', $interval);
+        $rtc = $this;
+        $this->_reloginTimer = $this->_loop->addTimer($interval, function () use ($rtc) {
+            $rtc->onReloginTimer();
+        });
     }
 
     /**
-     * Starts underlying client.
+     * Starts all timers and clients.
      */
     public function start()
     {
-        $this->_client->start();
+        $this->onReloginTimer(false);
+        if ($this->_mqttClient !== null) {
+            $this->_mqttClient->connect();
+        }
     }
 
     /**
-     * Stops underlying client.
+     * Stops all timers and clients.
      */
     public function stop()
     {
-        $this->_client->stop();
+        if ($this->_reloginTimer) {
+            $this->debug('[rtc] Login timer is cancelled');
+            $this->_reloginTimer->cancel();
+        }
+        if ($this->_mqttClient !== null) {
+            $this->_mqttClient->shutdown();
+        }
+    }
+
+    /**
+     * Initialize everything.
+     */
+    protected function _init()
+    {
+        // Refresh state.
+        $this->_instagram->login();
+        // Init MQTT client.
+        $experiments = $this->_instagram->experiments;
+        $mqttFeatures = isset($experiments['ig_android_mqtt_skywalker'])
+            ? $experiments['ig_android_mqtt_skywalker'] : [];
+        $mqttLiveFeatures = isset($experiments['ig_android_skywalker_live_event_start_end'])
+            ? $experiments['ig_android_skywalker_live_event_start_end'] : [];
+        $graphqlFeatures = isset($experiments['ig_android_gqls_typing_indicator'])
+            ? $experiments['ig_android_gqls_typing_indicator'] : [];
+        $this->debug('[rtc] starting mqtt client');
+        $this->_mqttClient = new RealtimeClient\Mqtt('mqtt', $this, $this->_instagram, [
+            'isMqttLiveEnabled' => RealtimeClient::isFeatureEnabled($mqttLiveFeatures, 'is_enabled'),
+            'isIrisEnabled'     => RealtimeClient::isFeatureEnabled($mqttFeatures, 'is_direct_over_iris_enabled'),
+            'msgTypeBlacklist'  => isset($mqttFeatures['pubsub_msg_type_blacklist']) ? $mqttFeatures['pubsub_msg_type_blacklist'] : null,
+            'isGraphQlEnabled'  => RealtimeClient::isFeatureEnabled($graphqlFeatures, 'is_enabled'),
+            'sequenceId'        => $this->_instagram->direct->getInbox()->getSeqId(),
+        ]);
+    }
+
+    /**
+     * Proxy for _init().
+     *
+     * @return PromiseInterface
+     */
+    public function init()
+    {
+        try {
+            $this->_init();
+        } catch (\Exception $e) {
+            return new RejectedPromise($e);
+        }
+
+        return new FulfilledPromise($this);
     }
 
     /**
@@ -117,8 +216,11 @@ class Realtime implements EventEmitterInterface
         array $command)
     {
         $command = static::jsonEncode($command);
-
-        return $this->_client->sendCommand($command);
+        if ($this->_mqttClient !== null) {
+            return $this->_mqttClient->sendCommand($command);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -410,6 +512,8 @@ class Realtime implements EventEmitterInterface
     public function updateSequenceId(
         $sequenceId)
     {
-        $this->_client->updateSequenceId($sequenceId);
+        if ($this->_mqttClient !== null) {
+            $this->_mqttClient->updateSequenceId($sequenceId);
+        }
     }
 }

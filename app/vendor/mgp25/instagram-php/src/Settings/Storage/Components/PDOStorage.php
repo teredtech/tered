@@ -68,7 +68,6 @@ abstract class PDOStorage implements StorageInterface
         } else {
             // We should connect for the user, by creating our own PDO object.
             $this->_isSharedPDO = false;
-
             try {
                 $this->_pdo = $this->_createPDO($locationConfig);
             } catch (\Exception $e) {

@@ -2,36 +2,25 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * UserInfoResponse.
- *
  * @method mixed getMegaphone()
- * @method mixed getMessage()
- * @method string getStatus()
  * @method Model\User getUser()
- * @method Model\_Message[] get_Messages()
  * @method bool isMegaphone()
- * @method bool isMessage()
- * @method bool isStatus()
  * @method bool isUser()
- * @method bool is_Messages()
- * @method $this setMegaphone(mixed $value)
- * @method $this setMessage(mixed $value)
- * @method $this setStatus(string $value)
- * @method $this setUser(Model\User $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetMegaphone()
- * @method $this unsetMessage()
- * @method $this unsetStatus()
- * @method $this unsetUser()
- * @method $this unset_Messages()
+ * @method setMegaphone(mixed $value)
+ * @method setUser(Model\User $value)
  */
-class UserInfoResponse extends Response
+class UserInfoResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'megaphone' => '',
-        'user'      => 'Model\User',
-    ];
+    use ResponseTrait;
+
+    public $megaphone;
+    /**
+     * @var Model\User
+     */
+    public $user;
 }

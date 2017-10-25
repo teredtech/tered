@@ -2,24 +2,21 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Aymf.
- *
- * @method AymfItem[] getItems()
+ * @method Item[] getItems()
  * @method mixed getMoreAvailable()
  * @method bool isItems()
  * @method bool isMoreAvailable()
- * @method $this setItems(AymfItem[] $value)
- * @method $this setMoreAvailable(mixed $value)
- * @method $this unsetItems()
- * @method $this unsetMoreAvailable()
+ * @method setItems(Item[] $value)
+ * @method setMoreAvailable(mixed $value)
  */
-class Aymf extends AutoPropertyMapper
+class Aymf extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'items'          => 'AymfItem[]',
-        'more_available' => '',
-    ];
+    /**
+     * @var Item[]
+     */
+    public $items;
+    public $more_available;
 }

@@ -111,18 +111,12 @@ class Crypto
                 'Ciphertext is too short.'
             );
         }
-        /**
-         * @var string
-         */
         $hmac = Core::ourSubstr($ciphertext, 0, Core::LEGACY_MAC_BYTE_SIZE);
-        if (!\is_string($hmac)) {
+        if ($hmac === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
-        /**
-         * @var string
-         */
         $ciphertext = Core::ourSubstr($ciphertext, Core::LEGACY_MAC_BYTE_SIZE);
-        if (!\is_string($ciphertext)) {
+        if ($ciphertext === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
 
@@ -151,24 +145,17 @@ class Crypto
                     'Ciphertext is too short.'
                 );
             }
-            /**
-             * @var string
-             */
             $iv = Core::ourSubstr($ciphertext, 0, Core::LEGACY_BLOCK_BYTE_SIZE);
-            if (!\is_string($iv)) {
+            if ($iv === false) {
                 throw new Ex\EnvironmentIsBrokenException();
             }
-
-            /**
-             * @var string
-             */
-            $actualCiphertext = Core::ourSubstr($ciphertext, Core::LEGACY_BLOCK_BYTE_SIZE);
-            if (!\is_string($actualCiphertext)) {
+            $ciphertext = Core::ourSubstr($ciphertext, Core::LEGACY_BLOCK_BYTE_SIZE);
+            if ($ciphertext === false) {
                 throw new Ex\EnvironmentIsBrokenException();
             }
 
             // Do the decryption.
-            $plaintext = self::plainDecrypt($actualCiphertext, $ekey, $iv, Core::LEGACY_CIPHER_METHOD);
+            $plaintext = self::plainDecrypt($ciphertext, $ekey, $iv, Core::LEGACY_CIPHER_METHOD);
             return $plaintext;
         } else {
             throw new Ex\WrongKeyOrModifiedCiphertextException(
@@ -239,7 +226,6 @@ class Crypto
         }
 
         // Get and check the version header.
-        /** @var string $header */
         $header = Core::ourSubstr($ciphertext, 0, Core::HEADER_VERSION_SIZE);
         if ($header !== Core::CURRENT_VERSION) {
             throw new Ex\WrongKeyOrModifiedCiphertextException(
@@ -248,40 +234,36 @@ class Crypto
         }
 
         // Get the salt.
-        /** @var string $salt */
         $salt = Core::ourSubstr(
             $ciphertext,
             Core::HEADER_VERSION_SIZE,
             Core::SALT_BYTE_SIZE
         );
-        if (!\is_string($salt)) {
+        if ($salt === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
 
         // Get the IV.
-        /** @var string $iv */
         $iv = Core::ourSubstr(
             $ciphertext,
             Core::HEADER_VERSION_SIZE + Core::SALT_BYTE_SIZE,
             Core::BLOCK_BYTE_SIZE
         );
-        if (!\is_string($iv)) {
+        if ($iv === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
 
         // Get the HMAC.
-        /** @var string $hmac */
         $hmac = Core::ourSubstr(
             $ciphertext,
             Core::ourStrlen($ciphertext) - Core::MAC_BYTE_SIZE,
             Core::MAC_BYTE_SIZE
         );
-        if (!\is_string($hmac)) {
+        if ($hmac === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
 
         // Get the actual encrypted ciphertext.
-        /** @var string $encrypted */
         $encrypted = Core::ourSubstr(
             $ciphertext,
             Core::HEADER_VERSION_SIZE + Core::SALT_BYTE_SIZE +
@@ -289,7 +271,7 @@ class Crypto
             Core::ourStrlen($ciphertext) - Core::MAC_BYTE_SIZE - Core::SALT_BYTE_SIZE -
                 Core::BLOCK_BYTE_SIZE - Core::HEADER_VERSION_SIZE
         );
-        if (!\is_string($encrypted)) {
+        if ($encrypted === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
 
@@ -322,7 +304,6 @@ class Crypto
     {
         Core::ensureConstantExists('OPENSSL_RAW_DATA');
         Core::ensureFunctionExists('openssl_encrypt');
-        /** @var string $ciphertext */
         $ciphertext = \openssl_encrypt(
             $plaintext,
             Core::CIPHER_METHOD,
@@ -331,7 +312,7 @@ class Crypto
             $iv
         );
 
-        if (!\is_string($ciphertext)) {
+        if ($ciphertext === false) {
             throw new Ex\EnvironmentIsBrokenException(
                 'openssl_encrypt() failed.'
             );
@@ -356,8 +337,6 @@ class Crypto
     {
         Core::ensureConstantExists('OPENSSL_RAW_DATA');
         Core::ensureFunctionExists('openssl_decrypt');
-
-        /** @var string $plaintext */
         $plaintext = \openssl_decrypt(
             $ciphertext,
             $cipherMethod,
@@ -365,7 +344,7 @@ class Crypto
             OPENSSL_RAW_DATA,
             $iv
         );
-        if (!\is_string($plaintext)) {
+        if ($plaintext === false) {
             throw new Ex\EnvironmentIsBrokenException(
                 'openssl_decrypt() failed.'
             );
@@ -377,7 +356,7 @@ class Crypto
     /**
      * Verifies an HMAC without leaking information through side-channels.
      *
-     * @param string $expected_hmac
+     * @param string $correct_hmac
      * @param string $message
      * @param string $key
      *
@@ -385,9 +364,9 @@ class Crypto
      *
      * @return bool
      */
-    protected static function verifyHMAC($expected_hmac, $message, $key)
+    protected static function verifyHMAC($correct_hmac, $message, $key)
     {
         $message_hmac = \hash_hmac(Core::HASH_FUNCTION_NAME, $message, $key, true);
-        return Core::hashEquals($message_hmac, $expected_hmac);
+        return Core::hashEquals($correct_hmac, $message_hmac);
     }
 }

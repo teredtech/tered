@@ -2,19 +2,17 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Owner.
- *
  * @method float getLat()
  * @method float getLng()
  * @method Location getLocationDict()
- * @method string getName()
+ * @method mixed getName()
  * @method string getPk()
- * @method string getProfilePicUrl()
- * @method string getProfilePicUsername()
- * @method string getShortName()
+ * @method mixed getProfilePicUrl()
+ * @method mixed getProfilePicUsername()
+ * @method mixed getShortName()
  * @method mixed getType()
  * @method bool isLat()
  * @method bool isLng()
@@ -25,36 +23,37 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isProfilePicUsername()
  * @method bool isShortName()
  * @method bool isType()
- * @method $this setLat(float $value)
- * @method $this setLng(float $value)
- * @method $this setLocationDict(Location $value)
- * @method $this setName(string $value)
- * @method $this setPk(string $value)
- * @method $this setProfilePicUrl(string $value)
- * @method $this setProfilePicUsername(string $value)
- * @method $this setShortName(string $value)
- * @method $this setType(mixed $value)
- * @method $this unsetLat()
- * @method $this unsetLng()
- * @method $this unsetLocationDict()
- * @method $this unsetName()
- * @method $this unsetPk()
- * @method $this unsetProfilePicUrl()
- * @method $this unsetProfilePicUsername()
- * @method $this unsetShortName()
- * @method $this unsetType()
+ * @method setLat(float $value)
+ * @method setLng(float $value)
+ * @method setLocationDict(Location $value)
+ * @method setName(mixed $value)
+ * @method setPk(string $value)
+ * @method setProfilePicUrl(mixed $value)
+ * @method setProfilePicUsername(mixed $value)
+ * @method setShortName(mixed $value)
+ * @method setType(mixed $value)
  */
-class Owner extends AutoPropertyMapper
+class Owner extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'type'                 => '',
-        'pk'                   => 'string',
-        'name'                 => 'string',
-        'profile_pic_url'      => 'string',
-        'profile_pic_username' => 'string',
-        'short_name'           => 'string',
-        'lat'                  => 'float',
-        'lng'                  => 'float',
-        'location_dict'        => 'Location',
-    ];
+    public $type;
+    /**
+     * @var string
+     */
+    public $pk;
+    public $name;
+    public $profile_pic_url;
+    public $profile_pic_username;
+    public $short_name;
+    /**
+     * @var float
+     */
+    public $lat;
+    /**
+     * @var float
+     */
+    public $lng;
+    /**
+     * @var Location
+     */
+    public $location_dict;
 }

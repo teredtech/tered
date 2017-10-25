@@ -113,7 +113,7 @@ class People extends RequestCollection
         $maxId = null)
     {
         $activity = $this->ig->request('news/');
-        if ($maxId !== null) {
+        if (!is_null($maxId)) {
             $activity->addParam('max_id', $maxId);
         }
 
@@ -280,10 +280,10 @@ class People extends RequestCollection
     {
         $request = $this->ig->request("friendships/{$userId}/following/")
             ->addParam('rank_token', $this->ig->rank_token);
-        if ($searchQuery !== null) {
+        if (!is_null($searchQuery)) {
             $request->addParam('query', $searchQuery);
         }
-        if ($maxId !== null) {
+        if (!is_null($maxId)) {
             $request->addParam('max_id', $maxId);
         }
 
@@ -308,10 +308,10 @@ class People extends RequestCollection
     {
         $request = $this->ig->request("friendships/{$userId}/followers/")
             ->addParam('rank_token', $this->ig->rank_token);
-        if ($searchQuery !== null) {
+        if (!is_null($searchQuery)) {
             $request->addParam('query', $searchQuery);
         }
-        if ($maxId !== null) {
+        if (!is_null($maxId)) {
             $request->addParam('max_id', $maxId);
         }
 
@@ -377,32 +377,20 @@ class People extends RequestCollection
      *
      * This performs a combined search for "top results" in all 3 areas at once.
      *
-     * @param string $query     The username/full name, hashtag or location to search for.
-     * @param string $latitude  (optional) Latitude.
-     * @param string $longitude (optional) Longitude.
+     * @param string $query The username/full name, hashtag or location to search for.
      *
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\FBSearchResponse
      */
     public function searchFacebook(
-        $query,
-        $latitude = null,
-        $longitude = null)
+        $query)
     {
-        $request = $this->ig->request('fbsearch/topsearch_flat/')
+        return $this->ig->request('fbsearch/topsearch/')
             ->addParam('context', 'blended')
             ->addParam('query', $query)
-            ->addParam('count', 30)
-            ->addParam('timezone_offset', date('Z'));
-
-        if ($latitude !== null && $longitude !== null) {
-            $request
-                ->addParam('lat', $latitude)
-                ->addParam('lng', $longitude);
-        }
-
-        return $request->getResponse(new Response\FBSearchResponse());
+            ->addParam('rank_token', $this->ig->rank_token)
+            ->getResponse(new Response\FBSearchResponse());
     }
 
     /**
@@ -439,7 +427,7 @@ class People extends RequestCollection
      * @see People::unlinkAddressBook()
      */
     public function linkAddressBook(
-        array $contacts)
+        $contacts)
     {
         return $this->ig->request('address_book/link/?include=extra_display_name,thumbnails')
             ->setSignedPost(false)

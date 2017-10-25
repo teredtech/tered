@@ -2,29 +2,25 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Experiment.
- *
  * @method mixed getGroup()
  * @method mixed getName()
  * @method Param[] getParams()
  * @method bool isGroup()
  * @method bool isName()
  * @method bool isParams()
- * @method $this setGroup(mixed $value)
- * @method $this setName(mixed $value)
- * @method $this setParams(Param[] $value)
- * @method $this unsetGroup()
- * @method $this unsetName()
- * @method $this unsetParams()
+ * @method setGroup(mixed $value)
+ * @method setName(mixed $value)
+ * @method setParams(Param[] $value)
  */
-class Experiment extends AutoPropertyMapper
+class Experiment extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'params' => 'Param[]',
-        'group'  => '',
-        'name'   => '',
-    ];
+    /**
+     * @var Param[]
+     */
+    public $params;
+    public $group;
+    public $name;
 }

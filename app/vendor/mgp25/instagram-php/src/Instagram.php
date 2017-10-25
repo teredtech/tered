@@ -41,9 +41,9 @@ class Instagram
     public $password;
 
     /**
-     * The Android device for the currently active user.
+     * The Android Device for the currently active user.
      *
-     * @var \InstagramAPI\Devices\DeviceInterface
+     * @var \InstagramAPI\Devices\Device
      */
     public $device;
 
@@ -102,13 +102,6 @@ class Instagram
     public $device_id;
 
     /**
-     * Phone ID.
-     *
-     * @var string
-     */
-    public $phone_id;
-
-    /**
      * Numerical UserPK ID of the active user account.
      *
      * @var string
@@ -116,24 +109,11 @@ class Instagram
     public $account_id;
 
     /**
-     * Our current guess about the session status.
-     *
-     * This contains our current GUESS about whether the current user is still
-     * logged in. There is NO GUARANTEE that we're still logged in. For example,
-     * the server may have invalidated our current session due to the account
-     * password being changed AFTER our last login happened (which kills all
-     * existing sessions for that account), or the session may have expired
-     * naturally due to not being used for a long time, and so on...
-     *
-     * NOTE TO USERS: The only way to know for sure if you're logged in is to
-     * try a request. If it throws a `LoginRequiredException`, then you're not
-     * logged in anymore. The `login()` function will always ensure that your
-     * current session is valid. But AFTER that, anything can happen... It's up
-     * to Instagram, and we have NO control over what they do with your session!
+     * Session status.
      *
      * @var bool
      */
-    public $isMaybeLoggedIn = false;
+    public $isLoggedIn = false;
 
     /**
      * Rank token.
@@ -219,28 +199,8 @@ class Instagram
     public function __construct(
         $debug = false,
         $truncatedDebug = false,
-        array $storageConfig = [])
+        $storageConfig = [])
     {
-        // Prevent people from running this library on ancient PHP versions, and
-        // verify that people have the most critically important PHP extensions.
-        // NOTE: All of these are marked as requirements in composer.json, but
-        // some people install the library at home and then move it somewhere
-        // else without the requirements, and then blame us for their errors.
-        if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50600) {
-            throw new \InstagramAPI\Exception\InternalException(
-                'You must have PHP 5.6 or higher to use the Instagram API library.'
-            );
-        }
-        static $extensions = ['curl', 'mbstring', 'gd', 'exif', 'zlib'];
-        foreach ($extensions as $ext) {
-            if (!@extension_loaded($ext)) {
-                throw new \InstagramAPI\Exception\InternalException(sprintf(
-                    'You must have the "%s" PHP extension to use the Instagram API library.',
-                    $ext
-                ));
-            }
-        }
-
         // Debugging options.
         $this->debug = $debug;
         $this->truncatedDebug = $truncatedDebug;
@@ -360,29 +320,126 @@ class Instagram
     }
 
     /**
-     * Login to Instagram or automatically resume and refresh previous session.
+     * Set the active account for the class instance.
      *
-     * Sets the active account for the class instance. You can call this multiple times to switch
-     * between multiple Instagram accounts.
+     * You can call this multiple times to switch between multiple accounts.
+     *
+     * @param string $username Your Instagram username.
+     * @param string $password Your Instagram password.
+     *
+     * @throws \InvalidArgumentException
+     * @throws \InstagramAPI\Exception\InstagramException
+     */
+    public function setUser(
+        $username,
+        $password)
+    {
+        if (empty($username) || empty($password)) {
+            throw new \InvalidArgumentException('You must provide a username and password to setUser().');
+        }
+
+        // Load all settings from the storage and mark as current user.
+        $this->settings->setActiveUser($username);
+
+        // Generate the user's Device instance, which will be created from the
+        // user's last-used device IF they've got a valid, good one stored.
+        // But if they've got a BAD/none, this will create a brand-new device.
+        $savedDeviceString = $this->settings->get('devicestring');
+        $this->device = new Devices\Device(Constants::IG_VERSION, Constants::USER_AGENT_LOCALE, $savedDeviceString);
+
+        // Save the chosen device string to settings if not already stored.
+        $deviceString = $this->device->getDeviceString();
+        if ($deviceString !== $savedDeviceString) {
+            $this->settings->set('devicestring', $deviceString);
+        }
+
+        // Generate a brand-new device fingerprint if the Device wasn't reused
+        // from settings, OR if any of the stored fingerprints are missing.
+        // NOTE: The regeneration when our device model changes is to avoid
+        // dangerously reusing the "previous phone's" unique hardware IDs.
+        // WARNING TO CONTRIBUTORS: Only add new parameter-checks here if they
+        // are CRITICALLY important to the particular device. We don't want to
+        // frivolously force the users to generate new device IDs constantly.
+        $resetCookieJar = false;
+        if ($deviceString !== $savedDeviceString // Brand new device, or missing
+            || empty($this->settings->get('uuid')) // one of the critically...
+            || empty($this->settings->get('phone_id')) // ...important device...
+            || empty($this->settings->get('device_id'))) { // ...parameters.
+            // Generate new hardware fingerprints.
+            $this->settings->set('device_id', Signatures::generateDeviceId());
+            $this->settings->set('phone_id', Signatures::generateUUID(true));
+            $this->settings->set('uuid', Signatures::generateUUID(true));
+
+            // Clear other params we also need to regenerate for the new device.
+            $this->settings->set('advertising_id', '');
+            $this->settings->set('session_id', '');
+            $this->settings->set('experiments', '');
+
+            // Remove the previous hardware's login details to force a relogin.
+            $this->settings->set('account_id', '');
+            $this->settings->set('last_login', '0');
+
+            // We'll also need to throw out all previous cookies.
+            $resetCookieJar = true;
+        }
+
+        // Generate other missing values. These are for less critical parameters
+        // that don't need to trigger a complete device reset like above. For
+        // example, this is good for new parameters that Instagram introduces
+        // over time, since those can be added one-by-one over time without
+        // needing to wipe/reset the whole device. Just be sure to also add them
+        // to the "clear other params" section above so that these are always
+        // properly regenerated whenever the user's whole "device" changes.
+        if (empty($this->settings->get('advertising_id'))) {
+            $this->settings->set('advertising_id', Signatures::generateUUID(true));
+        }
+        if (empty($this->settings->get('session_id'))) {
+            $this->settings->set('session_id', Signatures::generateUUID(true));
+        }
+
+        // Store various important parameters for easy access.
+        $this->username = $username;
+        $this->password = $password;
+        $this->uuid = $this->settings->get('uuid');
+        $this->advertising_id = $this->settings->get('advertising_id');
+        $this->device_id = $this->settings->get('device_id');
+        $this->session_id = $this->settings->get('session_id');
+        $this->experiments = $this->settings->getExperiments();
+
+        // Load the previous session details if we're possibly logged in.
+        if (!$resetCookieJar && $this->settings->isMaybeLoggedIn()) {
+            $this->isLoggedIn = true;
+            $this->account_id = $this->settings->get('account_id');
+            $this->rank_token = $this->account_id.'_'.$this->uuid;
+        } else {
+            $this->isLoggedIn = false;
+            $this->account_id = null;
+            $this->rank_token = null;
+        }
+
+        // Configures Client for current user AND updates isLoggedIn state
+        // if it fails to load the expected cookies from the user's jar.
+        // Must be done last here, so that isLoggedIn is properly updated!
+        // NOTE: If we generated a new device we start a new cookie jar.
+        $this->client->updateFromCurrentSettings($resetCookieJar);
+    }
+
+    /**
+     * Login to Instagram or automatically resume and refresh previous session.
      *
      * WARNING: You MUST run this function EVERY time your script runs! It handles automatic session
      * resume and relogin and app session state refresh and other absolutely *vital* things that are
      * important if you don't want to be banned from Instagram!
      *
-     * WARNING: This function MAY return a CHALLENGE telling you that the account needs two-factor
-     * login before letting you log in! Read the two-factor login example to see how to handle that.
-     *
-     * @param string $username           Your Instagram username.
-     * @param string $password           Your Instagram password.
-     * @param bool   $forceLogin         Force login to Instagram instead of resuming previous session.
-     * @param int    $appRefreshInterval How frequently login() should act like an Instagram app
-     *                                   that's been closed and reopened and needs to "refresh its
-     *                                   state", by asking for extended account state details.
-     *                                   Default: After 1800 seconds, meaning 30 minutes since the
-     *                                   last state-refreshing login() call.
-     *                                   This CANNOT be longer than 6 hours. Read _sendLoginFlow()!
-     *                                   The shorter your delay is the BETTER. You may even want to
-     *                                   set it to an even LOWER value than the default 30 minutes!
+     * @param bool $forceLogin         Force login to Instagram, this will create a new session.
+     * @param int  $appRefreshInterval How frequently login() should act like an Instagram app
+     *                                 that's been closed and reopened and needs to "refresh its
+     *                                 state", by asking for extended account state details.
+     *                                 Default: After 1800 seconds, meaning 30 minutes since the
+     *                                 last state-refreshing login() call.
+     *                                 This CANNOT be longer than 6 hours. Read _sendLoginFlow()!
+     *                                 The shorter your delay is the BETTER. You may even want to
+     *                                 set it to an even LOWER value than the default 30 minutes!
      *
      * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
@@ -391,28 +448,28 @@ class Instagram
      *                                                   otherwise NULL if an existing session is resumed.
      */
     public function login(
-        $username,
-        $password,
         $forceLogin = false,
         $appRefreshInterval = 1800)
     {
-        if (empty($username) || empty($password)) {
-            throw new \InvalidArgumentException('You must provide a username and password to login().');
-        }
-
-        // Switch the currently active user/pass if the details are different.
-        if ($this->username !== $username || $this->password !== $password) {
-            $this->_setUser($username, $password);
+        if (empty($this->username)) {
+            throw new \InstagramAPI\Exception\LoginRequiredException(
+                'You must provide a username and password to setUser() before attempting to login.'
+            );
         }
 
         // Perform a full relogin if necessary.
-        if (!$this->isMaybeLoggedIn || $forceLogin) {
-            $this->_sendPreLoginFlow();
+        if (!$this->isLoggedIn || $forceLogin) {
+            // Calling this non-token API will put a csrftoken in our cookie
+            // jar. We must do this before any functions that require a token.
+            $this->internal->syncDeviceFeatures(true);
+
+            $this->internal->readMsisdnHeader();
+            $this->internal->logAttribution();
 
             try {
                 $response = $this->request('accounts/login/')
                     ->setNeedsAuth(false)
-                    ->addPost('phone_id', $this->phone_id)
+                    ->addPost('phone_id', $this->settings->get('phone_id'))
                     ->addPost('_csrftoken', $this->client->getToken())
                     ->addPost('username', $this->username)
                     ->addPost('adid', $this->advertising_id)
@@ -422,7 +479,7 @@ class Instagram
                     ->addPost('login_attempt_count', 0)
                     ->getResponse(new Response\LoginResponse());
             } catch (\InstagramAPI\Exception\InstagramException $e) {
-                if ($e->hasResponse() && $e->getResponse()->isTwoFactorRequired()) {
+                if ($e->hasResponse() && $e->getResponse()->getTwoFactorRequired()) {
                     // Login failed because two-factor login is required.
                     // Return server response to tell user they need 2-factor.
                     return $e->getResponse();
@@ -446,28 +503,22 @@ class Instagram
     }
 
     /**
-     * Finish a two-factor authenticated login.
-     *
-     * This function finishes a two-factor challenge that was provided by the
-     * regular login() function. If you successfully answer their challenge,
-     * you will be logged in after this function call.
+     * Login to Instagram using two factor authentication.
      *
      * @param string $verificationCode    Verification code you have received via SMS.
-     * @param string $twoFactorIdentifier Two factor identifier, obtained in login() response. Format: "123456".
-     * @param int    $appRefreshInterval  See login() for description of this parameter.
+     * @param string $twoFactorIdentifier Two factor identifier, obtained in login() response. Format: 123456.
      *
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\LoginResponse
      */
-    public function finishTwoFactorLogin(
+    public function twoFactorLogin(
         $verificationCode,
-        $twoFactorIdentifier,
-        $appRefreshInterval = 1800)
+        $twoFactorIdentifier)
     {
-        if (empty($this->username) || empty($this->password)) {
+        if (empty($this->username)) {
             throw new \InstagramAPI\Exception\LoginRequiredException(
-                'You must provide a username and password to login() before attempting to finish the two-factor login process.'
+                'You must provide a username and password to setUser() before attempting to login.'
             );
         }
 
@@ -485,111 +536,9 @@ class Instagram
 
         $this->_updateLoginState($response);
 
-        $this->_sendLoginFlow(true, $appRefreshInterval);
+        $this->_sendLoginFlow(true);
 
         return $response;
-    }
-
-    /**
-     * Set the active account for the class instance.
-     *
-     * We can call this multiple times to switch between multiple accounts.
-     *
-     * @param string $username Your Instagram username.
-     * @param string $password Your Instagram password.
-     *
-     * @throws \InvalidArgumentException
-     * @throws \InstagramAPI\Exception\InstagramException
-     */
-    protected function _setUser(
-        $username,
-        $password)
-    {
-        if (empty($username) || empty($password)) {
-            throw new \InvalidArgumentException('You must provide a username and password to _setUser().');
-        }
-
-        // Load all settings from the storage and mark as current user.
-        $this->settings->setActiveUser($username);
-
-        // Generate the user's device instance, which will be created from the
-        // user's last-used device IF they've got a valid, good one stored.
-        // But if they've got a BAD/none, this will create a brand-new device.
-        $savedDeviceString = $this->settings->get('devicestring');
-        $this->device = new Devices\Device(Constants::IG_VERSION, Constants::VERSION_CODE, Constants::USER_AGENT_LOCALE, $savedDeviceString);
-
-        // Get active device string so that we can compare it to any saved one.
-        $deviceString = $this->device->getDeviceString();
-
-        // Generate a brand-new device fingerprint if the device wasn't reused
-        // from settings, OR if any of the stored fingerprints are missing.
-        // NOTE: The regeneration when our device model changes is to avoid
-        // dangerously reusing the "previous phone's" unique hardware IDs.
-        // WARNING TO CONTRIBUTORS: Only add new parameter-checks here if they
-        // are CRITICALLY important to the particular device. We don't want to
-        // frivolously force the users to generate new device IDs constantly.
-        $resetCookieJar = false;
-        if ($deviceString !== $savedDeviceString // Brand new device, or missing
-            || empty($this->settings->get('uuid')) // one of the critically...
-            || empty($this->settings->get('phone_id')) // ...important device...
-            || empty($this->settings->get('device_id'))) { // ...parameters.
-            // Erase all previously stored device-specific settings.
-            $this->settings->eraseDeviceSettings();
-
-            // Save the chosen device string to settings.
-            $this->settings->set('devicestring', $deviceString);
-
-            // Generate hardware fingerprints for the new device.
-            $this->settings->set('device_id', Signatures::generateDeviceId());
-            $this->settings->set('phone_id', Signatures::generateUUID(true));
-            $this->settings->set('uuid', Signatures::generateUUID(true));
-
-            // Erase any stored account ID, to ensure that we detect ourselves
-            // as logged-out. This will force a new relogin from the new device.
-            $this->settings->set('account_id', '');
-
-            // We'll also need to throw out all previous cookies.
-            $resetCookieJar = true;
-        }
-
-        // Generate other missing values. These are for less critical parameters
-        // that don't need to trigger a complete device reset like above. For
-        // example, this is good for new parameters that Instagram introduces
-        // over time, since those can be added one-by-one over time here without
-        // needing to wipe/reset the whole device.
-        if (empty($this->settings->get('advertising_id'))) {
-            $this->settings->set('advertising_id', Signatures::generateUUID(true));
-        }
-        if (empty($this->settings->get('session_id'))) {
-            $this->settings->set('session_id', Signatures::generateUUID(true));
-        }
-
-        // Store various important parameters for easy access.
-        $this->username = $username;
-        $this->password = $password;
-        $this->uuid = $this->settings->get('uuid');
-        $this->advertising_id = $this->settings->get('advertising_id');
-        $this->device_id = $this->settings->get('device_id');
-        $this->phone_id = $this->settings->get('phone_id');
-        $this->session_id = $this->settings->get('session_id');
-        $this->experiments = $this->settings->getExperiments();
-
-        // Load the previous session details if we're possibly logged in.
-        if (!$resetCookieJar && $this->settings->isMaybeLoggedIn()) {
-            $this->isMaybeLoggedIn = true;
-            $this->account_id = $this->settings->get('account_id');
-            $this->rank_token = $this->account_id.'_'.$this->uuid;
-        } else {
-            $this->isMaybeLoggedIn = false;
-            $this->account_id = null;
-            $this->rank_token = null;
-        }
-
-        // Configures Client for current user AND updates isMaybeLoggedIn state
-        // if it fails to load the expected cookies from the user's jar.
-        // Must be done last here, so that isMaybeLoggedIn is properly updated!
-        // NOTE: If we generated a new device we start a new cookie jar.
-        $this->client->updateFromCurrentSettings($resetCookieJar);
     }
 
     /**
@@ -610,71 +559,11 @@ class Instagram
             throw new \InvalidArgumentException('Invalid login response provided to _updateLoginState().');
         }
 
-        $this->isMaybeLoggedIn = true;
+        $this->isLoggedIn = true;
         $this->account_id = $response->getLoggedInUser()->getPk();
         $this->settings->set('account_id', $this->account_id);
         $this->rank_token = $this->account_id.'_'.$this->uuid;
         $this->settings->set('last_login', time());
-    }
-
-    /**
-     * Sends pre-login flow. This is required to emulate real device behavior.
-     *
-     * @throws \InstagramAPI\Exception\InstagramException
-     */
-    protected function _sendPreLoginFlow()
-    {
-        // Calling this non-token API will put a csrftoken in our cookie
-        // jar. We must do this before any functions that require a token.
-        $this->internal->syncDeviceFeatures(true);
-        $this->internal->readMsisdnHeader();
-        $this->internal->logAttribution();
-    }
-
-    /**
-     * Registers available Push channels during the login flow.
-     */
-    protected function _registerPushChannels()
-    {
-        // Forcibly remove the stored token value if >24 hours old.
-        // This prevents us from constantly re-registering the user's
-        // "useless" token if they have stopped using the Push features.
-        try {
-            $lastFbnsToken = (int) $this->settings->get('last_fbns_token');
-        } catch (\Exception $e) {
-            $lastFbnsToken = null;
-        }
-        if (!$lastFbnsToken || $lastFbnsToken < strtotime('-24 hours')) {
-            try {
-                $this->settings->set('fbns_token', '');
-            } catch (\Exception $e) {
-                // Ignore storage errors.
-            }
-
-            return;
-        }
-
-        // Read our token from the storage.
-        try {
-            $fbnsToken = $this->settings->get('fbns_token');
-        } catch (\Exception $e) {
-            $fbnsToken = null;
-        }
-        if ($fbnsToken === null) {
-            return;
-        }
-
-        // Register our last token since we had a fresh (age <24 hours) one,
-        // or clear our stored token if we fail to register it again.
-        try {
-            $this->push->register('mqtt', $fbnsToken);
-        } catch (\Exception $e) {
-            try {
-                $this->settings->set('fbns_token', '');
-            } catch (\Exception $e) {
-                // Ignore storage errors.
-            }
-        }
     }
 
     /**
@@ -723,7 +612,7 @@ class Instagram
             $this->timeline->getTimelineFeed();
             $this->direct->getRecentRecipients();
             $this->internal->syncUserFeatures();
-            $this->_registerPushChannels();
+            //$this->push->register();
             $this->direct->getRankedRecipients('reshare', true);
             $this->direct->getRankedRecipients('raven', true);
             $this->direct->getInbox();
@@ -746,13 +635,13 @@ class Instagram
             } catch (\InstagramAPI\Exception\LoginRequiredException $e) {
                 // If our session cookies are expired, we were now told to login,
                 // so handle that by running a forced relogin in that case!
-                return $this->login($this->username, $this->password, true, $appRefreshInterval);
+                return $this->login(true, $appRefreshInterval);
             }
 
             // Perform the "user has returned to their already-logged in app,
             // so refresh all feeds to check for news" API flow.
             $lastLoginTime = $this->settings->get('last_login');
-            if ($lastLoginTime === null || (time() - $lastLoginTime) > $appRefreshInterval) {
+            if (is_null($lastLoginTime) || (time() - $lastLoginTime) > $appRefreshInterval) {
                 $this->settings->set('last_login', time());
 
                 // Generate and save a new application session ID.
@@ -764,8 +653,9 @@ class Instagram
                 $this->story->getReelsTrayFeed();
                 $this->direct->getRankedRecipients('reshare', true);
                 $this->direct->getRankedRecipients('raven', true);
-                $this->_registerPushChannels();
+                //push register
                 $this->direct->getRecentRecipients();
+                //push register
                 //$this->internal->getMegaphoneLog();
                 $this->direct->getInbox();
                 $this->people->getRecentActivityInbox();
@@ -776,7 +666,7 @@ class Instagram
             // Users normally resume their sessions, meaning that their
             // experiments never get synced and updated. So sync periodically.
             $lastExperimentsTime = $this->settings->get('last_experiments');
-            if ($lastExperimentsTime === null || (time() - $lastExperimentsTime) > self::EXPERIMENTS_REFRESH) {
+            if (is_null($lastExperimentsTime) || (time() - $lastExperimentsTime) > self::EXPERIMENTS_REFRESH) {
                 $this->internal->syncUserFeatures();
                 $this->internal->syncDeviceFeatures();
             }
@@ -794,7 +684,7 @@ class Instagram
      * WARNING: Most people should NEVER call logout()! Our library emulates
      * the Instagram app for Android, where you are supposed to stay logged in
      * forever. By calling this function, you will tell Instagram that you are
-     * logging out of the APP. But you SHOULDN'T do that! In almost 100% of all
+     * logging out of the APP. But you shouldn't do that! In almost 100% of all
      * cases you want to *stay logged in* so that LOGIN() resumes your session!
      *
      * @throws \InstagramAPI\Exception\InstagramException
@@ -806,11 +696,6 @@ class Instagram
     public function logout()
     {
         $response = $this->request('accounts/logout/')
-            ->addPost('phone_id', $this->phone_id)
-            ->addPost('_csrftoken', $this->client->getToken())
-            ->addPost('guid', $this->uuid)
-            ->addPost('device_id', $this->device_id)
-            ->addPost('_uuid', $this->uuid)
             ->getResponse(new Response\LogoutResponse());
 
         // We've now logged out. Forcibly write our cookies to the storage, to

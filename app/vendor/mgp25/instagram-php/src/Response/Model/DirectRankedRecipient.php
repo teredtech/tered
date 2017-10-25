@@ -2,24 +2,24 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectRankedRecipient.
- *
  * @method DirectThread getThread()
  * @method User getUser()
  * @method bool isThread()
  * @method bool isUser()
- * @method $this setThread(DirectThread $value)
- * @method $this setUser(User $value)
- * @method $this unsetThread()
- * @method $this unsetUser()
+ * @method setThread(DirectThread $value)
+ * @method setUser(User $value)
  */
-class DirectRankedRecipient extends AutoPropertyMapper
+class DirectRankedRecipient extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'thread' => 'DirectThread',
-        'user'   => 'User',
-    ];
+    /**
+     * @var DirectThread
+     */
+    public $thread;
+    /**
+     * @var User
+     */
+    public $user;
 }

@@ -6,17 +6,11 @@ use Gettext\Translations;
 
 class Po extends Generator implements GeneratorInterface
 {
-    public static $options = [
-        'noLocation' => false,
-    ];
-
     /**
      * {@parentDoc}.
      */
     public static function toString(Translations $translations, array $options = [])
     {
-        $options += static::$options;
-
         $pluralForm = $translations->getPluralForms();
         $pluralSize = is_array($pluralForm) ? ($pluralForm[0] - 1) : null;
         $lines = ['msgid ""', 'msgstr ""'];
@@ -41,9 +35,9 @@ class Po extends Generator implements GeneratorInterface
                 }
             }
 
-            if (!$options['noLocation'] && $translation->hasReferences()) {
+            if ($translation->hasReferences()) {
                 foreach ($translation->getReferences() as $reference) {
-                    $lines[] = '#: '.$reference[0].(!is_null($reference[1]) ? ':'.$reference[1] : null);
+                    //$lines[] = '#: '.$reference[0].(!is_null($reference[1]) ? ':'.$reference[1] : null);
                 }
             }
 

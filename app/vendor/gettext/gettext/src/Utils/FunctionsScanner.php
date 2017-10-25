@@ -87,19 +87,11 @@ abstract class FunctionsScanner
                     break;
 
                 case 'dnpgettext':
-                    if (!isset($args[3])) {
+                    if (!isset($args[4])) {
                         continue 2;
                     }
 
                     list($domain, $context, $original, $plural) = $args;
-                    break;
-
-                case 'dngettext':
-                    if (!isset($args[2])) {
-                        continue 2;
-                    }
-
-                    list($domain, $original, $plural) = $args;
                     break;
 
                 default:

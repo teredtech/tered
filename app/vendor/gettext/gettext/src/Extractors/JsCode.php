@@ -22,8 +22,6 @@ class JsCode extends Extractor implements ExtractorInterface
             'p__' => 'pgettext',
             'dgettext' => 'dgettext',
             'd__' => 'dgettext',
-            'dngettext' => 'dngettext',
-            'dn__' => 'dngettext',
             'dpgettext' => 'dpgettext',
             'dp__' => 'dpgettext',
             'npgettext' => 'npgettext',

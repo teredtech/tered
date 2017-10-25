@@ -2,24 +2,21 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectThreadLastSeenAt.
- *
  * @method string getItemId()
  * @method mixed getTimestamp()
  * @method bool isItemId()
  * @method bool isTimestamp()
- * @method $this setItemId(string $value)
- * @method $this setTimestamp(mixed $value)
- * @method $this unsetItemId()
- * @method $this unsetTimestamp()
+ * @method setItemId(string $value)
+ * @method setTimestamp(mixed $value)
  */
-class DirectThreadLastSeenAt extends AutoPropertyMapper
+class DirectThreadLastSeenAt extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'item_id'   => 'string',
-        'timestamp' => '',
-    ];
+    /**
+     * @var string
+     */
+    public $item_id;
+    public $timestamp;
 }

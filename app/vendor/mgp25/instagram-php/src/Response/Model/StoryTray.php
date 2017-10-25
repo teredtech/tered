@@ -2,36 +2,30 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * StoryTray.
- *
  * @method mixed getCanReply()
- * @method mixed getCanReshare()
  * @method DismissCard getDismissCard()
  * @method mixed getExpiringAt()
- * @method bool getHasBestiesMedia()
  * @method string getId()
  * @method mixed getIsNux()
  * @method Item[] getItems()
- * @method string getLatestReelMedia()
+ * @method mixed getLatestReelMedia()
  * @method Location getLocation()
  * @method mixed getMuted()
  * @method string getNuxId()
  * @method Owner getOwner()
  * @method mixed getPrefetchCount()
  * @method mixed getRankedPosition()
- * @method string getSeen()
+ * @method mixed getSeen()
  * @method mixed getSeenRankedPosition()
  * @method mixed getShowNuxTooltip()
  * @method mixed getSourceToken()
  * @method User getUser()
  * @method bool isCanReply()
- * @method bool isCanReshare()
  * @method bool isDismissCard()
  * @method bool isExpiringAt()
- * @method bool isHasBestiesMedia()
  * @method bool isId()
  * @method bool isIsNux()
  * @method bool isItems()
@@ -47,76 +41,64 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isShowNuxTooltip()
  * @method bool isSourceToken()
  * @method bool isUser()
- * @method $this setCanReply(mixed $value)
- * @method $this setCanReshare(mixed $value)
- * @method $this setDismissCard(DismissCard $value)
- * @method $this setExpiringAt(mixed $value)
- * @method $this setHasBestiesMedia(bool $value)
- * @method $this setId(string $value)
- * @method $this setIsNux(mixed $value)
- * @method $this setItems(Item[] $value)
- * @method $this setLatestReelMedia(string $value)
- * @method $this setLocation(Location $value)
- * @method $this setMuted(mixed $value)
- * @method $this setNuxId(string $value)
- * @method $this setOwner(Owner $value)
- * @method $this setPrefetchCount(mixed $value)
- * @method $this setRankedPosition(mixed $value)
- * @method $this setSeen(string $value)
- * @method $this setSeenRankedPosition(mixed $value)
- * @method $this setShowNuxTooltip(mixed $value)
- * @method $this setSourceToken(mixed $value)
- * @method $this setUser(User $value)
- * @method $this unsetCanReply()
- * @method $this unsetCanReshare()
- * @method $this unsetDismissCard()
- * @method $this unsetExpiringAt()
- * @method $this unsetHasBestiesMedia()
- * @method $this unsetId()
- * @method $this unsetIsNux()
- * @method $this unsetItems()
- * @method $this unsetLatestReelMedia()
- * @method $this unsetLocation()
- * @method $this unsetMuted()
- * @method $this unsetNuxId()
- * @method $this unsetOwner()
- * @method $this unsetPrefetchCount()
- * @method $this unsetRankedPosition()
- * @method $this unsetSeen()
- * @method $this unsetSeenRankedPosition()
- * @method $this unsetShowNuxTooltip()
- * @method $this unsetSourceToken()
- * @method $this unsetUser()
+ * @method setCanReply(mixed $value)
+ * @method setDismissCard(DismissCard $value)
+ * @method setExpiringAt(mixed $value)
+ * @method setId(string $value)
+ * @method setIsNux(mixed $value)
+ * @method setItems(Item[] $value)
+ * @method setLatestReelMedia(mixed $value)
+ * @method setLocation(Location $value)
+ * @method setMuted(mixed $value)
+ * @method setNuxId(string $value)
+ * @method setOwner(Owner $value)
+ * @method setPrefetchCount(mixed $value)
+ * @method setRankedPosition(mixed $value)
+ * @method setSeen(mixed $value)
+ * @method setSeenRankedPosition(mixed $value)
+ * @method setShowNuxTooltip(mixed $value)
+ * @method setSourceToken(mixed $value)
+ * @method setUser(User $value)
  */
-class StoryTray extends AutoPropertyMapper
+class StoryTray extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'id'                   => 'string',
-        'items'                => 'Item[]',
-        'user'                 => 'User',
-        'can_reply'            => '',
-        'expiring_at'          => '',
-        'seen_ranked_position' => '',
-        /*
-         * The "taken_at" timestamp of the last story media you have seen for
-         * that user (the current tray's user). Defaults to `0` (not seen).
-         */
-        'seen'                 => 'string',
-        /*
-         * Unix "taken_at" timestamp of the newest item in their story reel.
-         */
-        'latest_reel_media'    => 'string',
-        'ranked_position'      => '',
-        'is_nux'               => '',
-        'show_nux_tooltip'     => '',
-        'muted'                => '',
-        'prefetch_count'       => '',
-        'location'             => 'Location',
-        'source_token'         => '',
-        'owner'                => 'Owner',
-        'nux_id'               => 'string',
-        'dismiss_card'         => 'DismissCard',
-        'can_reshare'          => '',
-        'has_besties_media'    => 'bool',
-    ];
+    /**
+     * @var string
+     */
+    public $id;
+    /**
+     * @var Item[]
+     */
+    public $items;
+    /**
+     * @var User
+     */
+    public $user;
+    public $can_reply;
+    public $expiring_at;
+    public $seen_ranked_position;
+    public $seen;
+    public $latest_reel_media;
+    public $ranked_position;
+    public $is_nux;
+    public $show_nux_tooltip;
+    public $muted;
+    public $prefetch_count;
+    /**
+     * @var Location
+     */
+    public $location;
+    public $source_token;
+    /**
+     * @var Owner
+     */
+    public $owner;
+    /**
+     * @var string
+     */
+    public $nux_id;
+    /**
+     * @var DismissCard
+     */
+    public $dismiss_card;
 }

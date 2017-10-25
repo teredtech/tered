@@ -195,7 +195,7 @@ class Timeline extends RequestCollection
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->addPost('_uuid', $this->ig->uuid)
             ->addPost('is_prefetch', '0')
-            ->addPost('phone_id', $this->ig->phone_id)
+            ->addPost('phone_id', $this->ig->settings->get('phone_id'))
             ->addPost('battery_level', '100')
             ->addPost('is_charging', '1')
             ->addPost('timezone_offset', date('Z'));
@@ -248,7 +248,7 @@ class Timeline extends RequestCollection
             $request->addPost('recovered_from_crash', '1');
         }
 
-        if ($maxId !== null) {
+        if ($maxId) {
             $request->addPost('max_id', $maxId);
         } else {
             $request->addHeader('X-IG-INSTALLED-APPS', base64_encode(json_encode([
@@ -276,18 +276,12 @@ class Timeline extends RequestCollection
         $maxId = null,
         $minTimestamp = null)
     {
-        $request = $this->ig->request("feed/user/{$userId}/")
+        return $this->ig->request("feed/user/{$userId}/")
             ->addParam('rank_token', $this->ig->rank_token)
-            ->addParam('ranked_content', 'true');
-
-        if ($maxId !== null) {
-            $request->addParam('max_id', $maxId);
-        }
-        if ($minTimestamp !== null) {
-            $request->addParam('min_timestamp', $minTimestamp);
-        }
-
-        return $request->getResponse(new Response\UserFeedResponse());
+            ->addParam('ranked_content', 'true')
+            ->addParam('max_id', (!is_null($maxId) ? $maxId : ''))
+            ->addParam('min_timestamp', (!is_null($minTimestamp) ? $minTimestamp : ''))
+            ->getResponse(new Response\UserFeedResponse());
     }
 
     /**
@@ -411,7 +405,7 @@ class Timeline extends RequestCollection
             $mediaFiles = []; // Reset queue.
             foreach ($myTimeline->getItems() as $item) {
                 $itemDate = date('Y-m-d \a\t H.i.s O', $item->getTakenAt());
-                if ($item->getMediaType() == Response\Model\Item::ALBUM) {
+                if ($item->media_type == Response\Model\Item::ALBUM) {
                     // Albums contain multiple items which must all be queued.
                     // NOTE: We won't name them by their subitem's getIds, since
                     // those Ids have no meaning outside of the album and they
@@ -422,8 +416,8 @@ class Timeline extends RequestCollection
                     $subPosition = 0;
                     foreach ($item->getCarouselMedia() as $subItem) {
                         ++$subPosition;
-                        if ($subItem->getMediaType() == Response\Model\CarouselMedia::PHOTO) {
-                            $mediaUrl = $subItem->getImageVersions2()->getCandidates()[0]->getUrl();
+                        if ($subItem->media_type == Response\Model\CarouselMedia::PHOTO) {
+                            $mediaUrl = $subItem->getImageVersions2()->candidates[0]->getUrl();
                         } else {
                             $mediaUrl = $subItem->getVideoVersions()[0]->getUrl();
                         }
@@ -434,8 +428,8 @@ class Timeline extends RequestCollection
                         ];
                     }
                 } else {
-                    if ($item->getMediaType() == Response\Model\Item::PHOTO) {
-                        $mediaUrl = $item->getImageVersions2()->getCandidates()[0]->getUrl();
+                    if ($item->media_type == Response\Model\Item::PHOTO) {
+                        $mediaUrl = $item->getImageVersions2()->candidates[0]->getUrl();
                     } else {
                         $mediaUrl = $item->getVideoVersions()[0]->getUrl();
                     }
@@ -464,9 +458,6 @@ class Timeline extends RequestCollection
                     touch($filePath, $mediaInfo['taken_at']);
                 }
             }
-
-            // Update the page ID to point to the next page (if more available).
-            $nextMaxId = $myTimeline->getNextMaxId();
-        } while ($nextMaxId !== null);
+        } while (!is_null($nextMaxId = $myTimeline->getNextMaxId()));
     }
 }

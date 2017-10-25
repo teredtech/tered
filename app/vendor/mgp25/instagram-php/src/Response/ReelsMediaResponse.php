@@ -2,36 +2,28 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * ReelsMediaResponse.
- *
- * @method mixed getMessage()
  * @method Model\Reel[] getReels()
  * @method Model\Reel[] getReelsMedia()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
- * @method bool isMessage()
  * @method bool isReels()
  * @method bool isReelsMedia()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setMessage(mixed $value)
- * @method $this setReels(Model\Reel[] $value)
- * @method $this setReelsMedia(Model\Reel[] $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetMessage()
- * @method $this unsetReels()
- * @method $this unsetReelsMedia()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setReels(Model\Reel[] $value)
+ * @method setReelsMedia(Model\Reel[] $value)
  */
-class ReelsMediaResponse extends Response
+class ReelsMediaResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'reels_media' => 'Model\Reel[]',
-        'reels'       => 'Model\Reel[]',
-    ];
+    use ResponseTrait;
+
+    /**
+     * @var Model\Reel[]
+     */
+    public $reels_media;
+    /**
+     * @var Model\Reel[]
+     */
+    public $reels;
 }

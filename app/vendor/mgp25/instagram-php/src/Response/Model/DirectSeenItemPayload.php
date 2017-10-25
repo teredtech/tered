@@ -2,24 +2,19 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectSeenItemPayload.
- *
  * @method mixed getCount()
  * @method string getTimestamp()
  * @method bool isCount()
  * @method bool isTimestamp()
- * @method $this setCount(mixed $value)
- * @method $this setTimestamp(string $value)
- * @method $this unsetCount()
- * @method $this unsetTimestamp()
+ * @method setCount(mixed $value)
+ * @method setTimestamp(string $value)
  */
-class DirectSeenItemPayload extends AutoPropertyMapper
+class DirectSeenItemPayload extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'count'     => '',
-        'timestamp' => 'string',
-    ];
+    public $count;
+    /** @var string */
+    public $timestamp;
 }

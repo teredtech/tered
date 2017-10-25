@@ -23,10 +23,6 @@ class Yaml extends Generator implements GeneratorInterface
     {
         $options += static::$options;
 
-        return YamlDumper::dump(
-            self::toArray($translations, $options['includeHeaders']),
-            $options['inline'],
-            $options['indent']
-        );
+        return YamlDumper::dump(self::toArray($translations, $options['includeHeaders']), $options['inline'], $options['indent']);
     }
 }

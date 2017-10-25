@@ -2,24 +2,20 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectReactions.
- *
  * @method DirectReaction[] getLikes()
  * @method int getLikesCount()
  * @method bool isLikes()
  * @method bool isLikesCount()
- * @method $this setLikes(DirectReaction[] $value)
- * @method $this setLikesCount(int $value)
- * @method $this unsetLikes()
- * @method $this unsetLikesCount()
+ * @method setLikes(DirectReaction[] $value)
+ * @method setLikesCount(int $value)
  */
-class DirectReactions extends AutoPropertyMapper
+class DirectReactions extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'likes_count' => 'int',
-        'likes'       => 'DirectReaction[]',
-    ];
+    /** @var int */
+    public $likes_count;
+    /** @var DirectReaction[] */
+    public $likes;
 }

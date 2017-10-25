@@ -2,16 +2,14 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Link.
- *
  * @method mixed getEnd()
  * @method string getId()
  * @method LinkContext getLinkContext()
  * @method mixed getStart()
- * @method string getText()
+ * @method mixed getText()
  * @method mixed getType()
  * @method bool isEnd()
  * @method bool isId()
@@ -19,27 +17,25 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isStart()
  * @method bool isText()
  * @method bool isType()
- * @method $this setEnd(mixed $value)
- * @method $this setId(string $value)
- * @method $this setLinkContext(LinkContext $value)
- * @method $this setStart(mixed $value)
- * @method $this setText(string $value)
- * @method $this setType(mixed $value)
- * @method $this unsetEnd()
- * @method $this unsetId()
- * @method $this unsetLinkContext()
- * @method $this unsetStart()
- * @method $this unsetText()
- * @method $this unsetType()
+ * @method setEnd(mixed $value)
+ * @method setId(string $value)
+ * @method setLinkContext(LinkContext $value)
+ * @method setStart(mixed $value)
+ * @method setText(mixed $value)
+ * @method setType(mixed $value)
  */
-class Link extends AutoPropertyMapper
+class Link extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'start'        => '',
-        'end'          => '',
-        'id'           => 'string',
-        'type'         => '',
-        'text'         => 'string',
-        'link_context' => 'LinkContext',
-    ];
+    public $start;
+    public $end;
+    /**
+     * @var string
+     */
+    public $id;
+    public $type;
+    public $text;
+    /**
+     * @var LinkContext
+     */
+    public $link_context;
 }

@@ -2,29 +2,25 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectExpiringSummary.
- *
  * @method int getCount()
  * @method string getTimestamp()
  * @method string getType()
  * @method bool isCount()
  * @method bool isTimestamp()
  * @method bool isType()
- * @method $this setCount(int $value)
- * @method $this setTimestamp(string $value)
- * @method $this setType(string $value)
- * @method $this unsetCount()
- * @method $this unsetTimestamp()
- * @method $this unsetType()
+ * @method setCount(int $value)
+ * @method setTimestamp(string $value)
+ * @method setType(string $value)
  */
-class DirectExpiringSummary extends AutoPropertyMapper
+class DirectExpiringSummary extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'type'      => 'string',
-        'timestamp' => 'string',
-        'count'     => 'int',
-    ];
+    /** @var string */
+    public $type;
+    /** @var string */
+    public $timestamp;
+    /** @var int */
+    public $count;
 }

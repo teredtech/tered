@@ -2,24 +2,21 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * CommentTranslations.
- *
  * @method string getId()
  * @method mixed getTranslation()
  * @method bool isId()
  * @method bool isTranslation()
- * @method $this setId(string $value)
- * @method $this setTranslation(mixed $value)
- * @method $this unsetId()
- * @method $this unsetTranslation()
+ * @method setId(string $value)
+ * @method setTranslation(mixed $value)
  */
-class CommentTranslations extends AutoPropertyMapper
+class CommentTranslations extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'id'          => 'string',
-        'translation' => '',
-    ];
+    /**
+     * @var string
+     */
+    public $id;
+    public $translation;
 }

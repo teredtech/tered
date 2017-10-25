@@ -2,29 +2,25 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * MediaInsights.
- *
  * @method mixed getEngagementCount()
  * @method mixed getImpressionCount()
  * @method string[] getReachCount()
  * @method bool isEngagementCount()
  * @method bool isImpressionCount()
  * @method bool isReachCount()
- * @method $this setEngagementCount(mixed $value)
- * @method $this setImpressionCount(mixed $value)
- * @method $this setReachCount(string[] $value)
- * @method $this unsetEngagementCount()
- * @method $this unsetImpressionCount()
- * @method $this unsetReachCount()
+ * @method setEngagementCount(mixed $value)
+ * @method setImpressionCount(mixed $value)
+ * @method setReachCount(string[] $value)
  */
-class MediaInsights extends AutoPropertyMapper
+class MediaInsights extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'reach_count'      => 'string[]',
-        'impression_count' => '',
-        'engagement_count' => '',
-    ];
+    /**
+     * @var string[]
+     */
+    public $reach_count;
+    public $impression_count;
+    public $engagement_count;
 }

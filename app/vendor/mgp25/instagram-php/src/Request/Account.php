@@ -33,25 +33,16 @@ class Account extends RequestCollection
     /**
      * Edit your profile.
      *
-     * Warning: You must provide ALL parameters to this function. The values
-     * which you provide will overwrite all current values on your profile.
-     * You can use getCurrentUser() to see your current values first.
-     *
-     * @param string      $url         Website URL. Use "" for nothing.
-     * @param string      $phone       Phone number. Use "" for nothing.
-     * @param string      $name        Full name. Use "" for nothing.
-     * @param string      $biography   Biography text. Use "" for nothing.
-     * @param string      $email       Email. Required!
-     * @param int         $gender      Gender (1 = male, 2 = female, 3 = unknown). Required!
-     * @param null|string $newUsername (optional) Rename your account to a new username,
-     *                                 which you've already verified with checkUsername().
+     * @param string $url       Website URL. Use "" for nothing.
+     * @param string $phone     Phone number. Use "" for nothing.
+     * @param string $name      Name. Use "" for nothing.
+     * @param string $biography Biography text. Use "" for nothing.
+     * @param string $email     Email. Required.
+     * @param int    $gender    Gender. Male = 1, Female = 2, Unknown = 3.
      *
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\UserInfoResponse
-     *
-     * @see Account::getCurrentUser() to get your current account details.
-     * @see Account::checkUsername() to verify your new username first.
      */
     public function editProfile(
         $url,
@@ -59,18 +50,12 @@ class Account extends RequestCollection
         $name,
         $biography,
         $email,
-        $gender,
-        $newUsername = null)
+        $gender)
     {
         // We must mark the profile for editing before doing the main request.
         $this->ig->request('accounts/current_user/')
             ->addParam('edit', true)
             ->getResponse(new Response\UserInfoResponse());
-
-        // Determine the desired username value.
-        $username = is_string($newUsername) && strlen($newUsername) > 0
-                  ? $newUsername
-                  : $this->ig->username;
 
         return $this->ig->request('accounts/edit_profile/')
             ->addPost('_uuid', $this->ig->uuid)
@@ -78,7 +63,7 @@ class Account extends RequestCollection
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->addPost('external_url', $url)
             ->addPost('phone_number', $phone)
-            ->addPost('username', $username)
+            ->addPost('username', $this->ig->username)
             ->addPost('first_name', $name)
             ->addPost('biography', $biography)
             ->addPost('email', $email)
@@ -179,31 +164,6 @@ class Account extends RequestCollection
     }
 
     /**
-     * Check if an Instagram username is available (not already registered).
-     *
-     * Use this before trying to rename your Instagram account,
-     * to be sure that the new username is available.
-     *
-     * @param string $username Instagram username to check.
-     *
-     * @throws \InstagramAPI\Exception\InstagramException
-     *
-     * @return \InstagramAPI\Response\CheckUsernameResponse
-     *
-     * @see Account::editProfile() to rename your account.
-     */
-    public function checkUsername(
-        $username)
-    {
-        return $this->ig->request('users/check_username/')
-            ->addPost('_uuid', $this->ig->uuid)
-            ->addPost('username', $username)
-            ->addPost('_csrftoken', $this->ig->client->getToken())
-            ->addPost('_uid', $this->ig->account_id)
-            ->getResponse(new Response\CheckUsernameResponse());
-    }
-
-    /**
      * Get account spam filter status.
      *
      * @throws \InstagramAPI\Exception\InstagramException
@@ -237,19 +197,6 @@ class Account extends RequestCollection
     }
 
     /**
-     * Get whether the comment category filter is disabled.
-     *
-     * @throws \InstagramAPI\Exception\InstagramException
-     *
-     * @return \InstagramAPI\Response\CommentCategoryFilterResponse
-     */
-    public function getCommentCategoryFilterDisabled()
-    {
-        return $this->ig->request('accounts/get_comment_category_filter_disabled/')
-            ->getResponse(new Response\CommentCategoryFilterResponse());
-    }
-
-    /**
      * Get account spam filter keywords.
      *
      * @throws \InstagramAPI\Exception\InstagramException
@@ -260,6 +207,19 @@ class Account extends RequestCollection
     {
         return $this->ig->request('accounts/get_comment_filter_keywords/')
             ->getResponse(new Response\CommentFilterKeywordsResponse());
+    }
+
+    /**
+     * Get whether the comment category filter is disabled.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\CommentCategoryFilterResponse
+     */
+    public function getCommentCategoryFilterDisabled()
+    {
+        return $this->ig->request('accounts/get_comment_category_filter_disabled/')
+            ->getResponse(new Response\CommentCategoryFilterResponse());
     }
 
     /**
@@ -421,7 +381,7 @@ class Account extends RequestCollection
         return $this->ig->request('accounts/send_confirm_email/')
             ->addPost('_uuid', $this->ig->uuid)
             ->addPost('_uid', $this->ig->account_id)
-            ->addPost('send_source', 'edit_profile')
+            ->addPost('send_source', 'profile_megaphone')
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->getResponse(new Response\SendConfirmEmailResponse());
     }

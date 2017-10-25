@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * LocationItem.
- *
  * @method Location getLocation()
  * @method mixed getMediaBundles()
  * @method mixed getSubtitle()
@@ -15,21 +13,18 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isMediaBundles()
  * @method bool isSubtitle()
  * @method bool isTitle()
- * @method $this setLocation(Location $value)
- * @method $this setMediaBundles(mixed $value)
- * @method $this setSubtitle(mixed $value)
- * @method $this setTitle(mixed $value)
- * @method $this unsetLocation()
- * @method $this unsetMediaBundles()
- * @method $this unsetSubtitle()
- * @method $this unsetTitle()
+ * @method setLocation(Location $value)
+ * @method setMediaBundles(mixed $value)
+ * @method setSubtitle(mixed $value)
+ * @method setTitle(mixed $value)
  */
-class LocationItem extends AutoPropertyMapper
+class LocationItem extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'media_bundles' => '',
-        'subtitle'      => '',
-        'location'      => 'Location',
-        'title'         => '',
-    ];
+    public $media_bundles;
+    public $subtitle;
+    /**
+     * @var Location
+     */
+    public $location;
+    public $title;
 }

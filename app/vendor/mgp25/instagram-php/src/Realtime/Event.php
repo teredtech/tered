@@ -2,19 +2,14 @@
 
 namespace InstagramAPI\Realtime;
 
-use Evenement\EventEmitterInterface;
-use InstagramAPI\AutoPropertyMapper;
-use Psr\Log\LoggerInterface;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Event.
- *
  * @method mixed getEvent()
  * @method bool isEvent()
- * @method $this setEvent(mixed $value)
- * @method $this unsetEvent()
+ * @method setEvent(mixed $value)
  */
-abstract class Event extends AutoPropertyMapper
+abstract class Event extends AutoPropertyHandler
 {
     const SUBSCRIBED = 'subscribed';
     const UNSUBSCRIBED = 'unsubscribed';
@@ -23,17 +18,13 @@ abstract class Event extends AutoPropertyMapper
     const BROADCAST_ACK = 'broadcast-ack';
     const ERROR = 'error';
 
-    const JSON_PROPERTY_MAP = [
-        'event' => '',
-    ];
+    public $event;
 
     /**
      * Event handler.
      *
-     * @param EventEmitterInterface $target
-     * @param LoggerInterface       $logger
+     * @param Client $client
      */
     abstract public function handle(
-        EventEmitterInterface $target,
-        LoggerInterface $logger);
+        Client $client);
 }

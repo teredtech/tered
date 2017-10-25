@@ -41,11 +41,9 @@ class PayPalResourceModel extends PayPalModel implements IResource
 
     public function getLink($rel)
     {
-        if (is_array($this->links)) {
-            foreach ($this->links as $link) {
-                if ($link->getRel() == $rel) {
-                    return $link->getHref();
-                }
+        foreach ($this->links as $link) {
+            if ($link->getRel() == $rel) {
+                return $link->getHref();
             }
         }
         return null;

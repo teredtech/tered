@@ -2,29 +2,25 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Suggested.
- *
  * @method mixed getClientTime()
  * @method mixed getPosition()
  * @method User getUser()
  * @method bool isClientTime()
  * @method bool isPosition()
  * @method bool isUser()
- * @method $this setClientTime(mixed $value)
- * @method $this setPosition(mixed $value)
- * @method $this setUser(User $value)
- * @method $this unsetClientTime()
- * @method $this unsetPosition()
- * @method $this unsetUser()
+ * @method setClientTime(mixed $value)
+ * @method setPosition(mixed $value)
+ * @method setUser(User $value)
  */
-class Suggested extends AutoPropertyMapper
+class Suggested extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'position'    => '',
-        'user'        => 'User',
-        'client_time' => '',
-    ];
+    public $position;
+    /**
+     * @var User
+     */
+    public $user;
+    public $client_time;
 }

@@ -47,12 +47,11 @@ class File implements StorageInterface
         array $locationConfig)
     {
         // Determine which base folder to store all per-user data in.
-        $baseFolder = ((isset($locationConfig['basefolder'])
-                        && !empty($locationConfig['basefolder']))
-                       ? $locationConfig['basefolder']
-                       : Constants::SRC_DIR.'/../sessions');
-        // Create the base folder and normalize its path to a clean value.
-        $this->_baseFolder = $this->_createFolder($baseFolder);
+        $this->_baseFolder = ((isset($locationConfig['basefolder'])
+                               && !empty($locationConfig['basefolder']))
+                              ? $locationConfig['basefolder']
+                              : Constants::SRC_DIR.'/../sessions/');
+        $this->_createFolder($this->_baseFolder);
     }
 
     /**
@@ -327,9 +326,9 @@ class File implements StorageInterface
     private function _generateUserPaths(
         $username)
     {
-        $userFolder = $this->_baseFolder.'/'.$username;
-        $settingsFile = $userFolder.'/'.sprintf(self::SETTINGSFILE_NAME, $username);
-        $cookiesFile = $userFolder.'/'.sprintf(self::COOKIESFILE_NAME, $username);
+        $userFolder = $this->_baseFolder.'/'.$username.'/';
+        $settingsFile = $userFolder.sprintf(self::SETTINGSFILE_NAME, $username);
+        $cookiesFile = $userFolder.sprintf(self::COOKIESFILE_NAME, $username);
 
         return [
             'userFolder'   => $userFolder,
@@ -344,9 +343,6 @@ class File implements StorageInterface
      * @param string $folder The directory path.
      *
      * @throws \InstagramAPI\Exception\SettingsException
-     *
-     * @return string The canonicalized absolute pathname of the folder, without
-     *                any trailing slash.
      */
     private function _createFolder(
         $folder)
@@ -357,18 +353,5 @@ class File implements StorageInterface
                 $folder
             ));
         }
-
-        // Determine the real path of the folder we created/checked.
-        // NOTE: This ensures that the path will work even on stingy systems
-        // such as Windows Server which chokes on multiple slashes in a row.
-        $realPath = @realpath($folder);
-        if (!is_string($realPath)) {
-            throw new SettingsException(sprintf(
-                'Unable to resolve real path to folder "%s".',
-                $folder
-            ));
-        }
-
-        return $realPath;
     }
 }

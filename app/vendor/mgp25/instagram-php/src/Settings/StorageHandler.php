@@ -2,8 +2,6 @@
 
 namespace InstagramAPI\Settings;
 
-use Fbns\Client\Auth\DeviceAuth;
-use Fbns\Client\AuthInterface;
 use InstagramAPI\Exception\SettingsException;
 
 /**
@@ -33,26 +31,8 @@ class StorageHandler
         'advertising_id', // Google Play advertising ID.
         'session_id', // The user's current application session ID.
         'experiments', // Interesting experiment variables for this account.
-        'fbns_auth', // Serialized auth credentials for FBNS.
-        'fbns_token', // Serialized FBNS token.
-        'last_fbns_token', // Tracks time elapsed since our last FBNS token refresh.
         'last_login', // Tracks time elapsed since our last login state refresh.
         'last_experiments', // Tracks time elapsed since our last experiments refresh.
-    ];
-
-    /**
-     * List of important settings to keep when erasing device-specific settings.
-     *
-     * Whenever we are told to erase all device-specific settings, we will clear
-     * the values of all settings EXCEPT the keys listed here. It is therefore
-     * VERY important to list ALL important NON-DEVICE specific settings here!
-     *
-     * @var array
-     *
-     * @see StorageHandler::eraseDeviceSettings()
-     */
-    const KEEP_KEYS_WHEN_ERASING_DEVICE = [
-        'account_id', // We don't really need to keep this, but it's a good example.
     ];
 
     /**
@@ -64,7 +44,7 @@ class StorageHandler
      */
     const EXPERIMENT_KEYS = [
         'ig_android_2fac',
-        'ig_android_realtime_iris',
+        'ig_android_mqtt_skywalker',
         'ig_android_skywalker_live_event_start_end',
         'ig_android_gqls_typing_indicator',
         'ig_android_upload_reliability_universe',
@@ -285,27 +265,6 @@ class StorageHandler
 
         return $this->_storage->hasUserCookies()
                 && !empty($this->get('account_id'));
-    }
-
-    /**
-     * Erase all device-specific settings.
-     *
-     * This is useful when assigning a new Android device to the account, upon
-     * which it's very important that we erase all previous, device-specific
-     * settings so that our account still looks natural to Instagram.
-     *
-     * Note that cookies will NOT be erased, since that action isn't supported
-     * by all storage backends. Ignoring old cookies is the job of the caller!
-     *
-     * @throws \InstagramAPI\Exception\SettingsException
-     */
-    public function eraseDeviceSettings()
-    {
-        foreach (self::PERSISTENT_KEYS as $key) {
-            if (!in_array($key, self::KEEP_KEYS_WHEN_ERASING_DEVICE)) {
-                $this->set($key, '');
-            }
-        }
     }
 
     /**
@@ -535,7 +494,6 @@ class StorageHandler
                 if (!$e instanceof SettingsException) {
                     $e = new SettingsException($e->getMessage());
                 }
-
                 throw $e; // Re-throw;
             }
         }
@@ -611,36 +569,5 @@ class StorageHandler
         }
 
         return $experiments;
-    }
-
-    /**
-     * Save FBNS authorization.
-     *
-     * @param AuthInterface $auth
-     */
-    public function setFbnsAuth(
-        AuthInterface $auth)
-    {
-        $this->set('fbns_auth', $auth);
-    }
-
-    /**
-     * Get FBNS authorization.
-     *
-     * Will restore previously saved auth details if they exist. Otherwise it
-     * creates random new authorization details.
-     *
-     * @return AuthInterface
-     */
-    public function getFbnsAuth()
-    {
-        $result = new DeviceAuth();
-
-        try {
-            $result->read($this->get('fbns_auth'));
-        } catch (\Exception $e) {
-        }
-
-        return $result;
     }
 }

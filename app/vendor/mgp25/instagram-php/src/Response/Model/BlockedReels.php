@@ -2,29 +2,29 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * BlockedReels.
- *
  * @method mixed getBigList()
  * @method mixed getPageSize()
- * @method User[] getUsers()
+ * @method \InstagramAPI\Response\Model\User[] getUsers()
  * @method bool isBigList()
  * @method bool isPageSize()
  * @method bool isUsers()
- * @method $this setBigList(mixed $value)
- * @method $this setPageSize(mixed $value)
- * @method $this setUsers(User[] $value)
- * @method $this unsetBigList()
- * @method $this unsetPageSize()
- * @method $this unsetUsers()
+ * @method setBigList(mixed $value)
+ * @method setPageSize(mixed $value)
+ * @method setUsers(\InstagramAPI\Response\Model\User[] $value)
  */
-class BlockedReels extends AutoPropertyMapper
+class BlockedReels extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'users'     => 'User[]',
-        'page_size' => '',
-        'big_list'  => '',
-    ];
+    // NOTE: We must use full paths to all model objects in THIS class, because
+    // "BlockedReelsResponse" re-uses this object and JSONMapper won't be
+    // able to find these sub-objects if the paths aren't absolute!
+
+    /**
+     * @var \InstagramAPI\Response\Model\User[]
+     */
+    public $users;
+    public $page_size;
+    public $big_list;
 }

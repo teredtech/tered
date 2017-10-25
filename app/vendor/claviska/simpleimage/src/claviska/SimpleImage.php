@@ -30,7 +30,7 @@ class SimpleImage {
     ERR_WEBP_NOT_ENABLED = 10,
     ERR_WRITE = 11;
 
-  protected $image, $mimeType, $exif;
+  private $image, $mimeType, $exif;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Magic methods

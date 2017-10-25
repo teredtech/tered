@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Realtime\Event\Payload;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Activity.
- *
  * @method mixed getActivityStatus()
  * @method string getSenderId()
  * @method mixed getTimestamp()
@@ -15,21 +13,16 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isSenderId()
  * @method bool isTimestamp()
  * @method bool isTtl()
- * @method $this setActivityStatus(mixed $value)
- * @method $this setSenderId(string $value)
- * @method $this setTimestamp(mixed $value)
- * @method $this setTtl(mixed $value)
- * @method $this unsetActivityStatus()
- * @method $this unsetSenderId()
- * @method $this unsetTimestamp()
- * @method $this unsetTtl()
+ * @method setActivityStatus(mixed $value)
+ * @method setSenderId(string $value)
+ * @method setTimestamp(mixed $value)
+ * @method setTtl(mixed $value)
  */
-class Activity extends AutoPropertyMapper
+class Activity extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'timestamp'       => '',
-        'sender_id'       => 'string',
-        'activity_status' => '',
-        'ttl'             => '',
-    ];
+    public $timestamp;
+    /** @var string */
+    public $sender_id;
+    public $activity_status;
+    public $ttl;
 }

@@ -2,14 +2,13 @@
 
 namespace React\Dns\Query;
 
+use React\Dns\BadServerException;
 use React\Dns\Model\Message;
 use React\Dns\Protocol\Parser;
 use React\Dns\Protocol\BinaryDumper;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
-use React\Promise;
-use React\Stream\DuplexResourceStream;
-use React\Stream\Stream;
+use React\Socket\Connection;
 
 class Executor implements ExecutorInterface
 {
@@ -57,32 +56,22 @@ class Executor implements ExecutorInterface
 
     public function doQuery($nameserver, $transport, $queryData, $name)
     {
-        // we only support UDP right now
-        if ($transport !== 'udp') {
-            return Promise\reject(new \RuntimeException(
-                'DNS query for ' . $name . ' failed: Requested transport "' . $transport . '" not available, only UDP is supported in this version'
-            ));
-        }
-
         $that = $this;
         $parser = $this->parser;
         $loop = $this->loop;
 
-        // UDP connections are instant, so try this without a timer
-        try {
-            $conn = $this->createConnection($nameserver, $transport);
-        } catch (\Exception $e) {
-            return Promise\reject(new \RuntimeException('DNS query for ' . $name . ' failed: ' . $e->getMessage(), 0, $e));
-        }
-
-        $deferred = new Deferred(function ($resolve, $reject) use (&$timer, $loop, &$conn, $name) {
+        $deferred = new Deferred(function ($resolve, $reject) use (&$timer, &$conn, $name) {
             $reject(new CancellationException(sprintf('DNS query for %s has been cancelled', $name)));
 
             if ($timer !== null) {
-                $loop->cancelTimer($timer);
+                $timer->cancel();
             }
             $conn->close();
         });
+
+        $retryWithTcp = function () use ($that, $nameserver, $queryData, $name) {
+            return $that->doQuery($nameserver, 'tcp', $queryData, $name);
+        };
 
         $timer = null;
         if ($this->timeout !== null) {
@@ -92,24 +81,54 @@ class Executor implements ExecutorInterface
             });
         }
 
-        $conn->on('data', function ($data) use ($conn, $parser, $deferred, $timer, $loop, $name) {
-            $conn->end();
+        try {
+            try {
+                $conn = $this->createConnection($nameserver, $transport);
+            } catch (\Exception $e) {
+                if ($transport === 'udp') {
+                    // UDP failed => retry with TCP
+                    $transport = 'tcp';
+                    $conn = $this->createConnection($nameserver, $transport);
+                } else {
+                    // TCP failed (UDP must already have been checked before)
+                    throw $e;
+                }
+            }
+        } catch (\Exception $e) {
+            // both UDP and TCP failed => reject
             if ($timer !== null) {
-                $loop->cancelTimer($timer);
+                $timer->cancel();
+            }
+            $deferred->reject(new \RuntimeException('Unable to connect to DNS server: ' . $e->getMessage(), 0, $e));
+
+            return $deferred->promise();
+        }
+
+        $conn->on('data', function ($data) use ($retryWithTcp, $conn, $parser, $transport, $deferred, $timer) {
+            if ($timer !== null) {
+                $timer->cancel();
             }
 
             try {
                 $response = $parser->parseMessage($data);
             } catch (\Exception $e) {
+                $conn->end();
                 $deferred->reject($e);
                 return;
             }
 
             if ($response->header->isTruncated()) {
-                $deferred->reject(new \RuntimeException('DNS query for ' . $name . ' failed: The server returned a truncated result for a UDP query, but retrying via TCP is currently not supported'));
+                if ('tcp' === $transport) {
+                    $deferred->reject(new BadServerException('The server set the truncated bit although we issued a TCP request'));
+                } else {
+                    $conn->end();
+                    $deferred->resolve($retryWithTcp());
+                }
+
                 return;
             }
 
+            $conn->end();
             $deferred->resolve($response);
         });
         $conn->write($queryData);
@@ -125,31 +144,11 @@ class Executor implements ExecutorInterface
         return mt_rand(0, 0xffff);
     }
 
-    /**
-     * @param string $nameserver
-     * @param string $transport
-     * @return \React\Stream\DuplexStreamInterface
-     */
     protected function createConnection($nameserver, $transport)
     {
         $fd = @stream_socket_client("$transport://$nameserver", $errno, $errstr, 0, STREAM_CLIENT_CONNECT | STREAM_CLIENT_ASYNC_CONNECT);
-        if ($fd === false) {
-            throw new \RuntimeException('Unable to connect to DNS server: ' . $errstr, $errno);
-        }
-
-        // Instantiate stream instance around this stream resource.
-        // This ought to be replaced with a datagram socket in the future.
-        // Temporary work around for Windows 10: buffer whole UDP response
-        // @coverageIgnoreStart
-        if (!class_exists('React\Stream\Stream')) {
-            // prefer DuplexResourceStream as of react/stream v0.7.0
-            $conn = new DuplexResourceStream($fd, $this->loop, -1);
-        } else {
-            // use legacy Stream class for react/stream < v0.7.0
-            $conn = new Stream($fd, $this->loop);
-            $conn->bufferSize = null;
-        }
-        // @coverageIgnoreEnd
+        $conn = new Connection($fd, $this->loop);
+        $conn->bufferSize = null; // Temporary fix for Windows 10 users
 
         return $conn;
     }

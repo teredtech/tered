@@ -2,56 +2,41 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * DirectShareInboxResponse.
- *
  * @method mixed getLastCountedAt()
  * @method string getMaxId()
- * @method mixed getMessage()
  * @method mixed getNewShares()
  * @method mixed getNewSharesInfo()
  * @method mixed getPatches()
  * @method mixed getShares()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
  * @method bool isLastCountedAt()
  * @method bool isMaxId()
- * @method bool isMessage()
  * @method bool isNewShares()
  * @method bool isNewSharesInfo()
  * @method bool isPatches()
  * @method bool isShares()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setLastCountedAt(mixed $value)
- * @method $this setMaxId(string $value)
- * @method $this setMessage(mixed $value)
- * @method $this setNewShares(mixed $value)
- * @method $this setNewSharesInfo(mixed $value)
- * @method $this setPatches(mixed $value)
- * @method $this setShares(mixed $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetLastCountedAt()
- * @method $this unsetMaxId()
- * @method $this unsetMessage()
- * @method $this unsetNewShares()
- * @method $this unsetNewSharesInfo()
- * @method $this unsetPatches()
- * @method $this unsetShares()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setLastCountedAt(mixed $value)
+ * @method setMaxId(string $value)
+ * @method setNewShares(mixed $value)
+ * @method setNewSharesInfo(mixed $value)
+ * @method setPatches(mixed $value)
+ * @method setShares(mixed $value)
  */
-class DirectShareInboxResponse extends Response
+class DirectShareInboxResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'shares'          => '',
-        'max_id'          => 'string',
-        'new_shares'      => '',
-        'patches'         => '',
-        'last_counted_at' => '',
-        'new_shares_info' => '',
-    ];
+    use ResponseTrait;
+
+    public $shares;
+    /**
+     * @var string
+     */
+    public $max_id;
+    public $new_shares;
+    public $patches;
+    public $last_counted_at;
+    public $new_shares_info;
 }

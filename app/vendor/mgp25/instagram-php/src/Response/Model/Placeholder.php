@@ -2,29 +2,22 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Placeholder.
- *
  * @method mixed getIsLinked()
  * @method mixed getMessage()
  * @method mixed getTitle()
  * @method bool isIsLinked()
  * @method bool isMessage()
  * @method bool isTitle()
- * @method $this setIsLinked(mixed $value)
- * @method $this setMessage(mixed $value)
- * @method $this setTitle(mixed $value)
- * @method $this unsetIsLinked()
- * @method $this unsetMessage()
- * @method $this unsetTitle()
+ * @method setIsLinked(mixed $value)
+ * @method setMessage(mixed $value)
+ * @method setTitle(mixed $value)
  */
-class Placeholder extends AutoPropertyMapper
+class Placeholder extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'is_linked' => '',
-        'title'     => '',
-        'message'   => '',
-    ];
+    public $is_linked;
+    public $title;
+    public $message;
 }

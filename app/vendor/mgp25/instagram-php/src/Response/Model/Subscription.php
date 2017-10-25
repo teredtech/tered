@@ -2,34 +2,26 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Subscription.
- *
  * @method mixed getAuth()
  * @method mixed getSequence()
  * @method mixed getTopic()
- * @method string getUrl()
+ * @method mixed getUrl()
  * @method bool isAuth()
  * @method bool isSequence()
  * @method bool isTopic()
  * @method bool isUrl()
- * @method $this setAuth(mixed $value)
- * @method $this setSequence(mixed $value)
- * @method $this setTopic(mixed $value)
- * @method $this setUrl(string $value)
- * @method $this unsetAuth()
- * @method $this unsetSequence()
- * @method $this unsetTopic()
- * @method $this unsetUrl()
+ * @method setAuth(mixed $value)
+ * @method setSequence(mixed $value)
+ * @method setTopic(mixed $value)
+ * @method setUrl(mixed $value)
  */
-class Subscription extends AutoPropertyMapper
+class Subscription extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'topic'    => '',
-        'url'      => 'string',
-        'sequence' => '',
-        'auth'     => '',
-    ];
+    public $topic;
+    public $url;
+    public $sequence;
+    public $auth;
 }

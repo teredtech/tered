@@ -124,20 +124,11 @@ final class Core
      * @param string $salt
      *
      * @throws Ex\EnvironmentIsBrokenException
-     * @psalm-suppress UndefinedFunction - We're checking if the function exists first.
      *
      * @return string
      */
     public static function HKDF($hash, $ikm, $length, $info = '', $salt = null)
     {
-        static $nativeHKDF = null;
-        if ($nativeHKDF === null) {
-            $nativeHKDF = \is_callable('\\hash_hkdf');
-        }
-        if ($nativeHKDF) {
-            return \hash_hkdf($hash, $ikm, $length, $info, $salt);
-        }
-
         $digest_length = Core::ourStrlen(\hash_hmac($hash, '', '', true));
 
         // Sanity-check the desired output length.
@@ -181,9 +172,8 @@ final class Core
         }
 
         // ORM = first L octets of T
-        /** @var string $orm */
         $orm = Core::ourSubstr($t, 0, $length);
-        if (!\is_string($orm)) {
+        if ($orm === false) {
             throw new Ex\EnvironmentIsBrokenException();
         }
         return $orm;
@@ -232,7 +222,6 @@ final class Core
      * Throws an exception if the constant doesn't exist.
      *
      * @param string $name
-     * @return void
      *
      * @throws Ex\EnvironmentIsBrokenException
      */
@@ -247,7 +236,6 @@ final class Core
      * Throws an exception if the function doesn't exist.
      *
      * @param string $name
-     * @return void
      *
      * @throws Ex\EnvironmentIsBrokenException
      */
@@ -299,7 +287,7 @@ final class Core
      *
      * @throws Ex\EnvironmentIsBrokenException
      *
-     * @return string|bool
+     * @return string
      */
     public static function ourSubstr($str, $start, $length = null)
     {
@@ -438,9 +426,9 @@ final class Core
         }
 
         if ($raw_output) {
-            return (string) Core::ourSubstr($output, 0, $key_length);
+            return Core::ourSubstr($output, 0, $key_length);
         } else {
-            return Encoding::binToHex((string) Core::ourSubstr($output, 0, $key_length));
+            return Encoding::binToHex(Core::ourSubstr($output, 0, $key_length));
         }
     }
 }

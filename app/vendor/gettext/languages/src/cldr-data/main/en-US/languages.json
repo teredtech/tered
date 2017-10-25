@@ -3,11 +3,12 @@
     "en-US": {
       "identity": {
         "version": {
-          "_number": "$Revision: 13133 $",
-          "_cldrVersion": "31"
+          "_number": "$Revision: 12740 $",
+          "_cldrVersion": "30.0.2"
         },
         "language": "en",
-        "territory": "US"
+        "territory": "US",
+        "variant": "POSIX"
       },
       "localeDisplayNames": {
         "languages": {

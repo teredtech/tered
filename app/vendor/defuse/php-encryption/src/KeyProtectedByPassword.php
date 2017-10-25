@@ -8,10 +8,7 @@ final class KeyProtectedByPassword
 {
     const PASSWORD_KEY_CURRENT_VERSION = "\xDE\xF1\x00\x00";
 
-    /**
-     * @var string
-     */
-    private $encrypted_key = '';
+    private $encrypted_key = null;
 
     /**
      * Creates a random key protected by the provided password.

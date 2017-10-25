@@ -2,24 +2,20 @@
 
 namespace InstagramAPI\Realtime\Event\Payload;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Notify.
- *
  * @method \InstagramAPI\Response\Model\ActionLog getActionLog()
  * @method string getUserId()
  * @method bool isActionLog()
  * @method bool isUserId()
- * @method $this setActionLog(\InstagramAPI\Response\Model\ActionLog $value)
- * @method $this setUserId(string $value)
- * @method $this unsetActionLog()
- * @method $this unsetUserId()
+ * @method setActionLog(\InstagramAPI\Response\Model\ActionLog $value)
+ * @method setUserId(string $value)
  */
-class Notify extends AutoPropertyMapper
+class Notify extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'user_id'    => 'string',
-        'action_log' => '\InstagramAPI\Response\Model\ActionLog',
-    ];
+    /** @var string */
+    public $user_id;
+    /** @var \InstagramAPI\Response\Model\ActionLog */
+    public $action_log;
 }

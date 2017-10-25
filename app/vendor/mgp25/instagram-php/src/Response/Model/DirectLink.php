@@ -2,24 +2,20 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * DirectLink.
- *
  * @method LinkContext getLinkContext()
  * @method string getText()
  * @method bool isLinkContext()
  * @method bool isText()
- * @method $this setLinkContext(LinkContext $value)
- * @method $this setText(string $value)
- * @method $this unsetLinkContext()
- * @method $this unsetText()
+ * @method setLinkContext(LinkContext $value)
+ * @method setText(string $value)
  */
-class DirectLink extends AutoPropertyMapper
+class DirectLink extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'text'         => 'string',
-        'link_context' => 'LinkContext',
-    ];
+    /** @var string */
+    public $text;
+    /** @var LinkContext */
+    public $link_context;
 }

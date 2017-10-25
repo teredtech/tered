@@ -2,14 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * PostLiveItem.
- *
  * @method Broadcast[] getBroadcasts()
  * @method mixed getCanReply()
- * @method mixed getCanReshare()
  * @method mixed getLastSeenBroadcastTs()
  * @method mixed getMuted()
  * @method string getPk()
@@ -18,43 +15,38 @@ use InstagramAPI\AutoPropertyMapper;
  * @method User getUser()
  * @method bool isBroadcasts()
  * @method bool isCanReply()
- * @method bool isCanReshare()
  * @method bool isLastSeenBroadcastTs()
  * @method bool isMuted()
  * @method bool isPk()
  * @method bool isRankedPosition()
  * @method bool isSeenRankedPosition()
  * @method bool isUser()
- * @method $this setBroadcasts(Broadcast[] $value)
- * @method $this setCanReply(mixed $value)
- * @method $this setCanReshare(mixed $value)
- * @method $this setLastSeenBroadcastTs(mixed $value)
- * @method $this setMuted(mixed $value)
- * @method $this setPk(string $value)
- * @method $this setRankedPosition(mixed $value)
- * @method $this setSeenRankedPosition(mixed $value)
- * @method $this setUser(User $value)
- * @method $this unsetBroadcasts()
- * @method $this unsetCanReply()
- * @method $this unsetCanReshare()
- * @method $this unsetLastSeenBroadcastTs()
- * @method $this unsetMuted()
- * @method $this unsetPk()
- * @method $this unsetRankedPosition()
- * @method $this unsetSeenRankedPosition()
- * @method $this unsetUser()
+ * @method setBroadcasts(Broadcast[] $value)
+ * @method setCanReply(mixed $value)
+ * @method setLastSeenBroadcastTs(mixed $value)
+ * @method setMuted(mixed $value)
+ * @method setPk(string $value)
+ * @method setRankedPosition(mixed $value)
+ * @method setSeenRankedPosition(mixed $value)
+ * @method setUser(User $value)
  */
-class PostLiveItem extends AutoPropertyMapper
+class PostLiveItem extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'pk'                     => 'string',
-        'user'                   => 'User',
-        'broadcasts'             => 'Broadcast[]',
-        'last_seen_broadcast_ts' => '',
-        'can_reply'              => '',
-        'ranked_position'        => '',
-        'seen_ranked_position'   => '',
-        'muted'                  => '',
-        'can_reshare'            => '',
-    ];
+    /**
+     * @var string
+     */
+    public $pk;
+    /**
+     * @var User
+     */
+    public $user;
+    /**
+     * @var Broadcast[]
+     */
+    public $broadcasts;
+    public $last_seen_broadcast_ts;
+    public $can_reply;
+    public $ranked_position;
+    public $seen_ranked_position;
+    public $muted;
 }

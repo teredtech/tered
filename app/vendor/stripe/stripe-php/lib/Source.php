@@ -67,11 +67,11 @@ class Source extends ApiResource
 
     /**
      * @param array|null $params
-     * @param array|string|null $options
+     * @param array|string|null $opts
      *
-     * @return Source The detached source.
+     * @return Source The deleted source.
      */
-    public function detach($params = null, $options = null)
+    public function delete($params = null, $options = null)
     {
         self::_validateParams($params);
 
@@ -93,23 +93,11 @@ class Source extends ApiResource
             $this->refreshFrom($response, $opts);
             return $this;
         } else {
-            $message = "This source object does not appear to be currently attached "
-               . "to a customer object.";
+            $message = "Source objects cannot be deleted, they can only be "
+               . "detached from customer objects. This source object does not "
+               . "appear to be currently attached to a customer object.";
             throw new Error\Api($message);
         }
-    }
-
-    /**
-     * @param array|null $params
-     * @param array|string|null $options
-     *
-     * @return Source The detached source.
-     *
-     * @deprecated Use the `detach` method instead.
-     */
-    public function delete($params = null, $options = null)
-    {
-        $this->detach($params, $options);
     }
 
     /**

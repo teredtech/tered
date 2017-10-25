@@ -2,56 +2,38 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\Response;
+use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\ResponseInterface;
+use InstagramAPI\ResponseTrait;
 
 /**
- * AccountSecurityInfoResponse.
- *
  * @method mixed getBackupCodes()
  * @method mixed getCountryCode()
  * @method mixed getIsPhoneConfirmed()
  * @method mixed getIsTwoFactorEnabled()
- * @method mixed getMessage()
  * @method mixed getNationalNumber()
  * @method mixed getPhoneNumber()
- * @method string getStatus()
- * @method Model\_Message[] get_Messages()
  * @method bool isBackupCodes()
  * @method bool isCountryCode()
  * @method bool isIsPhoneConfirmed()
  * @method bool isIsTwoFactorEnabled()
- * @method bool isMessage()
  * @method bool isNationalNumber()
  * @method bool isPhoneNumber()
- * @method bool isStatus()
- * @method bool is_Messages()
- * @method $this setBackupCodes(mixed $value)
- * @method $this setCountryCode(mixed $value)
- * @method $this setIsPhoneConfirmed(mixed $value)
- * @method $this setIsTwoFactorEnabled(mixed $value)
- * @method $this setMessage(mixed $value)
- * @method $this setNationalNumber(mixed $value)
- * @method $this setPhoneNumber(mixed $value)
- * @method $this setStatus(string $value)
- * @method $this set_Messages(Model\_Message[] $value)
- * @method $this unsetBackupCodes()
- * @method $this unsetCountryCode()
- * @method $this unsetIsPhoneConfirmed()
- * @method $this unsetIsTwoFactorEnabled()
- * @method $this unsetMessage()
- * @method $this unsetNationalNumber()
- * @method $this unsetPhoneNumber()
- * @method $this unsetStatus()
- * @method $this unset_Messages()
+ * @method setBackupCodes(mixed $value)
+ * @method setCountryCode(mixed $value)
+ * @method setIsPhoneConfirmed(mixed $value)
+ * @method setIsTwoFactorEnabled(mixed $value)
+ * @method setNationalNumber(mixed $value)
+ * @method setPhoneNumber(mixed $value)
  */
-class AccountSecurityInfoResponse extends Response
+class AccountSecurityInfoResponse extends AutoPropertyHandler implements ResponseInterface
 {
-    const JSON_PROPERTY_MAP = [
-        'backup_codes'          => '',
-        'is_phone_confirmed'    => '',
-        'country_code'          => '',
-        'phone_number'          => '',
-        'is_two_factor_enabled' => '',
-        'national_number'       => '',
-    ];
+    use ResponseTrait;
+
+    public $backup_codes;
+    public $is_phone_confirmed;
+    public $country_code;
+    public $phone_number;
+    public $is_two_factor_enabled;
+    public $national_number;
 }

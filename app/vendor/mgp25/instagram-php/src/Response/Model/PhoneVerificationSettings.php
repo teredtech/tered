@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * PhoneVerificationSettings.
- *
  * @method mixed getMaxSmsCount()
  * @method mixed getResendSmsDelaySec()
  * @method mixed getRobocallAfterMaxSms()
@@ -15,21 +13,15 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isResendSmsDelaySec()
  * @method bool isRobocallAfterMaxSms()
  * @method bool isRobocallCountDownTimeSec()
- * @method $this setMaxSmsCount(mixed $value)
- * @method $this setResendSmsDelaySec(mixed $value)
- * @method $this setRobocallAfterMaxSms(mixed $value)
- * @method $this setRobocallCountDownTimeSec(mixed $value)
- * @method $this unsetMaxSmsCount()
- * @method $this unsetResendSmsDelaySec()
- * @method $this unsetRobocallAfterMaxSms()
- * @method $this unsetRobocallCountDownTimeSec()
+ * @method setMaxSmsCount(mixed $value)
+ * @method setResendSmsDelaySec(mixed $value)
+ * @method setRobocallAfterMaxSms(mixed $value)
+ * @method setRobocallCountDownTimeSec(mixed $value)
  */
-class PhoneVerificationSettings extends AutoPropertyMapper
+class PhoneVerificationSettings extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'resend_sms_delay_sec'         => '',
-        'max_sms_count'                => '',
-        'robocall_count_down_time_sec' => '',
-        'robocall_after_max_sms'       => '',
-    ];
+    public $resend_sms_delay_sec;
+    public $max_sms_count;
+    public $robocall_count_down_time_sec;
+    public $robocall_after_max_sms;
 }

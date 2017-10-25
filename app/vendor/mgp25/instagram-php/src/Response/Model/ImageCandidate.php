@@ -2,29 +2,22 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * ImageCandidate.
- *
- * @method int getHeight()
- * @method string getUrl()
- * @method int getWidth()
+ * @method mixed getHeight()
+ * @method mixed getUrl()
+ * @method mixed getWidth()
  * @method bool isHeight()
  * @method bool isUrl()
  * @method bool isWidth()
- * @method $this setHeight(int $value)
- * @method $this setUrl(string $value)
- * @method $this setWidth(int $value)
- * @method $this unsetHeight()
- * @method $this unsetUrl()
- * @method $this unsetWidth()
+ * @method setHeight(mixed $value)
+ * @method setUrl(mixed $value)
+ * @method setWidth(mixed $value)
  */
-class ImageCandidate extends AutoPropertyMapper
+class ImageCandidate extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'url'    => 'string',
-        'width'  => 'int',
-        'height' => 'int',
-    ];
+    public $url;
+    public $width;
+    public $height;
 }

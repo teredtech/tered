@@ -2,25 +2,20 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * ActionBadge.
- *
  * @method mixed getActionCount()
  * @method mixed getActionTimestamp()
  * @method mixed getActionType()
  * @method bool isActionCount()
  * @method bool isActionTimestamp()
  * @method bool isActionType()
- * @method $this setActionCount(mixed $value)
- * @method $this setActionTimestamp(mixed $value)
- * @method $this setActionType(mixed $value)
- * @method $this unsetActionCount()
- * @method $this unsetActionTimestamp()
- * @method $this unsetActionType()
+ * @method setActionCount(mixed $value)
+ * @method setActionTimestamp(mixed $value)
+ * @method setActionType(mixed $value)
  */
-class ActionBadge extends AutoPropertyMapper
+class ActionBadge extends AutoPropertyHandler
 {
     const DELIVERED = 'raven_delivered';
     const SENT = 'raven_sent';
@@ -33,9 +28,7 @@ class ActionBadge extends AutoPropertyMapper
     const UNKNOWN = 'raven_unknown';
     const SUGGESTED = 'raven_suggested';
 
-    const JSON_PROPERTY_MAP = [
-        'action_type'      => '',
-        'action_count'     => '',
-        'action_timestamp' => '',
-    ];
+    public $action_type;
+    public $action_count;
+    public $action_timestamp;
 }

@@ -2,19 +2,17 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * BroadcastOwner.
- *
  * @method FriendshipStatus getFriendshipStatus()
- * @method string getFullName()
- * @method bool getIsPrivate()
- * @method bool getIsVerified()
+ * @method mixed getFullName()
+ * @method mixed getIsPrivate()
+ * @method mixed getIsVerified()
  * @method string getPk()
  * @method string getProfilePicId()
- * @method string getProfilePicUrl()
- * @method string getUsername()
+ * @method mixed getProfilePicUrl()
+ * @method mixed getUsername()
  * @method bool isFriendshipStatus()
  * @method bool isFullName()
  * @method bool isIsPrivate()
@@ -23,33 +21,32 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isProfilePicId()
  * @method bool isProfilePicUrl()
  * @method bool isUsername()
- * @method $this setFriendshipStatus(FriendshipStatus $value)
- * @method $this setFullName(string $value)
- * @method $this setIsPrivate(bool $value)
- * @method $this setIsVerified(bool $value)
- * @method $this setPk(string $value)
- * @method $this setProfilePicId(string $value)
- * @method $this setProfilePicUrl(string $value)
- * @method $this setUsername(string $value)
- * @method $this unsetFriendshipStatus()
- * @method $this unsetFullName()
- * @method $this unsetIsPrivate()
- * @method $this unsetIsVerified()
- * @method $this unsetPk()
- * @method $this unsetProfilePicId()
- * @method $this unsetProfilePicUrl()
- * @method $this unsetUsername()
+ * @method setFriendshipStatus(FriendshipStatus $value)
+ * @method setFullName(mixed $value)
+ * @method setIsPrivate(mixed $value)
+ * @method setIsVerified(mixed $value)
+ * @method setPk(string $value)
+ * @method setProfilePicId(string $value)
+ * @method setProfilePicUrl(mixed $value)
+ * @method setUsername(mixed $value)
  */
-class BroadcastOwner extends AutoPropertyMapper
+class BroadcastOwner extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'pk'                => 'string',
-        'friendship_status' => 'FriendshipStatus',
-        'full_name'         => 'string',
-        'is_verified'       => 'bool',
-        'profile_pic_url'   => 'string',
-        'profile_pic_id'    => 'string',
-        'is_private'        => 'bool',
-        'username'          => 'string',
-    ];
+    /**
+     * @var string
+     */
+    public $pk;
+    /**
+     * @var FriendshipStatus
+     */
+    public $friendship_status;
+    public $full_name;
+    public $is_verified;
+    public $profile_pic_url;
+    /**
+     * @var string
+     */
+    public $profile_pic_id;
+    public $is_private;
+    public $username;
 }

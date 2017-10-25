@@ -2,11 +2,9 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * Gating.
- *
  * @method mixed getButtons()
  * @method mixed getDescription()
  * @method mixed getGatingType()
@@ -15,21 +13,15 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isDescription()
  * @method bool isGatingType()
  * @method bool isTitle()
- * @method $this setButtons(mixed $value)
- * @method $this setDescription(mixed $value)
- * @method $this setGatingType(mixed $value)
- * @method $this setTitle(mixed $value)
- * @method $this unsetButtons()
- * @method $this unsetDescription()
- * @method $this unsetGatingType()
- * @method $this unsetTitle()
+ * @method setButtons(mixed $value)
+ * @method setDescription(mixed $value)
+ * @method setGatingType(mixed $value)
+ * @method setTitle(mixed $value)
  */
-class Gating extends AutoPropertyMapper
+class Gating extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'gating_type' => '',
-        'description' => '',
-        'buttons'     => '',
-        'title'       => '',
-    ];
+    public $gating_type;
+    public $description;
+    public $buttons;
+    public $title;
 }

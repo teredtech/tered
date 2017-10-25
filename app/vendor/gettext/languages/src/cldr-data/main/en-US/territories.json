@@ -3,11 +3,12 @@
     "en-US": {
       "identity": {
         "version": {
-          "_number": "$Revision: 13133 $",
-          "_cldrVersion": "31"
+          "_number": "$Revision: 12740 $",
+          "_cldrVersion": "30.0.2"
         },
         "language": "en",
-        "territory": "US"
+        "territory": "US",
+        "variant": "POSIX"
       },
       "localeDisplayNames": {
         "territories": {
@@ -102,8 +103,8 @@
           "CW": "Curaçao",
           "CX": "Christmas Island",
           "CY": "Cyprus",
-          "CZ": "Czechia",
-          "CZ-alt-variant": "Czech Republic",
+          "CZ": "Czech Republic",
+          "CZ-alt-variant": "Czechia",
           "DE": "Germany",
           "DG": "Diego Garcia",
           "DJ": "Djibouti",

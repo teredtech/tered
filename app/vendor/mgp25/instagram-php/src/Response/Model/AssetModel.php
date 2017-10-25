@@ -2,24 +2,21 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyMapper;
+use InstagramAPI\AutoPropertyHandler;
 
 /**
- * AssetModel.
- *
- * @method string getAssetUrl()
+ * @method mixed getAssetUrl()
  * @method string getId()
  * @method bool isAssetUrl()
  * @method bool isId()
- * @method $this setAssetUrl(string $value)
- * @method $this setId(string $value)
- * @method $this unsetAssetUrl()
- * @method $this unsetId()
+ * @method setAssetUrl(mixed $value)
+ * @method setId(string $value)
  */
-class AssetModel extends AutoPropertyMapper
+class AssetModel extends AutoPropertyHandler
 {
-    const JSON_PROPERTY_MAP = [
-        'asset_url' => 'string',
-        'id'        => 'string',
-    ];
+    public $asset_url;
+    /**
+     * @var string
+     */
+    public $id;
 }

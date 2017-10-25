@@ -465,7 +465,7 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendText(
-        array $recipients,
+        $recipients,
         $text,
         array $options = [])
     {
@@ -513,18 +513,18 @@ class Direct extends RequestCollection
      * @see https://help.instagram.com/1209246439090858 For more information.
      */
     public function sendPost(
-        array $recipients,
+        $recipients,
         $mediaId,
         array $options = [])
     {
         if (!preg_match('#^\d+_\d+$#D', $mediaId)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media ID.', $mediaId));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media ID.'));
         }
         if (!isset($options['media_type'])) {
             throw new \InvalidArgumentException('Please provide media_type in options.');
         }
         if ($options['media_type'] !== 'photo' && $options['media_type'] !== 'video') {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media_type.', $options['media_type']));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media_type.'), $options['media_type']);
         }
 
         return $this->_sendDirectItem('media_share', $recipients, array_merge($options, [
@@ -549,12 +549,12 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendPhoto(
-        array $recipients,
+        $recipients,
         $photoFilename,
         array $options = [])
     {
         if (!is_file($photoFilename) || !is_readable($photoFilename)) {
-            throw new \InvalidArgumentException(sprintf('File "%s" is not available for reading.', $photoFilename));
+            throw new \InvalidArgumentException(sprintf('File "%s" is not available for reading.'));
         }
 
         return $this->_sendDirectItem('photo', $recipients, array_merge($options, [
@@ -581,7 +581,7 @@ class Direct extends RequestCollection
      * @see Internal::configureSinglePhoto() for available metadata fields.
      */
     public function sendDisappearingPhoto(
-        array $recipients,
+        $recipients,
         $photoFilename,
         array $externalMetadata = [])
     {
@@ -610,7 +610,7 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendVideo(
-        array $recipients,
+        $recipients,
         $videoFilename,
         array $options = [])
     {
@@ -661,7 +661,7 @@ class Direct extends RequestCollection
      * @see Internal::configureSingleVideo() for available metadata fields.
      */
     public function sendDisappearingVideo(
-        array $recipients,
+        $recipients,
         $videoFilename,
         array $externalMetadata = [])
     {
@@ -686,7 +686,7 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendLike(
-        array $recipients,
+        $recipients,
         array $options = [])
     {
         return $this->_sendDirectItem('like', $recipients, $options);
@@ -710,7 +710,7 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendHashtag(
-        array $recipients,
+        $recipients,
         $hashtag,
         array $options = [])
     {
@@ -746,7 +746,7 @@ class Direct extends RequestCollection
      * @see Location::search()
      */
     public function sendLocation(
-        array $recipients,
+        $recipients,
         $locationId,
         array $options = [])
     {
@@ -777,7 +777,7 @@ class Direct extends RequestCollection
      * @return \InstagramAPI\Response\DirectSendItemResponse
      */
     public function sendProfile(
-        array $recipients,
+        $recipients,
         $userId,
         array $options = [])
     {
@@ -811,49 +811,6 @@ class Direct extends RequestCollection
         array $options = [])
     {
         return $this->_handleReaction($threadId, $threadItemId, $reactionType, 'created', $options);
-    }
-
-    /**
-     * Share an existing story post via direct message to a user's inbox.
-     *
-     * You are able to share your own stories, as well as public stories from
-     * other people.
-     *
-     * @param array  $recipients An array with "users" or "thread" keys.
-     *                           To start a new thread, provide "users" as an array
-     *                           of numerical UserPK IDs. To use an existing thread
-     *                           instead, provide "thread" with the thread ID.
-     * @param string $storyId    The story ID in Instagram's internal format (ie "3482384834_43294").
-     * @param array  $options    An associative array of additional parameters, including:
-     *                           "media_type" (required) - either "photo" or "video";
-     *                           "client_context" - predefined UUID used to prevent double-posting;
-     *                           "text" - text message.
-     *
-     * @throws \InvalidArgumentException
-     * @throws \InstagramAPI\Exception\InstagramException
-     *
-     * @return \InstagramAPI\Response\DirectSendItemResponse
-     *
-     * @see https://help.instagram.com/188382041703187 For more information.
-     */
-    public function sendStory(
-        array $recipients,
-        $storyId,
-        array $options = [])
-    {
-        if (!preg_match('#^\d+_\d+$#D', $storyId)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid story ID.', $storyId));
-        }
-        if (!isset($options['media_type'])) {
-            throw new \InvalidArgumentException('Please provide media_type in options.');
-        }
-        if ($options['media_type'] !== 'photo' && $options['media_type'] !== 'video') {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media_type.', $options['media_type']));
-        }
-
-        return $this->_sendDirectItem('story_share', $recipients, array_merge($options, [
-            'story_media_id' => $storyId,
-        ]));
     }
 
     /**
@@ -1033,8 +990,7 @@ class Direct extends RequestCollection
      *                           "profile" uses "client_context", "profile_user_id" and "text";
      *                           "photo" uses "client_context" and "filepath";
      *                           "video" uses "client_context", "upload_id" and "video_result";
-     *                           "links" uses "client_context", "link_text" and "link_urls";
-     *                           "story_share" uses "client_context", "story_media_id", "media_type" and "text".
+     *                           "links" uses "client_context", "link_text" and "link_urls".
      *
      * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
@@ -1043,19 +999,15 @@ class Direct extends RequestCollection
      */
     protected function _sendDirectItem(
         $type,
-        array $recipients,
+        $recipients,
         array $options = [])
     {
-        // Most requests are unsigned, but some use signing by overriding this.
-        $signedPost = false;
-
-        // Handle the request...
         switch ($type) {
             case 'media_share':
                 $request = $this->ig->request('direct_v2/threads/broadcast/media_share/');
                 // Check and set media_id.
                 if (!isset($options['media_id'])) {
-                    throw new \InvalidArgumentException('No media_id provided.');
+                    throw new \InvalidArgumentException('You must provide a media id.');
                 }
                 $request->addPost('media_id', $options['media_id']);
                 // Set text if provided.
@@ -1172,25 +1124,6 @@ class Direct extends RequestCollection
                 }
                 $request->addPost('node_type', $options['node_type']);
                 break;
-            case 'story_share':
-                $signedPost = true; // This must be a signed post!
-                $request = $this->ig->request('direct_v2/threads/broadcast/story_share/');
-                // Check and set story_media_id.
-                if (!isset($options['story_media_id'])) {
-                    throw new \InvalidArgumentException('No story_media_id provided.');
-                }
-                $request->addPost('story_media_id', $options['story_media_id']);
-                // Set text if provided.
-                if (isset($options['text']) && strlen($options['text'])) {
-                    $request->addPost('text', $options['text']);
-                }
-                // Check and set media_type.
-                if (isset($options['media_type']) && $options['media_type'] === 'video') {
-                    $request->addParam('media_type', 'video');
-                } else {
-                    $request->addParam('media_type', 'photo');
-                }
-                break;
             default:
                 throw new \InvalidArgumentException('Unsupported _sendDirectItem() type.');
         }
@@ -1214,13 +1147,7 @@ class Direct extends RequestCollection
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid UUID.', $options['client_context']));
         }
 
-        // Add some additional data if signed post.
-        if ($signedPost) {
-            $request->addPost('_uid', $this->ig->account_id);
-        }
-
-        // Execute the request with all data used by both signed and unsigned.
-        return $request->setSignedPost($signedPost)
+        return $request->setSignedPost(false)
             ->addPost('action', 'send_item')
             ->addPost('client_context', $options['client_context'])
             ->addPost('_csrftoken', $this->ig->client->getToken())

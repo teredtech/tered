@@ -2,18 +2,24 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Param.
+ *
  * @method mixed getName()
  * @method mixed getValue()
  * @method bool isName()
  * @method bool isValue()
- * @method setName(mixed $value)
- * @method setValue(mixed $value)
+ * @method $this setName(mixed $value)
+ * @method $this setValue(mixed $value)
+ * @method $this unsetName()
+ * @method $this unsetValue()
  */
-class Param extends AutoPropertyHandler
+class Param extends AutoPropertyMapper
 {
-    public $name;
-    public $value;
+    const JSON_PROPERTY_MAP = [
+        'name'  => '',
+        'value' => '',
+    ];
 }

@@ -80,6 +80,60 @@ class Live extends RequestCollection
     }
 
     /**
+     * Get the viewer list of a broadcast.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\ViewerListResponse
+     */
+    public function getViewerList(
+        $broadcastId)
+    {
+        return $this->ig->request("live/{$broadcastId}/get_viewer_list/")
+            ->getResponse(new Response\ViewerListResponse());
+    }
+
+    /**
+     * Get the final viewer list of a broadcast after it has ended.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\FinalViewerListResponse
+     */
+    public function getFinalViewerList(
+        $broadcastId)
+    {
+        return $this->ig->request("live/{$broadcastId}/get_final_viewer_list/")
+            ->getResponse(new Response\FinalViewerListResponse());
+    }
+
+    /**
+     * Get the viewer list of a post-live (saved replay) broadcast.
+     *
+     * @param string      $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     * @param null|string $maxId       Next "maximum ID", used for pagination.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\PostLiveViewerListResponse
+     */
+    public function getPostLiveViewerList(
+        $broadcastId,
+        $maxId = null)
+    {
+        $request = $this->ig->request("live/{$broadcastId}/get_post_live_viewers_list/");
+        if ($maxId !== null) {
+            $request->addParam('max_id', $maxId);
+        }
+
+        return $request->getResponse(new Response\PostLiveViewerListResponse());
+    }
+
+    /**
      * Get a live broadcast's heartbeat and viewer count.
      *
      * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
@@ -121,6 +175,52 @@ class Live extends RequestCollection
     }
 
     /**
+     * Pin a comment on live broadcast.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     * @param string $commentId   Target comment ID.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\PinCommentBroadcastResponse
+     */
+    public function pinComment(
+        $broadcastId,
+        $commentId)
+    {
+        return $this->ig->request("live/{$broadcastId}/pin_comment/")
+            ->addPost('offset_to_video_start', 0)
+            ->addPost('comment_id', $commentId)
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_uid', $this->ig->account_id)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->getResponse(new Response\PinCommentBroadcastResponse());
+    }
+
+    /**
+     * Unpin a comment on live broadcast.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     * @param string $commentId   Pinned comment ID.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\UnpinCommentBroadcastResponse
+     */
+    public function unpinComment(
+        $broadcastId,
+        $commentId)
+    {
+        return $this->ig->request("live/{$broadcastId}/unpin_comment/")
+            ->addPost('offset_to_video_start', 0)
+            ->addPost('comment_id', $commentId)
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_uid', $this->ig->account_id)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->getResponse(new Response\UnpinCommentBroadcastResponse());
+    }
+
+    /**
      * Get broadcast comments.
      *
      * @param string $broadcastId   The broadcast ID in Instagram's internal format (ie "17854587811139572").
@@ -140,15 +240,15 @@ class Live extends RequestCollection
     }
 
     /**
-     * Get live comments after live broadcast is over.
+     * Get post-live (saved replay) broadcast comments.
      *
      * @param string $broadcastId    The broadcast ID in Instagram's internal format (ie "17854587811139572").
-     * @param int    $startingOffset (optional).
-     * @param string $encodingTag    (optional).
+     * @param int    $startingOffset (optional) The time-offset to start at when retrieving the comments.
+     * @param string $encodingTag    (optional) TODO: ?.
      *
      * @throws \InstagramAPI\Exception\InstagramException
      *
-     * @return \InstagramAPI\Response\BroadcastCommentsResponse
+     * @return \InstagramAPI\Response\PostLiveCommentsResponse
      */
     public function getPostLiveComments(
         $broadcastId,
@@ -158,7 +258,7 @@ class Live extends RequestCollection
         return $this->ig->request("live/{$broadcastId}/get_post_live_comments/")
             ->addParam('starting_offset', $startingOffset)
             ->addParam('encoding_tag', $encodingTag)
-            ->getResponse(new Response\BroadcastCommentsResponse());
+            ->getResponse(new Response\PostLiveCommentsResponse());
     }
 
     /**
@@ -205,5 +305,132 @@ class Live extends RequestCollection
         return $this->ig->request("live/{$broadcastId}/get_like_count/")
             ->addParam('like_ts', $likeTs)
             ->getResponse(new Response\BroadcastLikeCountResponse());
+    }
+
+    /**
+     * Get post-live (saved replay) broadcast likes.
+     *
+     * @param string $broadcastId    The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     * @param int    $startingOffset (optional) The time-offset to start at when retrieving the likes.
+     * @param string $encodingTag    (optional) TODO: ?.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\PostLiveLikesResponse
+     */
+    public function getPostLiveLikes(
+        $broadcastId,
+        $startingOffset = 0,
+        $encodingTag = 'instagram_dash_remuxed')
+    {
+        return $this->ig->request("live/{$broadcastId}/get_post_live_likes/")
+            ->addParam('starting_offset', $startingOffset)
+            ->addParam('encoding_tag', $encodingTag)
+            ->getResponse(new Response\PostLiveLikesResponse());
+    }
+
+    /**
+     * Create a live broadcast.
+     *
+     * Read the description of start() for proper usage.
+     *
+     * @param int    $previewWidth     (optional) Width.
+     * @param int    $previewHeight    (optional) Height.
+     * @param string $broadcastMessage (optional) Message to use for the broadcast.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\CreateLiveResponse
+     *
+     * @see Live::start()
+     */
+    public function create(
+        $previewWidth = 720,
+        $previewHeight = 1184,
+        $broadcastMessage = '')
+    {
+        return $this->ig->request('live/create/')
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->addPost('preview_height', $previewHeight)
+            ->addPost('preview_width', $previewWidth)
+            ->addPost('broadcast_message', $broadcastMessage)
+            ->addPost('broadcast_type', 'RTMP')
+            ->addPost('internal_only', 0)
+            ->getResponse(new Response\CreateLiveResponse());
+    }
+
+    /**
+     * Start a live broadcast.
+     *
+     * Note that you MUST first call create() to get a broadcast-ID and its RTMP
+     * upload-URL. Next, simply begin sending your actual video broadcast to the
+     * stream-upload URL. And then call start() with the broadcast-ID to make
+     * the stream available to viewers.
+     *
+     * Also note that broadcasting to the video stream URL must be done via
+     * other software, since it ISN'T (and won't be) handled by this library!
+     *
+     * Lastly, note that stopping the stream is done via RTMP signals, which
+     * your broadcasting software MUST output properly (FFmpeg DOESN'T do it!).
+     *
+     * @param string $broadcastId       The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     * @param bool   $sendNotifications (optional) Whether to send notifications about the broadcast to your followers.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\StartLiveResponse
+     *
+     * @see Live::create()
+     */
+    public function start(
+        $broadcastId,
+        $sendNotifications = true)
+    {
+        return $this->ig->request("live/{$broadcastId}/start/")
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->addPost('should_send_notifications', (int) $sendNotifications)
+            ->getResponse(new Response\StartLiveResponse());
+    }
+
+    /**
+     * Add a finished broadcast to your post-live feed (saved replay).
+     *
+     * The broadcast must have ended before you can call this function.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\GenericResponse
+     */
+    public function addToPostLive(
+        $broadcastId)
+    {
+        return $this->ig->request("live/{$broadcastId}/add_to_post_live/")
+            ->addPost('_uid', $this->ig->account_id)
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->getResponse(new Response\GenericResponse());
+    }
+
+    /**
+     * Delete a saved post-live broadcast.
+     *
+     * @param string $broadcastId The broadcast ID in Instagram's internal format (ie "17854587811139572").
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\GenericResponse
+     */
+    public function deletePostLive(
+        $broadcastId)
+    {
+        return $this->ig->request("live/{$broadcastId}/delete_post_live/")
+            ->addPost('_uid', $this->ig->account_id)
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->getResponse(new Response\GenericResponse());
     }
 }

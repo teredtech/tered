@@ -14,7 +14,6 @@ use InstagramAPI\Exception\ThrottledException;
 use InstagramAPI\Request;
 use InstagramAPI\Request\Metadata\Internal as InternalMetadata;
 use InstagramAPI\Response;
-use InstagramAPI\ResponseInterface;
 use InstagramAPI\Signatures;
 use InstagramAPI\Utils;
 
@@ -177,13 +176,16 @@ class Internal extends RequestCollection
         }
 
         // Available external metadata parameters:
-        /** @var string Caption to use for the media. NOT USED FOR STORY MEDIA! */
+        /** @var string Caption to use for the media. */
         $captionText = isset($externalMetadata['caption']) ? $externalMetadata['caption'] : '';
         /** @var Response\Model\Location|null A Location object describing where
-         the media was taken. NOT USED FOR STORY MEDIA! */
-        $location = (isset($externalMetadata['location']) && $targetFeed != Constants::FEED_STORY) ? $externalMetadata['location'] : null;
+         * the media was taken. */
+        $location = (isset($externalMetadata['location'])) ? $externalMetadata['location'] : null;
+        /** @var array|null Array of story location sticker instructions. ONLY
+         * USED FOR STORY MEDIA! */
+        $locationSticker = (isset($externalMetadata['location_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['location_sticker'] : null;
         /** @var array|null Array of usertagging instructions, in the format
-         [['position'=>[0.5,0.5], 'user_id'=>'123'], ...]. ONLY FOR TIMELINE PHOTOS! */
+         * [['position'=>[0.5,0.5], 'user_id'=>'123'], ...]. ONLY FOR TIMELINE PHOTOS! */
         $usertags = (isset($externalMetadata['usertags']) && $targetFeed == Constants::FEED_TIMELINE) ? $externalMetadata['usertags'] : null;
         /** @var string|null Link to attach to the media. ONLY USED FOR STORY MEDIA,
          * AND YOU MUST HAVE A BUSINESS INSTAGRAM ACCOUNT TO POST A STORY LINK! */
@@ -193,6 +195,10 @@ class Internal extends RequestCollection
         $filter = null; // COMMENTED OUT SO USERS UNDERSTAND THEY CAN'T USE THIS!
         /** @var array Hashtags to use for the media. ONLY STORY MEDIA! */
         $hashtags = (isset($externalMetadata['hashtags']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['hashtags'] : null;
+        /** @var array Mentions to use for the media. ONLY STORY MEDIA! */
+        $storyMentions = (isset($externalMetadata['story_mentions']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_mentions'] : null;
+        /** @var array Story poll to use for the media. ONLY STORY MEDIA! */
+        $storyPoll = (isset($externalMetadata['story_polls']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_polls'] : null;
 
         // Fix very bad external user-metadata values.
         if (!is_string($captionText)) {
@@ -257,11 +263,31 @@ class Internal extends RequestCollection
                     $story_cta = '[{"links":[{"webUri":'.json_encode($link).'}]}]';
                     $request->addPost('story_cta', $story_cta);
                 }
-                if (!is_null($hashtags) && $captionText != '') {
-                    Utils::throwIfInvalidHashtags($captionText, $hashtags);
+                if ($hashtags !== null && $captionText !== '') {
+                    Utils::throwIfInvalidStoryHashtags($captionText, $hashtags);
                     $request
                         ->addPost('story_hashtags', json_encode($hashtags))
                         ->addPost('caption', $captionText)
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($locationSticker !== null && $location !== null) {
+                    Utils::throwIfInvalidStoryLocationSticker($locationSticker);
+                    $request
+                        ->addPost('story_locations', json_encode([$locationSticker]))
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($storyMentions !== null && $captionText !== '') {
+                    Utils::throwIfInvalidStoryMentions($storyMentions);
+                    $request
+                        ->addPost('reel_mentions', json_encode($storyMentions))
+                        ->addPost('caption', str_replace(' ', '+', $captionText).'+')
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($storyPoll !== null) {
+                    Utils::throwIfInvalidStoryPoll($storyPoll);
+                    $request
+                        ->addPost('story_polls', json_encode($storyPoll))
+                        ->addPost('internal_features', 'polling_sticker')
                         ->addPost('mas_opt_in', 'NOT_PROMPTED');
                 }
                 break;
@@ -278,24 +304,18 @@ class Internal extends RequestCollection
         }
 
         if ($location instanceof Response\Model\Location) {
-            $loc = [
-                $location->getExternalIdSource().'_id'   => $location->getExternalId(),
-                'name'                                   => $location->getName(),
-                'lat'                                    => $location->getLat(),
-                'lng'                                    => $location->getLng(),
-                'address'                                => $location->getAddress(),
-                'external_source'                        => $location->getExternalIdSource(),
-            ];
-
+            if ($targetFeed === Constants::FEED_TIMELINE) {
+                $request->addPost('location', Utils::buildMediaLocationJSON($location));
+            }
+            if ($targetFeed === Constants::FEED_STORY && $locationSticker === null) {
+                throw new \InvalidArgumentException('You must provide a location_sticker together with your story location.');
+            }
             $request
-                ->addPost('location', json_encode($loc))
                 ->addPost('geotag_enabled', '1')
                 ->addPost('posting_latitude', $location->getLat())
                 ->addPost('posting_longitude', $location->getLng())
                 ->addPost('media_latitude', $location->getLat())
-                ->addPost('media_longitude', $location->getLng())
-                ->addPost('av_latitude', 0.0)
-                ->addPost('av_longitude', 0.0);
+                ->addPost('media_longitude', $location->getLng());
         }
 
         $configure = $request->getResponse(new Response\ConfigureResponse());
@@ -465,13 +485,20 @@ class Internal extends RequestCollection
          * implemented for stories. */
         $usertags = (isset($externalMetadata['usertags']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['usertags'] : null;
         /** @var Response\Model\Location|null A Location object describing where
-         the media was taken. NOT USED FOR STORY MEDIA! */
-        $location = (isset($externalMetadata['location']) && $targetFeed != Constants::FEED_STORY) ? $externalMetadata['location'] : null;
+         * the media was taken. */
+        $location = (isset($externalMetadata['location'])) ? $externalMetadata['location'] : null;
+        /** @var array|null Array of story location sticker instructions. ONLY
+         * USED FOR STORY MEDIA! */
+        $locationSticker = (isset($externalMetadata['location_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['location_sticker'] : null;
         /** @var string|null Link to attach to the media. ONLY USED FOR STORY MEDIA,
          * AND YOU MUST HAVE A BUSINESS INSTAGRAM ACCOUNT TO POST A STORY LINK! */
         $link = (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['link'] : null;
         /** @var array Hashtags to use for the media. ONLY STORY MEDIA! */
         $hashtags = (isset($externalMetadata['hashtags']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['hashtags'] : null;
+        /** @var array Mentions to use for the media. ONLY STORY MEDIA! */
+        $storyMentions = (isset($externalMetadata['story_mentions']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_mentions'] : null;
+        /** @var array Story poll to use for the media. ONLY STORY MEDIA! */
+        $storyPoll = (isset($externalMetadata['story_polls']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_polls'] : null;
 
         // Fix very bad external user-metadata values.
         if (!is_string($captionText)) {
@@ -508,6 +535,9 @@ class Internal extends RequestCollection
             ->addPost('_uid', $this->ig->account_id);
 
         switch ($targetFeed) {
+            case Constants::FEED_TIMELINE:
+                $request->addPost('caption', $captionText);
+                break;
             case Constants::FEED_STORY:
                 $request
                     ->addPost('configure_mode', 1) // 1 - REEL_SHARE
@@ -519,11 +549,31 @@ class Internal extends RequestCollection
                     $story_cta = '[{"links":[{"webUri":'.json_encode($link).'}]}]';
                     $request->addPost('story_cta', $story_cta);
                 }
-                if (!is_null($hashtags) && $captionText != '') {
-                    Utils::throwIfInvalidHashtags($captionText, $hashtags);
+                if ($hashtags !== null && $captionText !== '') {
+                    Utils::throwIfInvalidStoryHashtags($captionText, $hashtags);
                     $request
                         ->addPost('story_hashtags', json_encode($hashtags))
                         ->addPost('caption', $captionText)
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($locationSticker !== null && $location !== null) {
+                    Utils::throwIfInvalidStoryLocationSticker($locationSticker);
+                    $request
+                        ->addPost('story_locations', json_encode([$locationSticker]))
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($storyMentions !== null && $captionText !== '') {
+                    Utils::throwIfInvalidStoryMentions($storyMentions);
+                    $request
+                        ->addPost('reel_mentions', json_encode($storyMentions))
+                        ->addPost('caption', str_replace(' ', '+', $captionText).'+')
+                        ->addPost('mas_opt_in', 'NOT_PROMPTED');
+                }
+                if ($storyPoll !== null) {
+                    Utils::throwIfInvalidStoryPoll($storyPoll);
+                    $request
+                        ->addPost('story_polls', json_encode($storyPoll))
+                        ->addPost('internal_features', 'polling_sticker')
                         ->addPost('mas_opt_in', 'NOT_PROMPTED');
                 }
                 break;
@@ -538,11 +588,9 @@ class Internal extends RequestCollection
                 break;
         }
 
-        $request->addPost('caption', $captionText);
-
         if ($targetFeed == Constants::FEED_STORY) {
             $request->addPost('story_media_creation_date', time());
-            if (!is_null($usertags)) {
+            if ($usertags !== null) {
                 // Reel Mention example:
                 // [{\"y\":0.3407772676161919,\"rotation\":0,\"user_id\":\"USER_ID\",\"x\":0.39892578125,\"width\":0.5619921875,\"height\":0.06011525487256372}]
                 // NOTE: The backslashes are just double JSON encoding, ignore
@@ -554,24 +602,18 @@ class Internal extends RequestCollection
         }
 
         if ($location instanceof Response\Model\Location) {
-            $loc = [
-                $location->getExternalIdSource().'_id'   => $location->getExternalId(),
-                'name'                                   => $location->getName(),
-                'lat'                                    => $location->getLat(),
-                'lng'                                    => $location->getLng(),
-                'address'                                => $location->getAddress(),
-                'external_source'                        => $location->getExternalIdSource(),
-            ];
-
+            if ($targetFeed === Constants::FEED_TIMELINE) {
+                $request->addPost('location', Utils::buildMediaLocationJSON($location));
+            }
+            if ($targetFeed === Constants::FEED_STORY && $locationSticker === null) {
+                throw new \InvalidArgumentException('You must provide a location_sticker together with your story location.');
+            }
             $request
-                ->addPost('location', json_encode($loc))
                 ->addPost('geotag_enabled', '1')
                 ->addPost('posting_latitude', $location->getLat())
                 ->addPost('posting_longitude', $location->getLng())
                 ->addPost('media_latitude', $location->getLat())
-                ->addPost('media_longitude', $location->getLng())
-                ->addPost('av_latitude', 0.0)
-                ->addPost('av_longitude', 0.0);
+                ->addPost('media_longitude', $location->getLng());
         }
 
         $configure = $request->getResponse(new Response\ConfigureResponse());
@@ -611,7 +653,7 @@ class Internal extends RequestCollection
         /** @var string Caption to use for the album. */
         $captionText = isset($externalMetadata['caption']) ? $externalMetadata['caption'] : '';
         /** @var Response\Model\Location|null A Location object describing where
-         the album was taken. */
+         * the album was taken. */
         $location = isset($externalMetadata['location']) ? $externalMetadata['location'] : null;
 
         // Fix very bad external user-metadata values.
@@ -696,17 +738,8 @@ class Internal extends RequestCollection
             ->addPost('children_metadata', $childrenMetadata);
 
         if ($location instanceof Response\Model\Location) {
-            $loc = [
-                $location->getExternalIdSource().'_id'   => $location->getExternalId(),
-                'name'                                   => $location->getName(),
-                'lat'                                    => $location->getLat(),
-                'lng'                                    => $location->getLng(),
-                'address'                                => $location->getAddress(),
-                'external_source'                        => $location->getExternalIdSource(),
-            ];
-
             $request
-                ->addPost('location', json_encode($loc))
+                ->addPost('location', Utils::buildMediaLocationJSON($location))
                 ->addPost('geotag_enabled', '1')
                 ->addPost('posting_latitude', $location->getLat())
                 ->addPost('posting_longitude', $location->getLng())
@@ -732,26 +765,25 @@ class Internal extends RequestCollection
         Response\SyncResponse $syncResponse)
     {
         $experiments = [];
-        foreach ($syncResponse->experiments as $experiment) {
-            if (!isset($experiment->name)) {
+        foreach ($syncResponse->getExperiments() as $experiment) {
+            $group = $experiment->getName();
+            $params = $experiment->getParams();
+
+            if ($group === null || $params === null) {
                 continue;
             }
 
-            $group = $experiment->name;
             if (!isset($experiments[$group])) {
                 $experiments[$group] = [];
             }
 
-            if (!isset($experiment->params)) {
-                continue;
-            }
-
-            foreach ($experiment->params as $param) {
-                if (!isset($param->name)) {
+            foreach ($params as $param) {
+                $paramName = $param->getName();
+                if ($paramName === null) {
                     continue;
                 }
 
-                $experiments[$group][$param->name] = $param->value;
+                $experiments[$group][$paramName] = $param->getValue();
             }
         }
 
@@ -973,26 +1005,79 @@ class Internal extends RequestCollection
     }
 
     /**
-     * Send analytics and events to Instagram's Analytics Server.
+     * Internal helper for marking story media items as seen.
      *
-     * @param array $data Analytics and event data array.
+     * This is used by story-related functions in other request-collections!
      *
+     * @param Response\Model\Item[] $items    Array of one or more story media Items.
+     * @param string|null           $sourceId Where the story was seen from,
+     *                                        such as a location story-tray ID.
+     *                                        If NULL, we automatically use the
+     *                                        user's profile ID from each Item
+     *                                        object as the source ID.
+     *
+     * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
      *
-     * @return \InstagramAPI\Response\ClientEventLogsResponse
+     * @return \InstagramAPI\Response\MediaSeenResponse
+     *
+     * @see Story::markMediaSeen()
+     * @see Location::markStoryMediaSeen()
+     * @see Hashtag::markStoryMediaSeen()
      */
-    public function sendClientEventLogs(
-        array $data)
+    public function markStoryMediaSeen(
+        array $items,
+        $sourceId = null)
     {
-        $message = base64_encode(gzcompress(json_encode($data)));
-        $message = urlencode($message); // Yep, we must URL-encode this data!
+        // Build the list of seen media, with human randomization of seen-time.
+        $reels = [];
+        $maxSeenAt = time(); // Get current global UTC timestamp.
+        $seenAt = $maxSeenAt - (3 * count($items)); // Start seenAt in the past.
+        foreach ($items as $item) {
+            if (!$item instanceof Response\Model\Item) {
+                throw new \InvalidArgumentException(
+                    'All story items must be instances of \InstagramAPI\Response\Model\Item.'
+                );
+            }
 
-        return $this->ig->request(Constants::GRAPH_URL.'logging_client_events')
-            ->addPost('message', $message)
-            ->addPost('compressed', '1')
-            ->addPost('access_token', Constants::ANALYTICS_ACCESS_TOKEN)
-            ->addPost('format', 'json')
-            ->getResponse(new Response\ClientEventLogsResponse());
+            // Raise "seenAt" if it's somehow older than the item's "takenAt".
+            // NOTE: Can only happen if you see a story instantly when posted.
+            $itemTakenAt = $item->getTakenAt();
+            if ($seenAt < $itemTakenAt) {
+                $seenAt = $itemTakenAt + 2;
+            }
+
+            // Do not let "seenAt" exceed the current global UTC time.
+            if ($seenAt > $maxSeenAt) {
+                $seenAt = $maxSeenAt;
+            }
+
+            // Determine the source ID for this item. This is where the item was
+            // seen from, such as a UserID or a Location-StoryTray ID.
+            $itemSourceId = ($sourceId === null ? $item->getUser()->getPk() : $sourceId);
+
+            // Key Format: "mediaPk_userPk_sourceId".
+            // NOTE: In case of seeing stories on a user's profile, their
+            // userPk is used as the sourceId, as "mediaPk_userPk_userPk".
+            $reelId = $item->getId().'_'.$itemSourceId;
+
+            // Value Format: ["mediaTakenAt_seenAt"] (array with single string).
+            $reels[$reelId] = [$itemTakenAt.'_'.$seenAt];
+
+            // Randomly add 1-3 seconds to next seenAt timestamp, to act human.
+            $seenAt += rand(1, 3);
+        }
+
+        return $this->ig->request('media/seen/')
+            ->setVersion(2)
+            ->addPost('_uuid', $this->ig->uuid)
+            ->addPost('_uid', $this->ig->account_id)
+            ->addPost('_csrftoken', $this->ig->client->getToken())
+            ->addPost('reels', $reels)
+            ->addPost('live_vods', [])
+            ->addParam('reel', 1)
+            ->addParam('live_vod', 0)
+            ->getResponse(new Response\MediaSeenResponse());
     }
 
     /**
@@ -1006,7 +1091,7 @@ class Internal extends RequestCollection
      * @throws \InstagramAPI\Exception\UploadFailedException
      * @throws \InstagramAPI\Exception\InstagramException
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function configureWithRetries(
         $entity,
@@ -1023,8 +1108,9 @@ class Internal extends RequestCollection
             }
 
             $result = null;
+
             try {
-                /** @var ResponseInterface $result */
+                /** @var Response $result */
                 $result = call_user_func($configurator);
             } catch (ThrottledException $e) {
                 throw $e;
@@ -1049,7 +1135,6 @@ class Internal extends RequestCollection
             }
 
             $httpResponse = $result->getHttpResponse();
-            $fullResponse = $result->getFullResponse();
             $delay = 1;
             switch ($httpResponse->getStatusCode()) {
                 case 200:
@@ -1059,7 +1144,11 @@ class Internal extends RequestCollection
                         throw new \InstagramAPI\Exception\UploadFailedException(sprintf(
                             'Configuration of "%s" failed. You need to reupload the media (%s).',
                             $entity,
-                            (isset($fullResponse->error_title) ? $fullResponse->error_title : 'unknown error')
+                            // We are reading a property that isn't defined in the class
+                            // property map, so we must use "has" first, to ensure it exists.
+                            ($result->hasErrorTitle() && is_string($result->getErrorTitle())
+                             ? $result->getErrorTitle()
+                             : 'unknown error')
                         ));
                     } elseif ($result->isOk()) {
                         return $result;
@@ -1067,8 +1156,10 @@ class Internal extends RequestCollection
                     // Continue to the next attempt.
                     break;
                 case 202:
-                    if (isset($fullResponse->cooldown_time_in_seconds)) {
-                        $delay = max((int) $fullResponse->cooldown_time_in_seconds, 1);
+                    // We are reading a property that isn't defined in the class
+                    // property map, so we must use "has" first, to ensure it exists.
+                    if ($result->hasCooldownTimeInSeconds() && $result->getCooldownTimeInSeconds() !== null) {
+                        $delay = max((int) $result->getCooldownTimeInSeconds(), 1);
                     }
                     break;
                 default:
@@ -1181,6 +1272,7 @@ class Internal extends RequestCollection
                 $videoFilename
             ));
         }
+
         try {
             // Create a stream for the opened file handle.
             $stream = new Stream($handle);
@@ -1227,6 +1319,7 @@ class Internal extends RequestCollection
 
                 // Perform the upload of the current chunk.
                 $start = microtime(true);
+
                 try {
                     $httpResponse = $request->getHttpResponse();
                 } catch (NetworkException $e) {
@@ -1240,6 +1333,7 @@ class Internal extends RequestCollection
                 $newChunkSize = min(self::MAX_CHUNK_SIZE, max(self::MIN_CHUNK_SIZE, $newChunkSize));
 
                 $result = null;
+
                 try {
                     /** @var Response\UploadVideoResponse $result */
                     $result = $request->getResponse(new Response\UploadVideoResponse());
@@ -1305,7 +1399,7 @@ class Internal extends RequestCollection
             }
         } finally {
             // Guaranteed to release handle even if something bad happens above!
-            fclose($handle);
+            Utils::safe_fclose($handle);
         }
 
         throw new \InstagramAPI\Exception\UploadFailedException(sprintf(
@@ -1374,6 +1468,7 @@ class Internal extends RequestCollection
                 $videoFilename
             ));
         }
+
         try {
             // Create a stream for the opened file handle.
             $stream = new Stream($handle);
@@ -1417,7 +1512,7 @@ class Internal extends RequestCollection
             }
         } finally {
             // Guaranteed to release handle even if something bad happens above!
-            fclose($handle);
+            Utils::safe_fclose($handle);
         }
 
         throw new \InstagramAPI\Exception\UploadFailedException(sprintf(

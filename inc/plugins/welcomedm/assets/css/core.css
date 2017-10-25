@@ -1,0 +1,51 @@
+.wdm-tab-heads {
+  padding: 0 25px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  line-height: 17px;
+  background-color: #3b7cff;
+  color: #fff; }
+  .wdm-tab-heads a {
+    float: left;
+    margin-top: 15px;
+    margin-right: 40px;
+    padding: 10px 0;
+    position: relative;
+    color: inherit; }
+    .wdm-tab-heads a:last-child {
+      margin-right: 0; }
+  .wdm-tab-heads a.active:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ff3d3d;
+    content: ""; }
+
+.new-message-input {
+  min-height: 132px; }
+
+.wdm-message-list {
+  margin-top: 30px; }
+
+.wdm-message-list-item {
+  float: left;
+  clear: both;
+  position: relative;
+  padding: 16px 21px 16px 48px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 17px;
+  color: #9b9b9b;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px; }
+  .wdm-message-list-item .remove-message-btn {
+    position: absolute;
+    font-size: 20px;
+    top: 16px;
+    left: 18px;
+    color: #3b7cff; }
+    .wdm-message-list-item .remove-message-btn:hover {
+      color: #ff3d3d; }

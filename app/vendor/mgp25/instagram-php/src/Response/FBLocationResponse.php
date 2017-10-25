@@ -2,29 +2,41 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
- * @method mixed getHasMore()
+ * FBLocationResponse.
+ *
+ * @method bool getHasMore()
  * @method Model\LocationItem[] getItems()
+ * @method mixed getMessage()
  * @method mixed getRankToken()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
  * @method bool isHasMore()
  * @method bool isItems()
+ * @method bool isMessage()
  * @method bool isRankToken()
- * @method setHasMore(mixed $value)
- * @method setItems(Model\LocationItem[] $value)
- * @method setRankToken(mixed $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setHasMore(bool $value)
+ * @method $this setItems(Model\LocationItem[] $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setRankToken(mixed $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetHasMore()
+ * @method $this unsetItems()
+ * @method $this unsetMessage()
+ * @method $this unsetRankToken()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class FBLocationResponse extends AutoPropertyHandler implements ResponseInterface
+class FBLocationResponse extends Response
 {
-    use ResponseTrait;
-
-    public $has_more;
-    /**
-     * @var Model\LocationItem[]
-     */
-    public $items;
-    public $rank_token;
+    const JSON_PROPERTY_MAP = [
+        'has_more'   => 'bool',
+        'items'      => 'Model\LocationItem[]',
+        'rank_token' => '',
+    ];
 }

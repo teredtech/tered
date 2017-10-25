@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Modules\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: 
+msgid "Auto Repost"
+msgstr "Auto Repost"
+
+#: 
+msgid "Invalid parameter"
+msgstr "Invalid parameter"
+
+#: 
+msgid "%s public post"
+msgid_plural "%s public posts"
+msgstr[0] "%s public post"
+
+#: 
+msgid "Instagram user"
+msgstr "Instagram user"
+
+#: 
+msgid "Please select an account from left side list."
+msgstr "Please select an account from left side list."
+
+#: 
+msgid "Hashtags"
+msgstr "Hashtags"
+
+#: 
+msgid "Places"
+msgstr "Places"
+
+#: 
+msgid "People"
+msgstr "People"
+
+#: 
+msgid "Speed"
+msgstr "Speed"
+
+#: 
+msgid "Auto"
+msgstr "Auto"
+
+#: 
+msgid "Recommended"
+msgstr "Recommended"
+
+#: 
+msgid "Very slow"
+msgstr "Very slow"
+
+#: 
+msgid "Slow"
+msgstr "Slow"
+
+#: 
+msgid "Medium"
+msgstr "Medium"
+
+#: 
+msgid "Fast"
+msgstr "Fast"
+
+#: 
+msgid "Very Fast"
+msgstr "Very Fast"
+
+#: 
+msgid "Remove after ..."
+msgstr "Remove after ..."
+
+#: 
+msgid "Never"
+msgstr "Never"
+
+#: 
+msgid "%s minutes"
+msgstr "%s minutes"
+
+#: 
+msgid "%s hour"
+msgid_plural "%s hours"
+msgstr[0] "%s hour"
+
+#: 
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] "%s day"
+

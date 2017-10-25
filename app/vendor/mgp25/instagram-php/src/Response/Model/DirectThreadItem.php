@@ -2,11 +2,13 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * DirectThreadItem.
+ *
  * @method ActionLog getActionLog()
- * @method mixed getClientContext()
+ * @method string getClientContext()
  * @method DirectExpiringSummary getExpiringMediaActionSummary()
  * @method mixed getHideInThread()
  * @method string getItemId()
@@ -18,11 +20,12 @@ use InstagramAPI\AutoPropertyHandler;
  * @method DirectThreadItemMedia getMedia()
  * @method Item getMediaShare()
  * @method Placeholder getPlaceholder()
+ * @method Item[] getPreviewMedias()
  * @method Item getRavenMedia()
  * @method DirectReactions getReactions()
  * @method ReelShare getReelShare()
- * @method array getSeenUserIds()
- * @method mixed getText()
+ * @method string[] getSeenUserIds()
+ * @method string getText()
  * @method mixed getTimestamp()
  * @method string getUserId()
  * @method bool isActionLog()
@@ -38,6 +41,7 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isMedia()
  * @method bool isMediaShare()
  * @method bool isPlaceholder()
+ * @method bool isPreviewMedias()
  * @method bool isRavenMedia()
  * @method bool isReactions()
  * @method bool isReelShare()
@@ -45,28 +49,50 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isText()
  * @method bool isTimestamp()
  * @method bool isUserId()
- * @method setActionLog(ActionLog $value)
- * @method setClientContext(mixed $value)
- * @method setExpiringMediaActionSummary(DirectExpiringSummary $value)
- * @method setHideInThread(mixed $value)
- * @method setItemId(string $value)
- * @method setItemType(mixed $value)
- * @method setLike(mixed $value)
- * @method setLink(DirectLink $value)
- * @method setLiveVideoShare(mixed $value)
- * @method setLocation(Location $value)
- * @method setMedia(DirectThreadItemMedia $value)
- * @method setMediaShare(Item $value)
- * @method setPlaceholder(Placeholder $value)
- * @method setRavenMedia(Item $value)
- * @method setReactions(DirectReactions $value)
- * @method setReelShare(ReelShare $value)
- * @method setSeenUserIds(array $value)
- * @method setText(mixed $value)
- * @method setTimestamp(mixed $value)
- * @method setUserId(string $value)
+ * @method $this setActionLog(ActionLog $value)
+ * @method $this setClientContext(string $value)
+ * @method $this setExpiringMediaActionSummary(DirectExpiringSummary $value)
+ * @method $this setHideInThread(mixed $value)
+ * @method $this setItemId(string $value)
+ * @method $this setItemType(mixed $value)
+ * @method $this setLike(mixed $value)
+ * @method $this setLink(DirectLink $value)
+ * @method $this setLiveVideoShare(mixed $value)
+ * @method $this setLocation(Location $value)
+ * @method $this setMedia(DirectThreadItemMedia $value)
+ * @method $this setMediaShare(Item $value)
+ * @method $this setPlaceholder(Placeholder $value)
+ * @method $this setPreviewMedias(Item[] $value)
+ * @method $this setRavenMedia(Item $value)
+ * @method $this setReactions(DirectReactions $value)
+ * @method $this setReelShare(ReelShare $value)
+ * @method $this setSeenUserIds(string[] $value)
+ * @method $this setText(string $value)
+ * @method $this setTimestamp(mixed $value)
+ * @method $this setUserId(string $value)
+ * @method $this unsetActionLog()
+ * @method $this unsetClientContext()
+ * @method $this unsetExpiringMediaActionSummary()
+ * @method $this unsetHideInThread()
+ * @method $this unsetItemId()
+ * @method $this unsetItemType()
+ * @method $this unsetLike()
+ * @method $this unsetLink()
+ * @method $this unsetLiveVideoShare()
+ * @method $this unsetLocation()
+ * @method $this unsetMedia()
+ * @method $this unsetMediaShare()
+ * @method $this unsetPlaceholder()
+ * @method $this unsetPreviewMedias()
+ * @method $this unsetRavenMedia()
+ * @method $this unsetReactions()
+ * @method $this unsetReelShare()
+ * @method $this unsetSeenUserIds()
+ * @method $this unsetText()
+ * @method $this unsetTimestamp()
+ * @method $this unsetUserId()
  */
-class DirectThreadItem extends AutoPropertyHandler
+class DirectThreadItem extends AutoPropertyMapper
 {
     const PLACEHOLDER = 'placeholder';
     const TEXT = 'text';
@@ -82,63 +108,27 @@ class DirectThreadItem extends AutoPropertyHandler
     const REEL_SHARE = 'reel_share';
     const LINK = 'link';
 
-    /**
-     * @var string
-     */
-    public $item_id;
-    public $item_type;
-    public $text;
-    /**
-     * @var Item
-     */
-    public $media_share;
-    /**
-     * @var DirectThreadItemMedia
-     */
-    public $media;
-    /**
-     * @var string
-     */
-    public $user_id;
-    public $timestamp;
-    public $client_context;
-    public $hide_in_thread;
-    /**
-     * @var ActionLog
-     */
-    public $action_log;
-    /**
-     * @var DirectLink
-     */
-    public $link;
-    /**
-     * @var DirectReactions
-     */
-    public $reactions;
-    /**
-     * @var Item
-     */
-    public $raven_media;
-    /**
-     * @var array
-     */
-    public $seen_user_ids;
-    /**
-     * @var DirectExpiringSummary
-     */
-    public $expiring_media_action_summary;
-    /**
-     * @var ReelShare
-     */
-    public $reel_share;
-    /**
-     * @var Placeholder
-     */
-    public $placeholder;
-    /**
-     * @var Location
-     */
-    public $location;
-    public $like;
-    public $live_video_share;
+    const JSON_PROPERTY_MAP = [
+        'item_id'                       => 'string',
+        'item_type'                     => '',
+        'text'                          => 'string',
+        'media_share'                   => 'Item',
+        'preview_medias'                => 'Item[]',
+        'media'                         => 'DirectThreadItemMedia',
+        'user_id'                       => 'string',
+        'timestamp'                     => '',
+        'client_context'                => 'string',
+        'hide_in_thread'                => '',
+        'action_log'                    => 'ActionLog',
+        'link'                          => 'DirectLink',
+        'reactions'                     => 'DirectReactions',
+        'raven_media'                   => 'Item',
+        'seen_user_ids'                 => 'string[]',
+        'expiring_media_action_summary' => 'DirectExpiringSummary',
+        'reel_share'                    => 'ReelShare',
+        'placeholder'                   => 'Placeholder',
+        'location'                      => 'Location',
+        'like'                          => '',
+        'live_video_share'              => '',
+    ];
 }

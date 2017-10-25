@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once APPPATH."/core/Autoloader.php";
 
 // instantiate the loader

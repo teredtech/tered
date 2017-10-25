@@ -2,19 +2,21 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
- * @method mixed getBitFlags()
+ * Caption.
+ *
+ * @method int getBitFlags()
  * @method mixed getContentType()
- * @method mixed getCreatedAt()
- * @method mixed getCreatedAtUtc()
- * @method mixed getDidReportAsSpam()
- * @method mixed getHasTranslation()
+ * @method string getCreatedAt()
+ * @method string getCreatedAtUtc()
+ * @method bool getDidReportAsSpam()
+ * @method bool getHasTranslation()
  * @method string getMediaId()
  * @method string getPk()
  * @method mixed getStatus()
- * @method mixed getText()
+ * @method string getText()
  * @method mixed getType()
  * @method User getUser()
  * @method string getUserId()
@@ -31,45 +33,48 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isType()
  * @method bool isUser()
  * @method bool isUserId()
- * @method setBitFlags(mixed $value)
- * @method setContentType(mixed $value)
- * @method setCreatedAt(mixed $value)
- * @method setCreatedAtUtc(mixed $value)
- * @method setDidReportAsSpam(mixed $value)
- * @method setHasTranslation(mixed $value)
- * @method setMediaId(string $value)
- * @method setPk(string $value)
- * @method setStatus(mixed $value)
- * @method setText(mixed $value)
- * @method setType(mixed $value)
- * @method setUser(User $value)
- * @method setUserId(string $value)
+ * @method $this setBitFlags(int $value)
+ * @method $this setContentType(mixed $value)
+ * @method $this setCreatedAt(string $value)
+ * @method $this setCreatedAtUtc(string $value)
+ * @method $this setDidReportAsSpam(bool $value)
+ * @method $this setHasTranslation(bool $value)
+ * @method $this setMediaId(string $value)
+ * @method $this setPk(string $value)
+ * @method $this setStatus(mixed $value)
+ * @method $this setText(string $value)
+ * @method $this setType(mixed $value)
+ * @method $this setUser(User $value)
+ * @method $this setUserId(string $value)
+ * @method $this unsetBitFlags()
+ * @method $this unsetContentType()
+ * @method $this unsetCreatedAt()
+ * @method $this unsetCreatedAtUtc()
+ * @method $this unsetDidReportAsSpam()
+ * @method $this unsetHasTranslation()
+ * @method $this unsetMediaId()
+ * @method $this unsetPk()
+ * @method $this unsetStatus()
+ * @method $this unsetText()
+ * @method $this unsetType()
+ * @method $this unsetUser()
+ * @method $this unsetUserId()
  */
-class Caption extends AutoPropertyHandler
+class Caption extends AutoPropertyMapper
 {
-    public $status;
-    /**
-     * @var string
-     */
-    public $user_id;
-    public $created_at_utc;
-    public $created_at;
-    public $bit_flags;
-    /**
-     * @var User
-     */
-    public $user;
-    public $content_type;
-    public $text;
-    /**
-     * @var string
-     */
-    public $media_id;
-    /**
-     * @var string
-     */
-    public $pk;
-    public $type;
-    public $has_translation;
-    public $did_report_as_spam;
+    const JSON_PROPERTY_MAP = [
+        'status'             => '',
+        'user_id'            => 'string',
+        'created_at_utc'     => 'string',
+        'created_at'         => 'string',
+        'bit_flags'          => 'int',
+        'user'               => 'User',
+        'content_type'       => '',
+        'text'               => 'string',
+        'media_id'           => 'string',
+        'pk'                 => 'string',
+        'type'               => '',
+        'has_translation'    => 'bool',
+        'did_report_as_spam' => 'bool',
+    ];
 }

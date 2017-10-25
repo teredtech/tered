@@ -2,30 +2,39 @@
 
 namespace InstagramAPI\Realtime;
 
-use InstagramAPI\AutoPropertyHandler;
+use Evenement\EventEmitterInterface;
+use InstagramAPI\AutoPropertyMapper;
+use Psr\Log\LoggerInterface;
 
 /**
+ * Action.
+ *
  * @method mixed getAction()
  * @method mixed getStatus()
  * @method bool isAction()
  * @method bool isStatus()
- * @method setAction(mixed $value)
- * @method setStatus(mixed $value)
+ * @method $this setAction(mixed $value)
+ * @method $this setStatus(mixed $value)
+ * @method $this unsetAction()
+ * @method $this unsetStatus()
  */
-abstract class Action extends AutoPropertyHandler
+abstract class Action extends AutoPropertyMapper
 {
     const ACK = 'item_ack';
-    const UNSEEN_COUNT = 'inbox_unseen_count';
     const UNKNOWN = 'unknown';
 
-    public $status;
-    public $action;
+    const JSON_PROPERTY_MAP = [
+        'status' => '',
+        'action' => '',
+    ];
 
     /**
      * Action handler.
      *
-     * @param Client $client
+     * @param EventEmitterInterface $target
+     * @param LoggerInterface       $logger
      */
     abstract public function handle(
-        Client $client);
+        EventEmitterInterface $target,
+        LoggerInterface $logger);
 }

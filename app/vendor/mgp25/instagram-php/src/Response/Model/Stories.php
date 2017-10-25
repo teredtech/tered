@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Stories.
+ *
  * @method string getId()
  * @method mixed getIsPortrait()
  * @method TopLive getTopLive()
@@ -13,24 +15,21 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isIsPortrait()
  * @method bool isTopLive()
  * @method bool isTray()
- * @method setId(string $value)
- * @method setIsPortrait(mixed $value)
- * @method setTopLive(TopLive $value)
- * @method setTray(StoryTray[] $value)
+ * @method $this setId(string $value)
+ * @method $this setIsPortrait(mixed $value)
+ * @method $this setTopLive(TopLive $value)
+ * @method $this setTray(StoryTray[] $value)
+ * @method $this unsetId()
+ * @method $this unsetIsPortrait()
+ * @method $this unsetTopLive()
+ * @method $this unsetTray()
  */
-class Stories extends AutoPropertyHandler
+class Stories extends AutoPropertyMapper
 {
-    public $is_portrait;
-    /**
-     * @var StoryTray[]
-     */
-    public $tray;
-    /**
-     * @var string
-     */
-    public $id;
-    /**
-     * @var TopLive
-     */
-    public $top_live;
+    const JSON_PROPERTY_MAP = [
+        'is_portrait' => '',
+        'tray'        => 'StoryTray[]',
+        'id'          => 'string',
+        'top_live'    => 'TopLive',
+    ];
 }

@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * LinkContext.
+ *
  * @method string getLinkImageUrl()
  * @method string getLinkSummary()
  * @method string getLinkTitle()
@@ -13,19 +15,21 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isLinkSummary()
  * @method bool isLinkTitle()
  * @method bool isLinkUrl()
- * @method setLinkImageUrl(string $value)
- * @method setLinkSummary(string $value)
- * @method setLinkTitle(string $value)
- * @method setLinkUrl(string $value)
+ * @method $this setLinkImageUrl(string $value)
+ * @method $this setLinkSummary(string $value)
+ * @method $this setLinkTitle(string $value)
+ * @method $this setLinkUrl(string $value)
+ * @method $this unsetLinkImageUrl()
+ * @method $this unsetLinkSummary()
+ * @method $this unsetLinkTitle()
+ * @method $this unsetLinkUrl()
  */
-class LinkContext extends AutoPropertyHandler
+class LinkContext extends AutoPropertyMapper
 {
-    /** @var string */
-    public $link_url;
-    /** @var string */
-    public $link_title;
-    /** @var string */
-    public $link_summary;
-    /** @var string */
-    public $link_image_url;
+    const JSON_PROPERTY_MAP = [
+        'link_url'       => 'string',
+        'link_title'     => 'string',
+        'link_summary'   => 'string',
+        'link_image_url' => 'string',
+    ];
 }

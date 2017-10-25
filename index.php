@@ -5,7 +5,7 @@ session_start();
 // Define basic constants
 define("VERSION", "030003"); // Used for cache control
 define("APP_VERSION", "3.0.3");
-define("ENVIRONMENT", "installation"); // [development|production|installation]
+define("ENVIRONMENT", "production"); // [development|production|installation]
 
 // Path to root directory of app.
 define("ROOTPATH", dirname(__FILE__));
@@ -79,8 +79,8 @@ $Router = new AltoRouter();
     // This is usefull in case of self use, or having different
     // landing page in different address. For ex: you can install the script
     // to subdirectory or subdomain of your wordpress website.
-    $Router->map("GET|POST", "/", "Index");
-    $Router->map("GET|POST", "/".$langslug."?/", "Index");
+    $Router->map("GET|POST", "/", "Login");
+    $Router->map("GET|POST", "/".$langslug."?/?", "Index");
 
     // Login
     $Router->map("GET|POST", "/".$langslug."?/login/?", "Login");

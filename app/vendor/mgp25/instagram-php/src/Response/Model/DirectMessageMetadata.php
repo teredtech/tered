@@ -2,38 +2,34 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * DirectMessageMetadata.
+ *
  * @method string getItemId()
- * @method array getParticipantIds()
+ * @method string[] getParticipantIds()
  * @method string getThreadId()
  * @method string getTimestamp()
  * @method bool isItemId()
  * @method bool isParticipantIds()
  * @method bool isThreadId()
  * @method bool isTimestamp()
- * @method setItemId(string $value)
- * @method setParticipantIds(array $value)
- * @method setThreadId(string $value)
- * @method setTimestamp(string $value)
+ * @method $this setItemId(string $value)
+ * @method $this setParticipantIds(string[] $value)
+ * @method $this setThreadId(string $value)
+ * @method $this setTimestamp(string $value)
+ * @method $this unsetItemId()
+ * @method $this unsetParticipantIds()
+ * @method $this unsetThreadId()
+ * @method $this unsetTimestamp()
  */
-class DirectMessageMetadata extends AutoPropertyHandler
+class DirectMessageMetadata extends AutoPropertyMapper
 {
-    /**
-     * @var string
-     */
-    public $thread_id;
-    /**
-     * @var string
-     */
-    public $item_id;
-    /**
-     * @var string
-     */
-    public $timestamp;
-    /**
-     * @var array
-     */
-    public $participant_ids;
+    const JSON_PROPERTY_MAP = [
+        'thread_id'       => 'string',
+        'item_id'         => 'string',
+        'timestamp'       => 'string',
+        'participant_ids' => 'string[]',
+    ];
 }

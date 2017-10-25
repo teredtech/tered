@@ -2,21 +2,33 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * ResumableOffsetResponse.
+ *
+ * @method mixed getMessage()
  * @method int getOffset()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
+ * @method bool isMessage()
  * @method bool isOffset()
- * @method setOffset(int $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setMessage(mixed $value)
+ * @method $this setOffset(int $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetMessage()
+ * @method $this unsetOffset()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class ResumableOffsetResponse extends AutoPropertyHandler implements ResponseInterface
+class ResumableOffsetResponse extends Response
 {
-    use ResponseTrait;
-
-    /** @var int */
-    public $offset;
+    const JSON_PROPERTY_MAP = [
+        'offset' => 'int',
+    ];
 
     /**
      * Checks if the response was successful.
@@ -25,7 +37,7 @@ class ResumableOffsetResponse extends AutoPropertyHandler implements ResponseInt
      */
     public function isOk()
     {
-        $offset = $this->getOffset();
+        $offset = $this->_getProperty('offset');
         if ($offset !== null && $offset >= 0) {
             return true;
         } else {

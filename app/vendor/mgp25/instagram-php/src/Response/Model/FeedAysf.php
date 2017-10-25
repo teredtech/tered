@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * FeedAysf.
+ *
  * @method mixed getActivator()
  * @method mixed getDisplayNewUnit()
  * @method mixed getFeedPosition()
@@ -13,7 +15,7 @@ use InstagramAPI\AutoPropertyHandler;
  * @method mixed getLandingSiteTitle()
  * @method mixed getLandingSiteType()
  * @method mixed getShouldRefill()
- * @method mixed getSuggestions()
+ * @method Suggestion[] getSuggestions()
  * @method mixed getTitle()
  * @method string getUuid()
  * @method mixed getViewAllText()
@@ -29,37 +31,45 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isTitle()
  * @method bool isUuid()
  * @method bool isViewAllText()
- * @method setActivator(mixed $value)
- * @method setDisplayNewUnit(mixed $value)
- * @method setFeedPosition(mixed $value)
- * @method setFetchUserDetails(mixed $value)
- * @method setIsDismissable(mixed $value)
- * @method setLandingSiteTitle(mixed $value)
- * @method setLandingSiteType(mixed $value)
- * @method setShouldRefill(mixed $value)
- * @method setSuggestions(mixed $value)
- * @method setTitle(mixed $value)
- * @method setUuid(string $value)
- * @method setViewAllText(mixed $value)
+ * @method $this setActivator(mixed $value)
+ * @method $this setDisplayNewUnit(mixed $value)
+ * @method $this setFeedPosition(mixed $value)
+ * @method $this setFetchUserDetails(mixed $value)
+ * @method $this setIsDismissable(mixed $value)
+ * @method $this setLandingSiteTitle(mixed $value)
+ * @method $this setLandingSiteType(mixed $value)
+ * @method $this setShouldRefill(mixed $value)
+ * @method $this setSuggestions(Suggestion[] $value)
+ * @method $this setTitle(mixed $value)
+ * @method $this setUuid(string $value)
+ * @method $this setViewAllText(mixed $value)
+ * @method $this unsetActivator()
+ * @method $this unsetDisplayNewUnit()
+ * @method $this unsetFeedPosition()
+ * @method $this unsetFetchUserDetails()
+ * @method $this unsetIsDismissable()
+ * @method $this unsetLandingSiteTitle()
+ * @method $this unsetLandingSiteType()
+ * @method $this unsetShouldRefill()
+ * @method $this unsetSuggestions()
+ * @method $this unsetTitle()
+ * @method $this unsetUuid()
+ * @method $this unsetViewAllText()
  */
-class FeedAysf extends AutoPropertyHandler
+class FeedAysf extends AutoPropertyMapper
 {
-    public $landing_site_type;
-    /**
-     * @var string
-     */
-    public $uuid;
-    public $view_all_text;
-    public $feed_position;
-    public $landing_site_title;
-    public $is_dismissable;
-    /*
-     * @var Suggestion[]
-     */
-    public $suggestions;
-    public $should_refill;
-    public $display_new_unit;
-    public $fetch_user_details;
-    public $title;
-    public $activator;
+    const JSON_PROPERTY_MAP = [
+        'landing_site_type'  => '',
+        'uuid'               => 'string',
+        'view_all_text'      => '',
+        'feed_position'      => '',
+        'landing_site_title' => '',
+        'is_dismissable'     => '',
+        'suggestions'        => 'Suggestion[]',
+        'should_refill'      => '',
+        'display_new_unit'   => '',
+        'fetch_user_details' => '',
+        'title'              => '',
+        'activator'          => '',
+    ];
 }

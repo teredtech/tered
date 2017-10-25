@@ -2,40 +2,51 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * DirectRankedRecipientsResponse.
+ *
  * @method mixed getExpires()
  * @method mixed getFiltered()
+ * @method mixed getMessage()
  * @method mixed getRankToken()
  * @method Model\DirectRankedRecipient[] getRankedRecipients()
  * @method string getRequestId()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
  * @method bool isExpires()
  * @method bool isFiltered()
+ * @method bool isMessage()
  * @method bool isRankToken()
  * @method bool isRankedRecipients()
  * @method bool isRequestId()
- * @method setExpires(mixed $value)
- * @method setFiltered(mixed $value)
- * @method setRankToken(mixed $value)
- * @method setRankedRecipients(Model\DirectRankedRecipient[] $value)
- * @method setRequestId(string $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setExpires(mixed $value)
+ * @method $this setFiltered(mixed $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setRankToken(mixed $value)
+ * @method $this setRankedRecipients(Model\DirectRankedRecipient[] $value)
+ * @method $this setRequestId(string $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetExpires()
+ * @method $this unsetFiltered()
+ * @method $this unsetMessage()
+ * @method $this unsetRankToken()
+ * @method $this unsetRankedRecipients()
+ * @method $this unsetRequestId()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class DirectRankedRecipientsResponse extends AutoPropertyHandler implements ResponseInterface
+class DirectRankedRecipientsResponse extends Response
 {
-    use ResponseTrait;
-
-    public $expires;
-    /**
-     * @var Model\DirectRankedRecipient[]
-     */
-    public $ranked_recipients;
-    public $filtered;
-    /**
-     * @var string
-     */
-    public $request_id;
-    public $rank_token;
+    const JSON_PROPERTY_MAP = [
+        'expires'           => '',
+        'ranked_recipients' => 'Model\DirectRankedRecipient[]',
+        'filtered'          => '',
+        'request_id'        => 'string',
+        'rank_token'        => '',
+    ];
 }

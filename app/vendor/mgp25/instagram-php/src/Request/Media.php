@@ -2,7 +2,7 @@
 
 namespace InstagramAPI\Request;
 
-use InstagramAPI\Constants;
+use InstagramAPI\Request;
 use InstagramAPI\Response;
 use InstagramAPI\Signatures;
 use InstagramAPI\Utils;
@@ -111,21 +111,8 @@ class Media extends RequestCollection
                     throw new \InvalidArgumentException('The "location" metadata value must be an instance of \InstagramAPI\Response\Model\Location.');
                 }
 
-                // TODO: THIS WORKS. BUT WE SHOULD VERIFY ALL OF THE PARAMETERS
-                // BELOW TO BE SURE THEY ARE REALLY THE CORRECT WAY TO EDIT
-                // LOCATION WHEN EDITING MEDIA!
-
-                $loc = [
-                    $metadata['location']->getExternalIdSource().'_id' => $metadata['location']->getExternalId(),
-                    'name'                                             => $metadata['location']->getName(),
-                    'lat'                                              => $metadata['location']->getLat(),
-                    'lng'                                              => $metadata['location']->getLng(),
-                    'address'                                          => $metadata['location']->getAddress(),
-                    'external_source'                                  => $metadata['location']->getExternalIdSource(),
-                ];
-
                 $request
-                    ->addPost('location', json_encode($loc))
+                    ->addPost('location', Utils::buildMediaLocationJSON($metadata['location']))
                     ->addPost('geotag_enabled', '1')
                     ->addPost('posting_latitude', $metadata['location']->getLat())
                     ->addPost('posting_longitude', $metadata['location']->getLng())
@@ -154,13 +141,16 @@ class Media extends RequestCollection
      * @param string $module    (optional) From which app module (page) you're performing this action.
      * @param array  $extraData (optional) Depending on the module name, additional data is required.
      *
+     * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\GenericResponse
+     *
+     * @see Media::_parseLikeParameters() For all supported modules and required parameters.
      */
     public function like(
         $mediaId,
-        $module = 'feed_contextual_post',
+        $module = 'feed_timeline',
         array $extraData = [])
     {
         $request = $this->ig->request("media/{$mediaId}/like/")
@@ -171,18 +161,7 @@ class Media extends RequestCollection
             ->addPost('radio_type', 'wifi-none')
             ->addPost('module_name', $module);
 
-        if (isset($extraData['doubleTap']) && $extraData['doubleTap']) {
-            $request->addUnsignedPost('d', 1);
-        } else {
-            $request->addUnsignedPost('d', 0);
-        }
-
-        if ($module == 'feed_contextual_post' && isset($extraData['exploreToken'])) {
-            $request->addPost('explore_source_token', $extraData['exploreToken']);
-        } elseif ($module == 'photo_view_profile' && isset($extraData['username']) && isset($extraData['userid'])) {
-            $request->addPost('username', $extraData['username'])
-                    ->addPost('user_id', $extraData['userid']);
-        }
+        $this->_parseLikeParameters('like', $request, $module, $extraData);
 
         return $request->getResponse(new Response\GenericResponse());
     }
@@ -194,13 +173,16 @@ class Media extends RequestCollection
      * @param string $module    (optional) From which app module (page) you're performing this action.
      * @param array  $extraData (optional) Depending on the module name, additional data is required.
      *
+     * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\GenericResponse
+     *
+     * @see Media::_parseLikeParameters() For all supported modules and required parameters.
      */
     public function unlike(
         $mediaId,
-        $module = 'feed_contextual_post',
+        $module = 'feed_timeline',
         array $extraData = [])
     {
         $request = $this->ig->request("media/{$mediaId}/unlike/")
@@ -209,15 +191,9 @@ class Media extends RequestCollection
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->addPost('media_id', $mediaId)
             ->addPost('radio_type', 'wifi-none')
-            ->addPost('module_name', $module)
-            ->addUnsignedPost('d', 0); // IG doesn't have "double-tap to unlike".
+            ->addPost('module_name', $module);
 
-        if ($module == 'feed_contextual_post' && isset($extraData['exploreToken'])) {
-            $request->addPost('explore_source_token', $extraData['exploreToken']);
-        } elseif ($module == 'photo_view_profile' && isset($extraData['username']) && isset($extraData['userid'])) {
-            $request->addPost('username', $extraData['username'])
-                    ->addPost('user_id', $extraData['userid']);
-        }
+        $this->_parseLikeParameters('unlike', $request, $module, $extraData);
 
         return $request->getResponse(new Response\GenericResponse());
     }
@@ -235,7 +211,7 @@ class Media extends RequestCollection
         $maxId = null)
     {
         $request = $this->ig->request('feed/liked/');
-        if (!is_null($maxId)) {
+        if ($maxId !== null) {
             $request->addParam('max_id', $maxId);
         }
 
@@ -328,10 +304,11 @@ class Media extends RequestCollection
      *
      * @param string $mediaId        The media ID in Instagram's internal format (ie "3482384834_43294").
      * @param string $commentText    Your comment text.
-     * @param string $replyCommentId (optional) ID of the comment you want to reply (ie "17895795823020906").
-     *                               $commentText MUST contain a mention to the user.
+     * @param string $replyCommentId (optional) The comment ID you are replying to, if this is a reply (ie "17895795823020906");
+     *                               when replying, your $commentText MUST contain an @-mention at the start (ie "@theirusername Hello!").
      * @param string $module         (optional) From which app module (page) you're performing this action.
      *
+     * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\CommentResponse
@@ -352,7 +329,10 @@ class Media extends RequestCollection
             ->addPost('containermodule', $module)
             ->addPost('radio_type', 'wifi-none');
 
-        if (!is_null($replyCommentId)) {
+        if ($replyCommentId !== null) {
+            if ($commentText[0] !== '@') {
+                throw new \InvalidArgumentException('When replying to a comment, your text must begin with an @-mention to their username.');
+            }
             $request->addPost('replied_to_comment_id', $replyCommentId);
         }
 
@@ -362,21 +342,93 @@ class Media extends RequestCollection
     /**
      * Get media comments.
      *
-     * @param string      $mediaId The media ID in Instagram's internal format (ie "3482384834_43294").
-     * @param null|string $maxId   Next "maximum ID", used for pagination.
+     * Note that this endpoint supports both backwards and forwards pagination.
+     * The only one you should really care about is "max_id" for backwards
+     * ("load older comments") pagination in normal cases. By default, if no
+     * parameter is provided, Instagram gives you the latest page of comments
+     * and then paginates backwards via the "max_id" parameter (and the correct
+     * value for it is the "next_max_id" in the response).
      *
+     * However, if you come to the comments "from a Push notification" (uses the
+     * "target_comment_id" parameter), then the response will ALSO contain a
+     * "next_min_id" value. In that case, you can get newer comments (than the
+     * target comment) by using THAT value and the "min_id" parameter instead.
+     *
+     * @param string $mediaId The media ID in Instagram's internal format (ie "3482384834_43294").
+     * @param array  $options An associative array of optional parameters, including:
+     *                        "max_id" - next "maximum ID" (get older comments, before this ID), used for backwards pagination;
+     *                        "min_id" - next "minimum ID" (get newer comments, after this ID), used for forwards pagination;
+     *                        "target_comment_id" - used by comment Push notifications to retrieve the page with the specific comment.
+     *
+     * @throws \InvalidArgumentException
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\MediaCommentsResponse
      */
     public function getComments(
         $mediaId,
-        $maxId = null)
+        array $options = [])
     {
-        return $this->ig->request("media/{$mediaId}/comments/")
-            ->addParam('ig_sig_key_version', Constants::SIG_KEY_VERSION)
-            ->addParam('max_id', $maxId)
-            ->getResponse(new Response\MediaCommentsResponse());
+        $request = $this->ig->request("media/{$mediaId}/comments/")
+            ->addParam('can_support_threading', true);
+
+        // Pagination.
+        if (isset($options['min_id']) && isset($options['max_id'])) {
+            throw new \InvalidArgumentException('You can use either "min_id" or "max_id", but not both at the same time.');
+        }
+        if (isset($options['min_id'])) {
+            $request->addParam('min_id', $options['min_id']);
+        }
+        if (isset($options['max_id'])) {
+            $request->addParam('max_id', $options['max_id']);
+        }
+
+        // Request specific comment (does NOT work together with pagination!).
+        // NOTE: If you try pagination params together with this param, then the
+        // server will reject the request completely and give nothing back!
+        if (isset($options['target_comment_id'])) {
+            if (isset($options['min_id']) || isset($options['max_id'])) {
+                throw new \InvalidArgumentException('You cannot use the "target_comment_id" parameter together with the "min_id" or "max_id" parameters.');
+            }
+            $request->addParam('target_comment_id', $options['target_comment_id']);
+        }
+
+        return $request->getResponse(new Response\MediaCommentsResponse());
+    }
+
+    /**
+     * Get the replies to a specific media comment.
+     *
+     * You should be sure that the comment actually HAS more replies before
+     * calling this endpoint! In that case, the comment itself will have a
+     * non-zero "child comment count" value, as well as some "preview comments".
+     *
+     * If the number of preview comments doesn't match the full "child comments"
+     * count, then you are ready to call this endpoint to retrieve the rest of
+     * them. Do NOT call it frivolously for comments that have no child comments
+     * or where you already have all of them via the child comment previews!
+     *
+     * @param string $mediaId   The media ID in Instagram's internal format (ie "3482384834_43294").
+     * @param string $commentId The parent comment's ID.
+     * @param array  $options   An associative array of optional parameters, including:
+     *                          "max_id" - next "maximum ID" (get older comments, before this ID), used for backwards pagination.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\MediaCommentRepliesResponse
+     */
+    public function getCommentReplies(
+        $mediaId,
+        $commentId,
+        array $options = [])
+    {
+        $request = $this->ig->request("media/{$mediaId}/comments/{$commentId}/child_comments/");
+
+        if (isset($options['max_id'])) {
+            $request->addParam('max_id', $options['max_id']);
+        }
+
+        return $request->getResponse(new Response\MediaCommentRepliesResponse());
     }
 
     /**
@@ -462,6 +514,21 @@ class Media extends RequestCollection
             ->addPost('_uid', $this->ig->account_id)
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->getResponse(new Response\CommentLikeUnlikeResponse());
+    }
+
+    /**
+     * Get list of users who liked a comment.
+     *
+     * @param string $commentId The comment's ID.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\CommentLikersResponse
+     */
+    public function getCommentLikers(
+        $commentId)
+    {
+        return $this->ig->request("media/{$commentId}/comment_likers/")->getResponse(new Response\CommentLikersResponse());
     }
 
     /**
@@ -564,7 +631,7 @@ class Media extends RequestCollection
             ->addPost('_uid', $this->ig->account_id)
             ->addPost('_csrftoken', $this->ig->client->getToken());
 
-        if (!is_null($maxId)) {
+        if ($maxId !== null) {
             $request->addParam('max_id', $maxId);
         }
 
@@ -585,5 +652,93 @@ class Media extends RequestCollection
             ->addPost('_uid', $this->ig->account_id)
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->getResponse(new Response\BlockedMediaResponse());
+    }
+
+    /**
+     * Validate and update the parameters for a like or unlike request.
+     *
+     * @param string  $type      What type of request this is (can be "like" or "unlike").
+     * @param Request $request   The request to fill with the parsed data.
+     * @param string  $module    From which app module (page) you're performing this action.
+     * @param array   $extraData Depending on the module name, additional data is required.
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function _parseLikeParameters(
+        $type,
+        Request $request,
+        $module,
+        array $extraData)
+    {
+        // Is this a "double-tap to like"? Note that Instagram doesn't have
+        // "double-tap to unlike". So this can only be "1" if it's a "like".
+        if ($type === 'like' && isset($extraData['double_tap']) && $extraData['double_tap']) {
+            $request->addUnsignedPost('d', 1);
+        } else {
+            $request->addUnsignedPost('d', 0); // Must always be 0 for "unlike".
+        }
+
+        // Now parse the necessary parameters for the selected module.
+        switch ($module) {
+        case 'feed_contextual_post': // "Explore" tab.
+            if (isset($extraData['explore_source_token'])) {
+                // The explore media `Item::getExploreSourceToken()` value.
+                $request->addPost('explore_source_token', $extraData['explore_source_token']);
+            } else {
+                throw new \InvalidArgumentException(sprintf('Missing extra data for module "%s".', $module));
+            }
+            break;
+        case 'profile': // LIST VIEW (when posts are shown vertically by the app
+                        // one at a time (as in the Timeline tab)): Any media on
+                        // a user profile (their timeline) in list view mode.
+        case 'media_view_profile': // GRID VIEW (standard 3x3): Album (carousel)
+                                   // on a user profile (their timeline).
+        case 'video_view_profile': // GRID VIEW (standard 3x3): Video on a user
+                                   // profile (their timeline).
+        case 'photo_view_profile': // GRID VIEW (standard 3x3): Photo on a user
+                                   // profile (their timeline).
+            if (isset($extraData['username']) && isset($extraData['user_id'])) {
+                // Username and id of the media's owner (the profile owner).
+                $request->addPost('username', $extraData['username'])
+                    ->addPost('user_id', $extraData['user_id']);
+            } else {
+                throw new \InvalidArgumentException(sprintf('Missing extra data for module "%s".', $module));
+            }
+            break;
+        case 'feed_contextual_hashtag': // "Hashtag" search result.
+            if (isset($extraData['hashtag'])) {
+                // The hashtag where the app found this media.
+                Utils::throwIfInvalidHashtag($extraData['hashtag']);
+                $request->addPost('hashtag', $extraData['hashtag']);
+            } else {
+                throw new \InvalidArgumentException(sprintf('Missing extra data for module "%s".', $module));
+            }
+            break;
+        case 'feed_contextual_location': // "Location" search result.
+            if (isset($extraData['location_id'])) {
+                // The location ID of this media.
+                $request->addPost('location_id', $extraData['location_id']);
+            } else {
+                throw new \InvalidArgumentException(sprintf('Missing extra data for module "%s".', $module));
+            }
+            break;
+        case 'feed_timeline': // "Timeline" tab (the global Home-feed with all
+                              // kinds of mixed news).
+        case 'newsfeed': // "Followings Activity" feed tab. Used when
+                         // liking/unliking a post that we clicked on from a
+                         // single-activity "xyz liked abc's post" entry.
+        case 'feed_contextual_newsfeed_multi_media_liked':  // "Followings
+                                                            // Activity" feed
+                                                            // tab. Used when
+                                                            // liking/unliking a
+                                                            // post that we
+                                                            // clicked on from a
+                                                            // multi-activity
+                                                            // "xyz liked 5
+                                                            // posts" entry.
+            break;
+        default:
+            throw new \InvalidArgumentException(sprintf('Invalid module name. %s does not correspond to any of the valid module names.', $module));
+        }
     }
 }

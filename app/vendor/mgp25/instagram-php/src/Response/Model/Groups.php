@@ -2,21 +2,24 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Groups.
+ *
  * @method Item[] getItems()
  * @method mixed getType()
  * @method bool isItems()
  * @method bool isType()
- * @method setItems(Item[] $value)
- * @method setType(mixed $value)
+ * @method $this setItems(Item[] $value)
+ * @method $this setType(mixed $value)
+ * @method $this unsetItems()
+ * @method $this unsetType()
  */
-class Groups extends AutoPropertyHandler
+class Groups extends AutoPropertyMapper
 {
-    public $type;
-    /**
-     * @var Item[]
-     */
-    public $items;
+    const JSON_PROPERTY_MAP = [
+        'type'  => '',
+        'items' => 'Item[]',
+    ];
 }

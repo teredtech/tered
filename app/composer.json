@@ -12,6 +12,7 @@
         "stripe/stripe-php": "^5.1",
         "phpmailer/phpmailer": "^5.2",
         "mgp25/instagram-php": "dev-master",
-        "claviska/simpleimage": "^3.3"
+        "claviska/simpleimage": "^3.3",
+        "sendgrid/sendgrid": "~6.0"
     }
 }

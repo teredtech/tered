@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Counts.
+ *
  * @method mixed getCampaignNotification()
  * @method mixed getCommentLikes()
  * @method mixed getComments()
@@ -21,23 +23,33 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isRelationships()
  * @method bool isRequests()
  * @method bool isUsertags()
- * @method setCampaignNotification(mixed $value)
- * @method setCommentLikes(mixed $value)
- * @method setComments(mixed $value)
- * @method setLikes(mixed $value)
- * @method setPhotosOfYou(mixed $value)
- * @method setRelationships(mixed $value)
- * @method setRequests(mixed $value)
- * @method setUsertags(mixed $value)
+ * @method $this setCampaignNotification(mixed $value)
+ * @method $this setCommentLikes(mixed $value)
+ * @method $this setComments(mixed $value)
+ * @method $this setLikes(mixed $value)
+ * @method $this setPhotosOfYou(mixed $value)
+ * @method $this setRelationships(mixed $value)
+ * @method $this setRequests(mixed $value)
+ * @method $this setUsertags(mixed $value)
+ * @method $this unsetCampaignNotification()
+ * @method $this unsetCommentLikes()
+ * @method $this unsetComments()
+ * @method $this unsetLikes()
+ * @method $this unsetPhotosOfYou()
+ * @method $this unsetRelationships()
+ * @method $this unsetRequests()
+ * @method $this unsetUsertags()
  */
-class Counts extends AutoPropertyHandler
+class Counts extends AutoPropertyMapper
 {
-    public $relationships;
-    public $requests;
-    public $photos_of_you;
-    public $usertags;
-    public $comments;
-    public $likes;
-    public $comment_likes;
-    public $campaign_notification;
+    const JSON_PROPERTY_MAP = [
+        'relationships'         => '',
+        'requests'              => '',
+        'photos_of_you'         => '',
+        'usertags'              => '',
+        'comments'              => '',
+        'likes'                 => '',
+        'comment_likes'         => '',
+        'campaign_notification' => '',
+    ];
 }

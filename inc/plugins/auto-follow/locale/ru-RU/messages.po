@@ -1,0 +1,182 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Modules\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: 
+msgid "Auto Follow"
+msgstr "Auto Follow"
+
+#: 
+msgid "Activity has been stopped"
+msgstr "Activity has been stopped"
+
+#: 
+msgid "Re-login is required for the account."
+msgstr "Re-login is required for the account."
+
+#: 
+msgid "User account is either disabled or expred."
+msgstr "User account is either disabled or expred."
+
+#: 
+msgid "Couldn't get the feed"
+msgstr "Couldn't get the feed"
+
+#: 
+msgid "Couldn't find new user to follow"
+msgstr "Couldn't find new user to follow"
+
+#: 
+msgid "Invalid parameter"
+msgstr "Invalid parameter"
+
+#: 
+msgid "%s public post"
+msgid_plural "%s public posts"
+msgstr[0] "%s public post"
+msgstr[1] "%s public posts"
+msgstr[2] "%s public posts"
+msgstr[3] "%s public posts"
+
+#: 
+msgid "Instagram user"
+msgstr "Instagram user"
+
+#: 
+msgid "Please select an account from left side list."
+msgstr "Please select an account from left side list."
+
+#: 
+msgid "Target & Settings"
+msgstr "Target & Settings"
+
+#: 
+msgid "Activity Log"
+msgstr "Activity Log"
+
+#: 
+msgid "Followed %s"
+msgstr "Followed %s"
+
+#: 
+msgid "View Profile"
+msgstr "View Profile"
+
+#: 
+msgid "Auto Follow activity log for %s is empty"
+msgstr "Auto Follow activity log for %s is empty"
+
+#: 
+msgid "Hashtags"
+msgstr "Hashtags"
+
+#: 
+msgid "Places"
+msgstr "Places"
+
+#: 
+msgid "People"
+msgstr "People"
+
+#: 
+msgid "Speed"
+msgstr "Speed"
+
+#: 
+msgid "Auto"
+msgstr "Auto"
+
+#: 
+msgid "Recommended"
+msgstr "Recommended"
+
+#: 
+msgid "Very Slow"
+msgstr "Very Slow"
+
+#: 
+msgid "Slow"
+msgstr "Slow"
+
+#: 
+msgid "Medium"
+msgstr "Medium"
+
+#: 
+msgid "Fast"
+msgstr "Fast"
+
+#: 
+msgid "Very Fast"
+msgstr "Very Fast"
+
+#: 
+msgid "Pause actions everyday"
+msgstr "Pause actions everyday"
+
+#: 
+msgid "Speeds"
+msgstr "Speeds"
+
+#: 
+msgid "%s request/hour"
+msgid_plural "%s requests/hour"
+msgstr[0] "%s request/hour"
+msgstr[1] "%s requests/hour"
+msgstr[2] "%s requests/hour"
+msgstr[3] "%s requests/hour"
+
+#: 
+msgid "These values indicates maximum amount of the requests per hour. They are not exact values. Depending on the server overload and delays between the requests, actual number of the requests might be less than these values."
+msgstr "These values indicates maximum amount of the requests per hour. They are not exact values. Depending on the server overload and delays between the requests, actual number of the requests might be less than these values."
+
+#: 
+msgid "High speeds might be risky"
+msgstr "High speeds might be risky"
+
+#: 
+msgid "Developers are not responsible for any issues related to the Instagram accounts."
+msgstr "Developers are not responsible for any issues related to the Instagram accounts."
+
+#: 
+msgid "Other Settings"
+msgstr "Other Settings"
+
+#: 
+msgid "Enable Random Delays"
+msgstr "Enable Random Delays"
+
+#: 
+msgid "If you enable this option, script will add random delays automatically between each requests."
+msgstr "If you enable this option, script will add random delays automatically between each requests."
+
+#: 
+msgid "Delays could be up to 5 minutes."
+msgstr "Delays could be up to 5 minutes."
+
+#: 
+msgid "Auto Follow Module Settings"
+msgstr "Auto Follow Module Settings"
+
+#:
+msgid "Next request will be sent %s approximately"
+msgstr "Next request will be sent %s approximately"
+
+#:
+msgid "Next request will be sent in a few moments"
+msgstr "Next request will be sent in a few moments"
+
+#:
+msgid "Something is wrong on the system"
+msgstr "Something is wrong on the system"
+
+#:
+msgid "Total %s actions"
+msgstr "Total %s actions"
+

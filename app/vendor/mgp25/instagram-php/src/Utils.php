@@ -2,10 +2,19 @@
 
 namespace InstagramAPI;
 
-use InstagramAPI\Request\Metadata\MediaDetails;
-use InstagramAPI\Request\Metadata\PhotoDetails;
-use InstagramAPI\Request\Metadata\VideoDetails;
+use Clue\React\HttpProxy\ProxyConnector as HttpConnectProxy;
+use Clue\React\Socks\Client as SocksProxy;
+use InstagramAPI\Media\MediaDetails;
+use InstagramAPI\Media\Photo\PhotoDetails;
+use InstagramAPI\Media\Photo\PhotoResizer;
+use InstagramAPI\Media\Video\VideoDetails;
+use InstagramAPI\Media\Video\VideoResizer;
 use InstagramAPI\Response\Model\Item;
+use InstagramAPI\Response\Model\Location;
+use React\EventLoop\LoopInterface;
+use React\Socket\Connector;
+use React\Socket\ConnectorInterface;
+use React\Socket\SecureConnector;
 
 class Utils
 {
@@ -194,6 +203,54 @@ class Utils
     }
 
     /**
+     * Builds an Instagram media location JSON object in the correct format.
+     *
+     * This function is used whenever we need to send a location to Instagram's
+     * API. All endpoints (so far) expect location data in this exact format.
+     *
+     * @param Location $location A model object representing the location.
+     *
+     * @throws \InvalidArgumentException If the location is invalid.
+     *
+     * @return string The final JSON string ready to submit as an API parameter.
+     */
+    public static function buildMediaLocationJSON(
+        $location)
+    {
+        if (!$location instanceof Location) {
+            throw new \InvalidArgumentException('The location must be an instance of \InstagramAPI\Response\Model\Location.');
+        }
+
+        // Forbid locations that came from Location::searchFacebook() and
+        // Location::searchFacebookByPoint()! They have slightly different
+        // properties, and they don't always contain all data we need. The
+        // real application NEVER uses the "Facebook" endpoints for attaching
+        // locations to media, and NEITHER SHOULD WE.
+        if ($location->getFacebookPlacesId() !== null) {
+            throw new \InvalidArgumentException('You are not allowed to use Location model objects from the Facebook-based location search functions. They are not valid media locations!');
+        }
+
+        // Core location keys that always exist.
+        $obj = [
+            'name'            => $location->getName(),
+            'lat'             => $location->getLat(),
+            'lng'             => $location->getLng(),
+            'address'         => $location->getAddress(),
+            'external_source' => $location->getExternalIdSource(),
+        ];
+
+        // Attach the location ID via a dynamically generated key.
+        // NOTE: This automatically generates a key such as "facebook_places_id".
+        $key = $location->getExternalIdSource().'_id';
+        $obj[$key] = $location->getExternalId();
+
+        // Ensure that all keys are listed in the correct hash order.
+        $obj = self::reorderByHashCode($obj);
+
+        return json_encode($obj);
+    }
+
+    /**
      * Check for ffmpeg/avconv dependencies.
      *
      * TIP: If your binary isn't findable via the PATH environment locations,
@@ -266,13 +323,13 @@ class Utils
     {
         // Check if input file exists.
         if (empty($photoFilename) || !is_file($photoFilename)) {
-            throw new \InvalidArgumentException(__('The photo file "%s" does not exist on disk.', $photoFilename));
+            throw new \InvalidArgumentException(sprintf('The photo file "%s" does not exist on disk.', $photoFilename));
         }
 
         // Determine photo file size and throw when the file is empty.
         $filesize = filesize($photoFilename);
         if ($filesize < 1) {
-            throw new \InvalidArgumentException(__(
+            throw new \InvalidArgumentException(sprintf(
                 'The photo file "%s" is empty.',
                 $photoFilename
             ));
@@ -281,7 +338,7 @@ class Utils
         // Get image details.
         $result = @getimagesize($photoFilename);
         if ($result === false) {
-            throw new \InvalidArgumentException(__('The photo file "%s" is not a valid image.', $photoFilename));
+            throw new \InvalidArgumentException(sprintf('The photo file "%s" is not a valid image.', $photoFilename));
         }
 
         return [
@@ -311,7 +368,7 @@ class Utils
         // Determine video file size and throw when the file is empty.
         $filesize = filesize($videoFilename);
         if ($filesize < 1) {
-            throw new \InvalidArgumentException(__(
+            throw new \InvalidArgumentException(sprintf(
                 'The video "%s" is empty.',
                 $videoFilename
             ));
@@ -320,12 +377,12 @@ class Utils
         // The user must have FFprobe.
         $ffprobe = self::checkFFPROBE();
         if ($ffprobe === false) {
-            throw new \RuntimeException(__('You must have FFprobe to analyze video details.'));
+            throw new \RuntimeException('You must have FFprobe to analyze video details.');
         }
 
         // Check if input file exists.
         if (empty($videoFilename) || !is_file($videoFilename)) {
-            throw new \InvalidArgumentException(__('The video file "%s" does not exist on disk.', $videoFilename));
+            throw new \InvalidArgumentException(sprintf('The video file "%s" does not exist on disk.', $videoFilename));
         }
 
         // Load with FFPROBE. Shows details as JSON and exits.
@@ -334,34 +391,46 @@ class Utils
 
         // Check for processing errors.
         if ($jsonInfo === null) {
-            throw new \RuntimeException(__('FFprobe failed to analyze your video file "%s".', $videoFilename));
+            throw new \RuntimeException(sprintf('FFprobe failed to analyze your video file "%s".', $videoFilename));
         }
 
         // Attempt to decode the JSON.
         $probeResult = @json_decode($jsonInfo, true);
         if ($probeResult === null) {
-            throw new \RuntimeException(__('FFprobe gave us invalid JSON for "%s".', $videoFilename));
+            throw new \RuntimeException(sprintf('FFprobe gave us invalid JSON for "%s".', $videoFilename));
         }
 
         // Now analyze all streams to find the first video stream.
         // We ignore all audio and subtitle streams.
         $videoDetails = [];
         foreach ($probeResult['streams'] as $streamIdx => $streamInfo) {
-            if ($streamInfo['codec_type'] == 'video') {
+            if ($streamInfo['codec_type'] === 'video') {
                 $videoDetails['filesize'] = $filesize;
                 $videoDetails['codec'] = $streamInfo['codec_name']; // string
-                $videoDetails['width'] = intval($streamInfo['width'], 10);
-                $videoDetails['height'] = intval($streamInfo['height'], 10);
-                // NOTE: Duration is a float such as "230.138000".
-                $videoDetails['duration'] = floatval($streamInfo['duration']);
+                $videoDetails['width'] = (int) $streamInfo['width'];
+                $videoDetails['height'] = (int) $streamInfo['height'];
+                if (isset($videoDetails['duration'])) {
+                    // NOTE: Duration is a float such as "230.138000".
+                    $videoDetails['duration'] = (float) $streamInfo['duration'];
+                }
 
                 break; // Stop checking streams.
             }
         }
 
-        // Make sure we have found format details.
+        // Make sure we have found at least one video stream.
         if (count($videoDetails) === 0) {
-            throw new \RuntimeException(__('FFprobe failed to detect any video format details. Is "%s" a valid video file?', $videoFilename));
+            throw new \RuntimeException(sprintf('FFprobe failed to detect any video format details. Is "%s" a valid video file?', $videoFilename));
+        }
+
+        // Sometimes there is no duration in stream info, so we should check the format.
+        if (!isset($videoDetails['duration']) && isset($probeResult['format']['duration'])) {
+            $videoDetails['duration'] = (float) $probeResult['format']['duration'];
+        }
+
+        // Make sure we have detected the video duration.
+        if (!isset($videoDetails['duration'])) {
+            throw new \RuntimeException(sprintf('FFprobe failed to detect video duration. Is "%s" a valid video file?', $videoFilename));
         }
 
         return $videoDetails;
@@ -395,24 +464,24 @@ class Utils
         // those when validating the aspect ratio range further down.
         if ($mediaDetails instanceof PhotoDetails) {
             // Validate photo resolution. Instagram allows between 320px-1080px width.
-            if ($width < 320 || $width > MediaAutoResizer::MAX_WIDTH) {
-                throw new \InvalidArgumentException(__(
-                    'Instagram only accepts photos that are between 320 and %d pixels wide. Your file "%s" is %d pixels wide.',
-                    MediaAutoResizer::MAX_WIDTH, $mediaFilename, $width
+            if ($width < PhotoResizer::MIN_WIDTH || $width > PhotoResizer::MAX_WIDTH) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Instagram only accepts photos that are between %d and %d pixels wide. Your file "%s" is %d pixels wide.',
+                    PhotoResizer::MIN_WIDTH, PhotoResizer::MAX_WIDTH, $mediaFilename, $width
                 ));
             }
         } elseif ($mediaDetails instanceof VideoDetails) {
             // Validate video resolution. Instagram allows between 480px-720px width.
             // NOTE: They'll resize 720px wide videos on the server, to 640px instead.
             // NOTE: Their server CAN receive between 320px-1080px width without
-            // rejecting the file, but the official app would NEVER upload such
+            // rejecting the video, but the official app would NEVER upload such
             // resolutions. It's controlled by the "ig_android_universe_video_production"
             // experiment variable, which currently enforces width of min:480, max:720.
             // If users want to upload bigger videos, they MUST resize locally first!
-            if ($width < 480 || $width > 720) {
-                throw new \InvalidArgumentException(__(
-                    'Instagram only accepts videos that are between 480 and 720 pixels wide. Your file "%s" is %d pixels wide.',
-                    $mediaFilename, $width
+            if ($width < VideoResizer::MIN_WIDTH || $width > VideoResizer::MAX_WIDTH) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Instagram only accepts videos that are between %d and %d pixels wide. Your file "%s" is %d pixels wide.',
+                    VideoResizer::MIN_WIDTH, VideoResizer::MAX_WIDTH, $mediaFilename, $width
                 ));
             }
         }
@@ -425,7 +494,7 @@ class Utils
         case Constants::FEED_STORY:
         case Constants::FEED_DIRECT_STORY:
             if ($aspectRatio < MediaAutoResizer::MIN_STORY_RATIO || $aspectRatio > MediaAutoResizer::MAX_STORY_RATIO) {
-                throw new \InvalidArgumentException(__(
+                throw new \InvalidArgumentException(sprintf(
                     'Instagram only accepts story media with aspect ratios between %.3f and %.3f. Your file "%s" has a %.4f aspect ratio.',
                     MediaAutoResizer::MIN_STORY_RATIO, MediaAutoResizer::MAX_STORY_RATIO, $mediaFilename, $aspectRatio
                 ));
@@ -433,7 +502,7 @@ class Utils
             break;
         default:
             if ($aspectRatio < MediaAutoResizer::MIN_RATIO || $aspectRatio > MediaAutoResizer::MAX_RATIO) {
-                throw new \InvalidArgumentException(__(
+                throw new \InvalidArgumentException(sprintf(
                     'Instagram only accepts media with aspect ratios between %.3f and %.3f. Your file "%s" has a %.4f aspect ratio.',
                     MediaAutoResizer::MIN_RATIO, MediaAutoResizer::MAX_RATIO, $mediaFilename, $aspectRatio
                 ));
@@ -462,7 +531,7 @@ class Utils
         case Constants::FEED_STORY:
             // Instagram only allows 3-15 seconds for stories.
             if ($duration < 3 || $duration > 15) {
-                throw new \InvalidArgumentException(__(
+                throw new \InvalidArgumentException(sprintf(
                     'Instagram only accepts story videos that are between 3 and 15 seconds long. Your story video "%s" is %.3f seconds long.',
                     $videoFilename, $duration
                 ));
@@ -472,7 +541,7 @@ class Utils
         case Constants::FEED_DIRECT_STORY:
             // Instagram only allows 0.1-15 seconds for direct messages.
             if ($duration < 0.1 || $duration > 15) {
-                throw new \InvalidArgumentException(__(
+                throw new \InvalidArgumentException(sprintf(
                     'Instagram only accepts direct videos that are between 0.1 and 15 seconds long. Your direct video "%s" is %.3f seconds long.',
                     $videoFilename, $duration
                 ));
@@ -482,7 +551,7 @@ class Utils
             // Validate video length. Instagram only allows 3-60 seconds.
             // SEE: https://help.instagram.com/270963803047681
             if ($duration < 3 || $duration > 60) {
-                throw new \InvalidArgumentException(__(
+                throw new \InvalidArgumentException(sprintf(
                     'Instagram only accepts videos that are between 3 and 60 seconds long. Your video "%s" is %.3f seconds long.',
                     $videoFilename, $duration
                 ));
@@ -510,7 +579,7 @@ class Utils
         // NOTE: It is confirmed that Instagram only accepts JPEG files.
         $type = $photoDetails->getType();
         if ($type !== IMAGETYPE_JPEG) {
-            throw new \InvalidArgumentException(__('The photo file "%s" is not a JPEG file.', $photoFilename));
+            throw new \InvalidArgumentException(sprintf('The photo file "%s" is not a JPEG file.', $photoFilename));
         }
 
         // Validate photo resolution and aspect ratio.
@@ -540,12 +609,12 @@ class Utils
         // The user must have FFmpeg.
         $ffmpeg = self::checkFFMPEG();
         if ($ffmpeg === false) {
-            throw new \RuntimeException(__('You must have FFmpeg to generate video thumbnails.'));
+            throw new \RuntimeException('You must have FFmpeg to generate video thumbnails.');
         }
 
         // Check if input file exists.
         if (empty($videoFilename) || !is_file($videoFilename)) {
-            throw new \InvalidArgumentException(__('The video file "%s" does not exist on disk.', $videoFilename));
+            throw new \InvalidArgumentException(sprintf('The video file "%s" does not exist on disk.', $videoFilename));
         }
 
         // Generate a temp thumbnail filename and delete if file already exists.
@@ -564,7 +633,7 @@ class Utils
 
             // Check for processing errors.
             if ($statusCode !== 0) {
-                throw new \RuntimeException(__('FFmpeg failed to generate a video thumbnail.'));
+                throw new \RuntimeException('FFmpeg failed to generate a video thumbnail.');
             }
 
             // Automatically crop&resize the thumbnail to Instagram's requirements.
@@ -601,7 +670,7 @@ class Utils
         foreach ($usertags as $k => $v) {
             if ($k === 'in' || $k === 'removed') {
                 if (!is_array($v)) {
-                    throw new \InvalidArgumentException(__(
+                    throw new \InvalidArgumentException(sprintf(
                         'Invalid usertags array. The value for key "%s" must be an array.', $k
                     ));
                 }
@@ -620,7 +689,7 @@ class Utils
                     // Check the array of userids to remove.
                     foreach ($v as $userId) {
                         if (!ctype_digit($userId) && (!is_int($userId) || $userId < 0)) {
-                            throw new \InvalidArgumentException(__('Invalid user ID in usertags "removed" array.'));
+                            throw new \InvalidArgumentException('Invalid user ID in usertags "removed" array.');
                         }
                     }
                 }
@@ -636,45 +705,295 @@ class Utils
                     || $v['position'][1] < 0.0 || $v['position'][1] > 1.0
                     || !isset($v['user_id']) || !is_scalar($v['user_id'])
                     || (!ctype_digit($v['user_id']) && (!is_int($v['user_id']) || $v['user_id'] < 0))) {
-                    throw new \InvalidArgumentException(__('Invalid user entry in usertags array.'));
+                    throw new \InvalidArgumentException('Invalid user entry in usertags array.');
                 }
             }
         }
     }
 
     /**
+     * Verifies that a single hashtag is valid.
+     *
+     * This function enforces the following requirements: It must be a string,
+     * at least 1 character long, and cannot contain the "#" character itself.
+     *
+     * @param mixed $hashtag The hashtag to check (should be string but we
+     *                       accept anything for checking purposes).
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function throwIfInvalidHashtag(
+        $hashtag)
+    {
+        if (!is_string($hashtag) || !strlen($hashtag)) {
+            throw new \InvalidArgumentException('Hashtag must be a non-empty string.');
+        }
+        // Perform an UTF-8 aware search for the illegal "#" symbol (anywhere).
+        // NOTE: We must use mb_strpos() to support international tags.
+        if (mb_strpos($hashtag, '#') !== false) {
+            throw new \InvalidArgumentException(sprintf(
+                'Hashtag "%s" is not allowed to contain the "#" character.',
+                $hashtag
+            ));
+        }
+    }
+
+    /**
+     * Verifies an array of story poll.
+     *
+     * @param array[] $storyPoll Array with story poll key-value pairs.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    public static function throwIfInvalidStoryPoll(
+        array $storyPoll)
+    {
+        $requiredKeys = ['question', 'viewer_vote', 'viewer_can_vote', 'tallies', 'is_sticker'];
+
+        if (count($storyPoll) !== 1) {
+            throw new \InvalidArgumentException(sprintf('Only one story poll is permitted. You added %d story polls.', count($storyPoll)));
+        }
+
+        // Ensure that all keys exist.
+        $missingKeys = array_keys(array_diff_key(['question' => 1, 'viewer_vote' => 1, 'viewer_can_vote' => 1, 'tallies' => 1, 'is_sticker' => 1], $storyPoll[0]));
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for story poll array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($storyPoll[0] as $k => $v) {
+            switch ($k) {
+                case 'question':
+                    if (!is_string($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story poll array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'viewer_vote':
+                    if ($v !== 0) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story poll array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'viewer_can_vote':
+                case 'is_sticker':
+                    if (!is_bool($v) && $v !== true) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story poll array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'tallies':
+                    if (!is_array($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story poll array-key "%s".', $v, $k));
+                    }
+                    self::_throwIfInvalidStoryPollTallies($v);
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($storyPoll[0], array_flip($requiredKeys)), 'polls');
+    }
+
+    /**
+     * Verifies if tallies are valid.
+     *
+     * @param array[] $tallies Array with story poll key-value pairs.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    protected static function _throwIfInvalidStoryPollTallies(
+        array $tallies)
+    {
+        $requiredKeys = ['text', 'count', 'font_size'];
+        if (count($tallies) !== 2) {
+            throw new \InvalidArgumentException(sprintf('Missing data for tallies.'));
+        }
+
+        foreach ($tallies as $tallie) {
+            $missingKeys = array_keys(array_diff_key(['text' => 1, 'count' => 1, 'font_size' => 1], $tallie));
+
+            if (count($missingKeys)) {
+                throw new \InvalidArgumentException(sprintf('Missing keys "%s" for location array.', implode(', ', $missingKeys)));
+            }
+            foreach ($tallie as $k => $v) {
+                if (!in_array($k, $requiredKeys, true)) {
+                    throw new \InvalidArgumentException(sprintf('Invalid key "%s" for story poll tallies.', $k));
+                }
+                switch ($k) {
+                    case 'text':
+                        if (!is_string($v)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for tallies array-key "%s".', $v, $k));
+                        }
+                        break;
+                    case 'count':
+                        if ($v !== 0) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for tallies array-key "%s".', $v, $k));
+                        }
+                        break;
+                    case 'font_size':
+                        if (!is_float($v) || $v !== 35.0) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for tallies array-key "%s".', $v, $k));
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Verifies an array of story mentions.
+     *
+     * @param array[] $storyMentions The array of all story mentions.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    public static function throwIfInvalidStoryMentions(
+        array $storyMentions)
+    {
+        $requiredKeys = ['user_id'];
+
+        foreach ($storyMentions as $mention) {
+            // Ensure that all keys exist.
+            $missingKeys = array_keys(array_diff_key(['user_id' => 1], $mention));
+            if (count($missingKeys)) {
+                throw new \InvalidArgumentException(sprintf('Missing keys "%s" for mention array.', implode(', ', $missingKeys)));
+            }
+
+            foreach ($mention as $k => $v) {
+                switch ($k) {
+                    case 'user_id':
+                        if (!ctype_digit($v) && (!is_int($v) || $v < 0)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story mention array-key "%s".', $v, $k));
+                        }
+                        break;
+                }
+            }
+            self::_throwIfInvalidStoryStickerPlacement(array_diff_key($mention, array_flip($requiredKeys)), 'story mentions');
+        }
+    }
+
+    /**
+     * Verifies if a story location sticker is valid.
+     *
+     * @param array[] $locationSticker Array with location sticker key-value pairs.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    public static function throwIfInvalidStoryLocationSticker(
+        array $locationSticker)
+    {
+        $requiredKeys = ['location_id', 'is_sticker'];
+        $missingKeys = array_keys(array_diff_key(['location_id' => 1, 'is_sticker' => 1], $locationSticker));
+
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for location array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($locationSticker as $k => $v) {
+            switch ($k) {
+                case 'location_id':
+                    if (!is_string($v) && !is_numeric($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for location array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'is_sticker':
+                    if (!is_bool($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                    }
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($locationSticker, array_flip($requiredKeys)), 'location');
+    }
+
+    /**
      * Verifies if a caption is valid for a hashtag and verifies an array of hashtags.
      *
-     * @param string $captionText The caption for the story hashtag.
-     * @param array  $hashtags    The array of usertags.
+     * @param string  $captionText The caption for the story hashtag to verify.
+     * @param array[] $hashtags    The array of all story hashtags.
      *
-     * @throws \InvalidArgumentException If caption doesn't contains any hashtag.
+     * @throws \InvalidArgumentException If caption doesn't contain any hashtag,
      *                                   or if any tags are invalid.
      */
     public static function throwIfInvalidStoryHashtags(
          $captionText,
          array $hashtags)
     {
-        preg_match_all("/(#\w+)/u", $captionText, $matches);
+        $requiredKeys = ['tag_name', 'use_custom_title', 'is_sticker'];
 
-        if (!$matches[1]) {
-            throw new \InvalidArgumentException(__('Invalid caption for hashtag.'));
+        // Extract all hashtags from the caption using a UTF-8 aware regex.
+        if (!preg_match_all('/#(\w+)/u', $captionText, $tagsInCaption)) {
+            throw new \InvalidArgumentException('Invalid caption for hashtag.');
         }
 
+        // Verify all provided hashtags.
         foreach ($hashtags as $hashtag) {
-            if (!in_array($hashtag['tag_name'], $matches[1])) {
-                throw new \InvalidArgumentException(__('Tag name "%s" does not exist in the caption text.', $hashtag['tag_name']));
+            $missingKeys = array_keys(array_diff_key(['tag_name' => 1, 'use_custom_title' => 1, 'is_sticker' => 1], $hashtag));
+            if (count($missingKeys)) {
+                throw new \InvalidArgumentException(sprintf('Missing keys "%s" for hashtag array.', implode(', ', $missingKeys)));
             }
+
             foreach ($hashtag as $k => $v) {
-                if (!in_array($k, ['tag_name', 'x', 'y', 'width', 'height', 'rotation', 'is_sticker', 'use_custom_title'], true)) {
-                    throw new \InvalidArgumentException(__('Invalid key "%s" for hashtag.', $k));
+                switch ($k) {
+                    case 'tag_name':
+                        // Ensure that the hashtag format is valid.
+                        self::throwIfInvalidHashtag($v);
+                        // Verify that this tag exists somewhere in the caption to check.
+                        if (!in_array($v, $tagsInCaption[1])) { // NOTE: UTF-8 aware.
+                            throw new \InvalidArgumentException(sprintf('Tag name "%s" does not exist in the caption text.', $v));
+                        }
+                        break;
+                    case 'use_custom_title':
+                        if (!is_bool($v)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        }
+                        break;
+                    case 'is_sticker':
+                        if (!is_bool($v)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        }
+                        break;
                 }
-                if (
-                     (($k !== 'is_sticker' && $k !== 'use_custom_title') && ($v < 0.0 || $v > 1.0))
-                     || (($k === 'is_sticker' || $k === 'use_custom_title') && !is_bool($v))
-                ) {
-                    throw new \InvalidArgumentException(__('Invalid value "%s" for hashtag "%s".', $v, $k));
-                }
+            }
+            self::_throwIfInvalidStoryStickerPlacement(array_diff_key($hashtag, array_flip($requiredKeys)), 'hashtag');
+        }
+    }
+
+    /**
+     * Verifies a story sticker's placement parameters.
+     *
+     * There are many kinds of story stickers, such as hashtags, locations,
+     * mentions, etc. To place them on the media, the user must provide certain
+     * parameters for things like position and size. This function verifies all
+     * of those parameters and ensures that the sticker placement is valid.
+     *
+     * @param array  $storySticker The array describing the story sticker placement.
+     * @param string $type         What type of sticker this is.
+     *
+     * @throws \InvalidArgumentException If storySticker is missing keys or has invalid values.
+     */
+    protected static function _throwIfInvalidStoryStickerPlacement(
+        array $storySticker,
+        $type)
+    {
+        $requiredKeys = ['x', 'y', 'width', 'height', 'rotation'];
+
+        // Ensure that all required hashtag array keys exist.
+        $missingKeys = array_keys(array_diff_key(['x' => 1, 'y' => 1, 'width' => 1, 'height' => 1, 'rotation' => 0], $storySticker));
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for "%s".', implode(', ', $missingKeys), $type));
+        }
+
+        // Check the individual array values.
+        foreach ($storySticker as $k => $v) {
+            if (!in_array($k, $requiredKeys, true)) {
+                throw new \InvalidArgumentException(sprintf('Invalid key "%s" for "%s".', $k, $type));
+            }
+            switch ($k) {
+                case 'x':
+                case 'y':
+                case 'width':
+                case 'height':
+                case 'rotation':
+                    if (!is_float($v) || $v < 0.0 || $v > 1.0) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for "%s" key "%s".', $v, $type, $k));
+                    }
+                    break;
             }
         }
     }
@@ -702,7 +1021,7 @@ class Utils
             }
         }
         if (!in_array($mediaType, ['PHOTO', 'VIDEO', 'ALBUM'], true)) {
-            throw new \InvalidArgumentException(__('"%s" is not a valid media type.', $mediaType));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid media type.', $mediaType));
         }
 
         return $mediaType;
@@ -872,12 +1191,14 @@ class Utils
      * If the script is killed before the write is complete, only the temporary
      * trash file will be corrupted.
      *
+     * The algorithm also ensures that 100% of the bytes were written to disk.
+     *
      * @param string $filename     Filename to write the data to.
      * @param string $data         Data to write to file.
      * @param string $atomicSuffix Lets you optionally provide a different
      *                             suffix for the temporary file.
      *
-     * @return mixed Number of bytes written on success, otherwise FALSE.
+     * @return int|bool Number of bytes written on success, otherwise `FALSE`.
      */
     public static function atomicWrite(
         $filename,
@@ -887,8 +1208,10 @@ class Utils
         // Perform an exclusive (locked) overwrite to a temporary file.
         $filenameTmp = sprintf('%s.%s', $filename, $atomicSuffix);
         $writeResult = @file_put_contents($filenameTmp, $data, LOCK_EX);
-        if ($writeResult !== false) {
-            // Now move the file to its real destination (replaced if exists).
+
+        // Only proceed if we wrote 100% of the data bytes to disk.
+        if ($writeResult !== false && $writeResult === strlen($data)) {
+            // Now move the file to its real destination (replaces if exists).
             $moveResult = @rename($filenameTmp, $filename);
             if ($moveResult === true) {
                 // Successful write and move. Return number of bytes written.
@@ -896,7 +1219,64 @@ class Utils
             }
         }
 
+        // We've failed. Remove the temporary file if it exists.
+        if (is_file($filenameTmp)) {
+            @unlink($filenameTmp);
+        }
+
         return false; // Failed.
+    }
+
+    /**
+     * Creates an empty temp file with a unique filename.
+     *
+     * @param string $outputDir  Folder to place the temp file in.
+     * @param string $namePrefix (optional) What prefix to use for the temp file.
+     *
+     * @throws \RuntimeException If the file cannot be created.
+     *
+     * @return string
+     */
+    public static function createTempFile(
+        $outputDir,
+        $namePrefix = 'TEMP')
+    {
+        // Automatically generates a name like "INSTATEMP_" or "INSTAVID_" etc.
+        $finalPrefix = sprintf('INSTA%s_', $namePrefix);
+
+        // Try to create the file (detects errors).
+        $tmpFile = @tempnam($outputDir, $finalPrefix);
+        if (!is_string($tmpFile)) {
+            throw new \RuntimeException(sprintf(
+                'Unable to create temporary output file in "%s" (with prefix "%s").',
+                $outputDir, $finalPrefix
+            ));
+        }
+
+        return $tmpFile;
+    }
+
+    /**
+     * Closes a file pointer if it's open.
+     *
+     * Always use this function instead of fclose()!
+     *
+     * Unlike the normal fclose(), this function is safe to call multiple times
+     * since it only attempts to close the pointer if it's actually still open.
+     * The normal fclose() would give an annoying warning in that scenario.
+     *
+     * @param resource $handle A file pointer opened by fopen() or fsockopen().
+     *
+     * @return bool TRUE on success or FALSE on failure.
+     */
+    public static function safe_fclose(
+        $handle)
+    {
+        if (is_resource($handle)) {
+            return fclose($handle);
+        }
+
+        return true;
     }
 
     /**
@@ -942,14 +1322,18 @@ class Utils
         $text)
     {
         $urls = [];
-        if (false !== preg_match_all(
+        if (preg_match_all(
             // NOTE: This disgusting regex comes from the Android SDK, slightly
-            // modified by IG and then encoded by us into PHP regex format.
+            // modified by Instagram and then encoded by us into PHP format. We
+            // are NOT allowed to tweak this regex! It MUST match the official
+            // app so that our link-detection acts *exactly* like the real app!
+            // NOTE: Here is the "to PHP regex" conversion algorithm we used:
+            // https://github.com/mgp25/Instagram-API/issues/1445#issuecomment-318921867
             '/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9\x{00A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\_][a-zA-Z0-9\x{00A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\_\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnprwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdeghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eosuw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agksyz]|v[aceginu]|w[fs]|(?:\x{03B4}\x{03BF}\x{03BA}\x{03B9}\x{03BC}\x{03AE}|\x{0438}\x{0441}\x{043F}\x{044B}\x{0442}\x{0430}\x{043D}\x{0438}\x{0435}|\x{0440}\x{0444}|\x{0441}\x{0440}\x{0431}|\x{05D8}\x{05E2}\x{05E1}\x{05D8}|\x{0622}\x{0632}\x{0645}\x{0627}\x{06CC}\x{0634}\x{06CC}|\x{0625}\x{062E}\x{062A}\x{0628}\x{0627}\x{0631}|\x{0627}\x{0644}\x{0627}\x{0631}\x{062F}\x{0646}|\x{0627}\x{0644}\x{062C}\x{0632}\x{0627}\x{0626}\x{0631}|\x{0627}\x{0644}\x{0633}\x{0639}\x{0648}\x{062F}\x{064A}\x{0629}|\x{0627}\x{0644}\x{0645}\x{063A}\x{0631}\x{0628}|\x{0627}\x{0645}\x{0627}\x{0631}\x{0627}\x{062A}|\x{0628}\x{06BE}\x{0627}\x{0631}\x{062A}|\x{062A}\x{0648}\x{0646}\x{0633}|\x{0633}\x{0648}\x{0631}\x{064A}\x{0629}|\x{0641}\x{0644}\x{0633}\x{0637}\x{064A}\x{0646}|\x{0642}\x{0637}\x{0631}|\x{0645}\x{0635}\x{0631}|\x{092A}\x{0930}\x{0940}\x{0915}\x{094D}\x{0937}\x{093E}|\x{092D}\x{093E}\x{0930}\x{0924}|\x{09AD}\x{09BE}\x{09B0}\x{09A4}|\x{0A2D}\x{0A3E}\x{0A30}\x{0A24}|\x{0AAD}\x{0ABE}\x{0AB0}\x{0AA4}|\x{0B87}\x{0BA8}\x{0BCD}\x{0BA4}\x{0BBF}\x{0BAF}\x{0BBE}|\x{0B87}\x{0BB2}\x{0B99}\x{0BCD}\x{0B95}\x{0BC8}|\x{0B9A}\x{0BBF}\x{0B99}\x{0BCD}\x{0B95}\x{0BAA}\x{0BCD}\x{0BAA}\x{0BC2}\x{0BB0}\x{0BCD}|\x{0BAA}\x{0BB0}\x{0BBF}\x{0B9F}\x{0BCD}\x{0B9A}\x{0BC8}|\x{0C2D}\x{0C3E}\x{0C30}\x{0C24}\x{0C4D}|\x{0DBD}\x{0D82}\x{0D9A}\x{0DCF}|\x{0E44}\x{0E17}\x{0E22}|\x{30C6}\x{30B9}\x{30C8}|\x{4E2D}\x{56FD}|\x{4E2D}\x{570B}|\x{53F0}\x{6E7E}|\x{53F0}\x{7063}|\x{65B0}\x{52A0}\x{5761}|\x{6D4B}\x{8BD5}|\x{6E2C}\x{8A66}|\x{9999}\x{6E2F}|\x{D14C}\x{C2A4}\x{D2B8}|\x{D55C}\x{AD6D}|xn\-\-0zwm56d|xn\-\-11b5bs3a9aj6g|xn\-\-3e0b707e|xn\-\-45brj9c|xn\-\-80akhbyknj4f|xn\-\-90a3ac|xn\-\-9t4b11yi5a|xn\-\-clchc0ea0b2g2a9gcd|xn\-\-deba0ad|xn\-\-fiqs8s|xn\-\-fiqz9s|xn\-\-fpcrj9c3d|xn\-\-fzc2c9e2c|xn\-\-g6w251d|xn\-\-gecrj9c|xn\-\-h2brj9c|xn\-\-hgbk6aj7f53bba|xn\-\-hlcj6aya9esc7a|xn\-\-j6w193g|xn\-\-jxalpdlp|xn\-\-kgbechtv|xn\-\-kprw13d|xn\-\-kpry57d|xn\-\-lgbbat1ad8j|xn\-\-mgbaam7a8h|xn\-\-mgbayh7gpa|xn\-\-mgbbh1a71e|xn\-\-mgbc0a9azcg|xn\-\-mgberp4a5d4ar|xn\-\-o3cw4h|xn\-\-ogbpf8fl|xn\-\-p1ai|xn\-\-pgbs0dh|xn\-\-s9brj9c|xn\-\-wgbh1c|xn\-\-wgbl6a|xn\-\-xkc2al3hye2a|xn\-\-xkc2dl3a5ee0h|xn\-\-yfro4i67o|xn\-\-ygbi2ammx|xn\-\-zckzah|xxx)|y[et]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\x{00A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/iu',
             $text,
             $matches,
             PREG_SET_ORDER
-        )) {
+        ) !== false) {
             foreach ($matches as $match) {
                 $urls[] = [
                     'fullUrl'  => $match[0], // "https://foo:bar@www.bing.com/?foo=#test"
@@ -962,5 +1346,128 @@ class Utils
         }
 
         return $urls;
+    }
+
+    /**
+     * Returns a proxy (if any) for a given host based on a given config.
+     *
+     * @param string $host        Host.
+     * @param mixed  $proxyConfig Proxy config.
+     *
+     * @return string|null
+     *
+     * @see http://docs.guzzlephp.org/en/stable/request-options.html#proxy
+     */
+    public static function getProxyForHost(
+        $host,
+        $proxyConfig = null)
+    {
+        // Empty config => no proxy.
+        if (empty($proxyConfig)) {
+            return;
+        }
+
+        // Plain string => return it.
+        if (!is_array($proxyConfig)) {
+            return $proxyConfig;
+        }
+
+        // HTTP proxies do not have CONNECT method.
+        if (!isset($proxyConfig['https'])) {
+            throw new \InvalidArgumentException('No proxy with CONNECT method found.');
+        }
+
+        // Check exceptions.
+        if (isset($proxyConfig['no']) && \GuzzleHttp\is_host_in_noproxy($host, $proxyConfig['no'])) {
+            return;
+        }
+
+        return $proxyConfig['https'];
+    }
+
+    /**
+     * Parse given SSL certificate verification and return a secure context.
+     *
+     * @param mixed $config
+     *
+     * @return array
+     *
+     * @see http://docs.guzzlephp.org/en/stable/request-options.html#verify
+     */
+    public static function getSecureContext(
+        $config)
+    {
+        $context = [];
+        if ($config === true) {
+            // PHP 5.6 or greater will find the system cert by default. When
+            // < 5.6, use the Guzzle bundled cacert.
+            if (PHP_VERSION_ID < 50600) {
+                $context['cafile'] = \GuzzleHttp\default_ca_bundle();
+            }
+        } elseif (is_string($config)) {
+            $context['cafile'] = $config;
+            if (!file_exists($config)) {
+                throw new \RuntimeException(sprintf('SSL CA bundle not found: "%s".', $config));
+            }
+        } elseif ($config === false) {
+            $context['verify_peer'] = false;
+            $context['verify_peer_name'] = false;
+
+            return $context;
+        } else {
+            throw new \InvalidArgumentException('Invalid verify request option.');
+        }
+        $context['verify_peer'] = true;
+        $context['verify_peer_name'] = true;
+        $context['allow_self_signed'] = false;
+
+        return $context;
+    }
+
+    /**
+     * Returns a secure connector for given configuration.
+     *
+     * @param LoopInterface $loop
+     * @param array         $secureContext
+     * @param string|null   $proxyAddress
+     *
+     * @return ConnectorInterface
+     */
+    public static function getSecureConnector(
+        LoopInterface $loop,
+        array $secureContext = [],
+        $proxyAddress = null)
+    {
+        if ($proxyAddress === null) {
+            $connector = new Connector($loop);
+
+            return new SecureConnector($connector, $loop, $secureContext);
+        }
+
+        if (strpos($proxyAddress, '://') === false) {
+            $scheme = 'http';
+        } else {
+            $scheme = parse_url($proxyAddress, PHP_URL_SCHEME);
+        }
+
+        $connector = new Connector($loop);
+        switch ($scheme) {
+            case 'socks':
+            case 'socks4':
+            case 'socks4a':
+            case 'socks5':
+                $connector = new SocksProxy($proxyAddress, $connector);
+                break;
+            case 'http':
+                $connector = new HttpConnectProxy($proxyAddress, $connector);
+                break;
+            case 'https':
+                $connector = new HttpConnectProxy($proxyAddress, new SecureConnector($connector, $loop, $secureContext));
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unsupported proxy scheme: %s.', $scheme));
+        }
+
+        return new SecureConnector($connector, $loop, $secureContext);
     }
 }

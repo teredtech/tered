@@ -2,28 +2,39 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
- * @method mixed getPosition()
+ * In.
+ *
+ * @method mixed getDurationInVideoInSec()
+ * @method float[] getPosition()
+ * @method mixed getStartTimeInVideoInSec()
  * @method mixed getTimeInVideo()
- * @method mixed getUser()
+ * @method User getUser()
+ * @method bool isDurationInVideoInSec()
  * @method bool isPosition()
+ * @method bool isStartTimeInVideoInSec()
  * @method bool isTimeInVideo()
  * @method bool isUser()
- * @method setPosition(mixed $value)
- * @method setTimeInVideo(mixed $value)
- * @method setUser(mixed $value)
+ * @method $this setDurationInVideoInSec(mixed $value)
+ * @method $this setPosition(float[] $value)
+ * @method $this setStartTimeInVideoInSec(mixed $value)
+ * @method $this setTimeInVideo(mixed $value)
+ * @method $this setUser(User $value)
+ * @method $this unsetDurationInVideoInSec()
+ * @method $this unsetPosition()
+ * @method $this unsetStartTimeInVideoInSec()
+ * @method $this unsetTimeInVideo()
+ * @method $this unsetUser()
  */
-class In extends AutoPropertyHandler
+class In extends AutoPropertyMapper
 {
-    /*
-     * @var Position
-     */
-    public $position;
-    /*
-     * @var User
-     */
-    public $user;
-    public $time_in_video;
+    const JSON_PROPERTY_MAP = [
+        'position'                   => 'float[]',
+        'user'                       => 'User',
+        'time_in_video'              => '',
+        'start_time_in_video_in_sec' => '',
+        'duration_in_video_in_sec'   => '',
+    ];
 }

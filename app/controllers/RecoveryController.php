@@ -29,7 +29,7 @@ class RecoveryController extends Controller
     private function recover()
     {
         $email = Input::post("email");
-        
+
         if ($email) {
             $User = Controller::model("User", $email);
 

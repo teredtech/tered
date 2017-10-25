@@ -2,14 +2,19 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Insights.
+ *
  * @method mixed getInstagramInsights()
  * @method bool isInstagramInsights()
- * @method setInstagramInsights(mixed $value)
+ * @method $this setInstagramInsights(mixed $value)
+ * @method $this unsetInstagramInsights()
  */
-class Insights extends AutoPropertyHandler
+class Insights extends AutoPropertyMapper
 {
-    public $instagram_insights;
+    const JSON_PROPERTY_MAP = [
+        'instagram_insights' => '',
+    ];
 }

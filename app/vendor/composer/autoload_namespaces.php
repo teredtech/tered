@@ -10,6 +10,5 @@ return array(
     'Viocon' => array($vendorDir . '/usmanhalalit/viocon/src'),
     'Pixie' => array($vendorDir . '/usmanhalalit/pixie/src'),
     'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),
-    'JsonMapper' => array($vendorDir . '/netresearch/jsonmapper/src'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
 );

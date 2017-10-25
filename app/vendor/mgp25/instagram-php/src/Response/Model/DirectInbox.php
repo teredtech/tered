@@ -2,10 +2,12 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
- * @method mixed getHasOlder()
+ * DirectInbox.
+ *
+ * @method bool getHasOlder()
  * @method mixed getOldestCursor()
  * @method DirectThread[] getThreads()
  * @method mixed getUnseenCount()
@@ -15,20 +17,24 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isThreads()
  * @method bool isUnseenCount()
  * @method bool isUnseenCountTs()
- * @method setHasOlder(mixed $value)
- * @method setOldestCursor(mixed $value)
- * @method setThreads(DirectThread[] $value)
- * @method setUnseenCount(mixed $value)
- * @method setUnseenCountTs(mixed $value)
+ * @method $this setHasOlder(bool $value)
+ * @method $this setOldestCursor(mixed $value)
+ * @method $this setThreads(DirectThread[] $value)
+ * @method $this setUnseenCount(mixed $value)
+ * @method $this setUnseenCountTs(mixed $value)
+ * @method $this unsetHasOlder()
+ * @method $this unsetOldestCursor()
+ * @method $this unsetThreads()
+ * @method $this unsetUnseenCount()
+ * @method $this unsetUnseenCountTs()
  */
-class DirectInbox extends AutoPropertyHandler
+class DirectInbox extends AutoPropertyMapper
 {
-    public $unseen_count;
-    public $has_older;
-    public $oldest_cursor;
-    public $unseen_count_ts; // is a timestamp
-    /**
-     * @var DirectThread[]
-     */
-    public $threads;
+    const JSON_PROPERTY_MAP = [
+        'unseen_count'    => '',
+        'has_older'       => 'bool',
+        'oldest_cursor'   => '',
+        'unseen_count_ts' => '', // Is a timestamp.
+        'threads'         => 'DirectThread[]',
+    ];
 }

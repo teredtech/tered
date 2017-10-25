@@ -2,33 +2,46 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * MediaInfoResponse.
+ *
  * @method mixed getAutoLoadMoreEnabled()
  * @method Model\Item[] getItems()
+ * @method mixed getMessage()
  * @method mixed getMoreAvailable()
  * @method mixed getNumResults()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
  * @method bool isAutoLoadMoreEnabled()
  * @method bool isItems()
+ * @method bool isMessage()
  * @method bool isMoreAvailable()
  * @method bool isNumResults()
- * @method setAutoLoadMoreEnabled(mixed $value)
- * @method setItems(Model\Item[] $value)
- * @method setMoreAvailable(mixed $value)
- * @method setNumResults(mixed $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setAutoLoadMoreEnabled(mixed $value)
+ * @method $this setItems(Model\Item[] $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setMoreAvailable(mixed $value)
+ * @method $this setNumResults(mixed $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetAutoLoadMoreEnabled()
+ * @method $this unsetItems()
+ * @method $this unsetMessage()
+ * @method $this unsetMoreAvailable()
+ * @method $this unsetNumResults()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class MediaInfoResponse extends AutoPropertyHandler implements ResponseInterface
+class MediaInfoResponse extends Response
 {
-    use ResponseTrait;
-
-    public $auto_load_more_enabled;
-    public $num_results;
-    public $more_available;
-    /**
-     * @var Model\Item[]
-     */
-    public $items;
+    const JSON_PROPERTY_MAP = [
+        'auto_load_more_enabled' => '',
+        'num_results'            => '',
+        'more_available'         => '',
+        'items'                  => 'Model\Item[]',
+    ];
 }

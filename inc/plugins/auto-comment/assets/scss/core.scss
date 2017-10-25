@@ -1,0 +1,77 @@
+@import "../../../../../assets/scss/variables";
+
+.ac-tab-heads {
+    padding: 0 25px;
+    margin-bottom: 5px;
+
+    font-size: 14px;
+    line-height: 17px;
+    
+    background-color: $color-primary;
+    color: #fff;
+
+    a {
+        float: left;
+        margin-top: 15px;
+        margin-right: 40px;
+        padding: 10px 0;
+        position: relative;
+
+        color: inherit;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    a.active:after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+
+        background-color: $color-danger;
+
+        content: "";
+    }
+}
+
+
+.new-comment-input {
+    min-height: 132px;
+}
+
+
+.ac-comment-list {
+    margin-top: 30px;
+}
+
+.ac-comment-list-item {
+    float: left;
+    clear: both;
+    position: relative;
+    padding: 16px 21px 16px 48px;
+    margin-bottom: 20px;
+
+    font-size: 14px;
+    line-height: 17px;
+    color: $color-mid;
+    background-color: $color-light;
+
+    border: 1px solid $section-border-color;
+    border-radius: 10px;
+
+    .remove-comment-btn {
+        position: absolute;
+        font-size: 20px;
+        top: 16px;
+        left: 18px;
+
+        color: $color-primary;
+
+        &:hover {
+            color: $color-danger;
+        }
+    }
+}

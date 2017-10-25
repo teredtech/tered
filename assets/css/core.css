@@ -120,8 +120,8 @@ a.full-link {
   margin-bottom: 20px;
   font-size: 40px; }
 
-/**
- * Titles
+/**
+ * Titles
  */
 .page-primary-title {
   margin: 0 0 14px;
@@ -314,8 +314,8 @@ a.full-link {
 :-moz-placeholder {
   color: #e0e0e0; }
 
-/* input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+/* input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
 } */
 .input {
   -webkit-box-sizing: border-box;
@@ -1175,8 +1175,8 @@ tr:nth-child(even) td {
   text-align: center;
   border-top: 1px solid #eeeeee; }
 
-/**
- * Mini page (expired, checkout result)
+/**
+ * Mini page (expired, checkout result)
  */
 .minipage .inner {
   max-width: 400px;

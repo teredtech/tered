@@ -2,44 +2,54 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * ReelShare.
+ *
  * @method mixed getBroadcasts()
  * @method Item getMedia()
+ * @method string getMentionedUserId()
  * @method mixed getStickerVersion()
  * @method mixed getStoryRankingToken()
- * @method mixed getText()
+ * @method string getText()
  * @method Item[] getTray()
  * @method mixed getType()
  * @method bool isBroadcasts()
  * @method bool isMedia()
+ * @method bool isMentionedUserId()
  * @method bool isStickerVersion()
  * @method bool isStoryRankingToken()
  * @method bool isText()
  * @method bool isTray()
  * @method bool isType()
- * @method setBroadcasts(mixed $value)
- * @method setMedia(Item $value)
- * @method setStickerVersion(mixed $value)
- * @method setStoryRankingToken(mixed $value)
- * @method setText(mixed $value)
- * @method setTray(Item[] $value)
- * @method setType(mixed $value)
+ * @method $this setBroadcasts(mixed $value)
+ * @method $this setMedia(Item $value)
+ * @method $this setMentionedUserId(string $value)
+ * @method $this setStickerVersion(mixed $value)
+ * @method $this setStoryRankingToken(mixed $value)
+ * @method $this setText(string $value)
+ * @method $this setTray(Item[] $value)
+ * @method $this setType(mixed $value)
+ * @method $this unsetBroadcasts()
+ * @method $this unsetMedia()
+ * @method $this unsetMentionedUserId()
+ * @method $this unsetStickerVersion()
+ * @method $this unsetStoryRankingToken()
+ * @method $this unsetText()
+ * @method $this unsetTray()
+ * @method $this unsetType()
  */
-class ReelShare extends AutoPropertyHandler
+class ReelShare extends AutoPropertyMapper
 {
-    /**
-     * @var Item[]
-     */
-    public $tray;
-    public $story_ranking_token;
-    public $broadcasts;
-    public $sticker_version;
-    public $text;
-    public $type;
-    /**
-     * @var Item
-     */
-    public $media;
+    const JSON_PROPERTY_MAP = [
+        'tray'                => 'Item[]',
+        'story_ranking_token' => '',
+        'broadcasts'          => '',
+        'sticker_version'     => '',
+        'text'                => 'string',
+        'type'                => '',
+        'media'               => 'Item',
+        'mentioned_user_id'   => 'string',
+    ];
 }

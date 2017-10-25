@@ -38,7 +38,7 @@ class SignupController extends Controller
         $errors = [];
 
         $required_fields  = [
-            "firstname", "lastname", "email", 
+            "firstname", "lastname", "email",
             "password", "password-confirm", "timezone"
         ];
 
@@ -97,7 +97,7 @@ class SignupController extends Controller
                 ];
 
                 $User->set("email", strtolower(Input::post("email")))
-                     ->set("password", 
+                     ->set("password",
                            password_hash(Input::post("password"), PASSWORD_DEFAULT))
                      ->set("firstname", Input::post("firstname"))
                      ->set("lastname", Input::post("lastname"))
@@ -110,15 +110,15 @@ class SignupController extends Controller
                 try {
                     // Send notification emails to admins
                     \Email::sendNotification("new-user", ["user" => $User]);
+                    // Send notification to user
+                    \Email::sendNotification("welcome", ["user" => $User]);
                 } catch (\Exception $e) {
                     // Failed to send notification email to admins
                     // Do nothing here, it's not critical error
                 }
 
-
                 // Fire user.signup event
                 Event::trigger("user.signup", $User);
-
 
                 $Package = Controller::model("Package", Input::post("package"));
                 if ($Package->isAvailable()) {
@@ -130,14 +130,13 @@ class SignupController extends Controller
                 // Logging in
                 setcookie("nplh", $User->get("id").".".md5($User->get("password")), 0, "/");
 
-
                 header("Location: ".$continue);
                 exit;
             }
         }
 
         $this->setVariable("FormErrors", $errors);
-        
+
         return $this;
     }
 }

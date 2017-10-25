@@ -2,15 +2,17 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Channel.
+ *
  * @method string getChannelId()
  * @method mixed getChannelType()
  * @method mixed getContext()
  * @method mixed getHeader()
  * @method Item getMedia()
- * @method mixed getMediaCount()
+ * @method int getMediaCount()
  * @method mixed getTitle()
  * @method bool isChannelId()
  * @method bool isChannelType()
@@ -19,27 +21,30 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isMedia()
  * @method bool isMediaCount()
  * @method bool isTitle()
- * @method setChannelId(string $value)
- * @method setChannelType(mixed $value)
- * @method setContext(mixed $value)
- * @method setHeader(mixed $value)
- * @method setMedia(Item $value)
- * @method setMediaCount(mixed $value)
- * @method setTitle(mixed $value)
+ * @method $this setChannelId(string $value)
+ * @method $this setChannelType(mixed $value)
+ * @method $this setContext(mixed $value)
+ * @method $this setHeader(mixed $value)
+ * @method $this setMedia(Item $value)
+ * @method $this setMediaCount(int $value)
+ * @method $this setTitle(mixed $value)
+ * @method $this unsetChannelId()
+ * @method $this unsetChannelType()
+ * @method $this unsetContext()
+ * @method $this unsetHeader()
+ * @method $this unsetMedia()
+ * @method $this unsetMediaCount()
+ * @method $this unsetTitle()
  */
-class Channel extends AutoPropertyHandler
+class Channel extends AutoPropertyMapper
 {
-    /**
-     * @var string
-     */
-    public $channel_id;
-    public $channel_type;
-    public $title;
-    public $header;
-    public $media_count;
-    /**
-     * @var Item
-     */
-    public $media;
-    public $context;
+    const JSON_PROPERTY_MAP = [
+        'channel_id'   => 'string',
+        'channel_type' => '',
+        'title'        => '',
+        'header'       => '',
+        'media_count'  => 'int',
+        'media'        => 'Item',
+        'context'      => '',
+    ];
 }

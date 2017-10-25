@@ -2,23 +2,26 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * BroadcastCommentsResponse.
+ *
  * @method mixed getCaption()
  * @method mixed getCaptionIsEdited()
- * @method mixed getCommentCount()
- * @method mixed getCommentLikesEnabled()
+ * @method int getCommentCount()
+ * @method bool getCommentLikesEnabled()
  * @method mixed getCommentMuted()
  * @method Model\Comment[] getComments()
- * @method mixed getHasMoreComments()
- * @method mixed getHasMoreHeadloadComments()
+ * @method bool getHasMoreComments()
+ * @method bool getHasMoreHeadloadComments()
  * @method mixed getIsFirstFetch()
  * @method mixed getLiveSecondsPerComment()
+ * @method mixed getMessage()
  * @method Model\Comment getPinnedComment()
+ * @method string getStatus()
  * @method mixed getSystemComments()
+ * @method Model\_Message[] get_Messages()
  * @method bool isCaption()
  * @method bool isCaptionIsEdited()
  * @method bool isCommentCount()
@@ -29,41 +32,56 @@ use InstagramAPI\ResponseTrait;
  * @method bool isHasMoreHeadloadComments()
  * @method bool isIsFirstFetch()
  * @method bool isLiveSecondsPerComment()
+ * @method bool isMessage()
  * @method bool isPinnedComment()
+ * @method bool isStatus()
  * @method bool isSystemComments()
- * @method setCaption(mixed $value)
- * @method setCaptionIsEdited(mixed $value)
- * @method setCommentCount(mixed $value)
- * @method setCommentLikesEnabled(mixed $value)
- * @method setCommentMuted(mixed $value)
- * @method setComments(Model\Comment[] $value)
- * @method setHasMoreComments(mixed $value)
- * @method setHasMoreHeadloadComments(mixed $value)
- * @method setIsFirstFetch(mixed $value)
- * @method setLiveSecondsPerComment(mixed $value)
- * @method setPinnedComment(Model\Comment $value)
- * @method setSystemComments(mixed $value)
+ * @method bool is_Messages()
+ * @method $this setCaption(mixed $value)
+ * @method $this setCaptionIsEdited(mixed $value)
+ * @method $this setCommentCount(int $value)
+ * @method $this setCommentLikesEnabled(bool $value)
+ * @method $this setCommentMuted(mixed $value)
+ * @method $this setComments(Model\Comment[] $value)
+ * @method $this setHasMoreComments(bool $value)
+ * @method $this setHasMoreHeadloadComments(bool $value)
+ * @method $this setIsFirstFetch(mixed $value)
+ * @method $this setLiveSecondsPerComment(mixed $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setPinnedComment(Model\Comment $value)
+ * @method $this setStatus(string $value)
+ * @method $this setSystemComments(mixed $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetCaption()
+ * @method $this unsetCaptionIsEdited()
+ * @method $this unsetCommentCount()
+ * @method $this unsetCommentLikesEnabled()
+ * @method $this unsetCommentMuted()
+ * @method $this unsetComments()
+ * @method $this unsetHasMoreComments()
+ * @method $this unsetHasMoreHeadloadComments()
+ * @method $this unsetIsFirstFetch()
+ * @method $this unsetLiveSecondsPerComment()
+ * @method $this unsetMessage()
+ * @method $this unsetPinnedComment()
+ * @method $this unsetStatus()
+ * @method $this unsetSystemComments()
+ * @method $this unset_Messages()
  */
-class BroadcastCommentsResponse extends AutoPropertyHandler implements ResponseInterface
+class BroadcastCommentsResponse extends Response
 {
-    use ResponseTrait;
-
-    /**
-     * @var Model\Comment[]
-     */
-    public $comments;
-    public $comment_count;
-    public $live_seconds_per_comment;
-    public $has_more_headload_comments;
-    public $is_first_fetch;
-    public $comment_likes_enabled;
-    /**
-     * @var Model\Comment
-     */
-    public $pinned_comment;
-    public $system_comments;
-    public $has_more_comments;
-    public $caption_is_edited;
-    public $caption;
-    public $comment_muted;
+    const JSON_PROPERTY_MAP = [
+        'comments'                   => 'Model\Comment[]',
+        'comment_count'              => 'int',
+        'live_seconds_per_comment'   => '',
+        'has_more_headload_comments' => 'bool',
+        'is_first_fetch'             => '',
+        'comment_likes_enabled'      => 'bool',
+        'pinned_comment'             => 'Model\Comment',
+        'system_comments'            => '',
+        'has_more_comments'          => 'bool',
+        'caption_is_edited'          => '',
+        'caption'                    => '',
+        'comment_muted'              => '',
+    ];
 }

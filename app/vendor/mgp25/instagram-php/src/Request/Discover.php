@@ -13,7 +13,7 @@ class Discover extends RequestCollection
      * Get Explore tab feed.
      *
      * @param null|string $maxId      Next "maximum ID", used for pagination.
-     * @param bool        $isPrefetch Flag for first fetch.
+     * @param bool        $isPrefetch Whether this is the first fetch; we'll ignore maxId if TRUE.
      *
      * @throws \InstagramAPI\Exception\InstagramException
      *
@@ -26,11 +26,11 @@ class Discover extends RequestCollection
         $request = $this->ig->request('discover/explore/')
             ->addParam('is_prefetch', $isPrefetch)
             ->addParam('is_from_promote', false)
-            ->addParam('timezone_offset', 0)
+            ->addParam('timezone_offset', date('Z'))
             ->addParam('session_id', $this->ig->session_id);
 
         if (!$isPrefetch) {
-            if (is_null($maxId)) {
+            if ($maxId === null) {
                 $maxId = 0;
             }
             $request->addParam('max_id', $maxId);
@@ -74,7 +74,7 @@ class Discover extends RequestCollection
                  ->addParam('people_teaser_supported', '1')
                  ->addParam('rank_token', $this->ig->rank_token)
                  ->addParam('ranked_content', 'true');
-        // if ($maxId) { // NOTE: Popular feed DOESN'T properly support max_id.
+        // if ($maxId !== null) { // NOTE: Popular feed DOESN'T properly support max_id.
         //     $request->addParam('max_id', $maxId);
         // }
 
@@ -94,7 +94,7 @@ class Discover extends RequestCollection
         $maxId = null)
     {
         $request = $this->ig->request('discover/channels_home/');
-        if ($maxId) {
+        if ($maxId !== null) {
             $request->addParam('max_id', $maxId);
         }
 

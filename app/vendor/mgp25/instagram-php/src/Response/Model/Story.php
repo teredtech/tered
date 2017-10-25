@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Story.
+ *
  * @method Args getArgs()
  * @method Counts getCounts()
  * @method string getPk()
@@ -15,26 +17,24 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isPk()
  * @method bool isStoryType()
  * @method bool isType()
- * @method setArgs(Args $value)
- * @method setCounts(Counts $value)
- * @method setPk(string $value)
- * @method setStoryType(mixed $value)
- * @method setType(mixed $value)
+ * @method $this setArgs(Args $value)
+ * @method $this setCounts(Counts $value)
+ * @method $this setPk(string $value)
+ * @method $this setStoryType(mixed $value)
+ * @method $this setType(mixed $value)
+ * @method $this unsetArgs()
+ * @method $this unsetCounts()
+ * @method $this unsetPk()
+ * @method $this unsetStoryType()
+ * @method $this unsetType()
  */
-class Story extends AutoPropertyHandler
+class Story extends AutoPropertyMapper
 {
-    /**
-     * @var string
-     */
-    public $pk;
-    /**
-     * @var Counts
-     */
-    public $counts;
-    /**
-     * @var Args
-     */
-    public $args;
-    public $type;
-    public $story_type;
+    const JSON_PROPERTY_MAP = [
+        'pk'         => 'string',
+        'counts'     => 'Counts',
+        'args'       => 'Args',
+        'type'       => '',
+        'story_type' => '',
+    ];
 }

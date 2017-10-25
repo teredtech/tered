@@ -1,0 +1,200 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Modules\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: 
+msgid "Auto Unfollow"
+msgstr "Auto Unfollow"
+
+#: 
+msgid "Instagram user"
+msgstr "Instagram user"
+
+#: 
+msgid "Please select an account from left side list."
+msgstr "Please select an account from left side list."
+
+#: 
+msgid "Activity Log"
+msgstr "Activity Log"
+
+#: 
+msgid "Next request will be sent %s approximately"
+msgstr "Next request will be sent %s approximately"
+
+#: 
+msgid "Next request will be sent in a few moments"
+msgstr "Next request will be sent in a few moments"
+
+#: 
+msgid "Something is wrong on the system"
+msgstr "Something is wrong on the system"
+
+#: 
+msgid "Unfollowed %s"
+msgstr "Unfollowed %s"
+
+#: 
+msgid "View Profile"
+msgstr "View Profile"
+
+#: 
+msgid "Total %s actions"
+msgstr "Total %s actions"
+
+#: 
+msgid "Auto Unfollow activity log for %s is empty"
+msgstr "Auto Unfollow activity log for %s is empty"
+
+#: 
+msgid "Speed"
+msgstr "Speed"
+
+#: 
+msgid "Auto"
+msgstr "Auto"
+
+#: 
+msgid "Recommended"
+msgstr "Recommended"
+
+#: 
+msgid "Very Slow"
+msgstr "Very Slow"
+
+#: 
+msgid "Slow"
+msgstr "Slow"
+
+#: 
+msgid "Medium"
+msgstr "Medium"
+
+#: 
+msgid "Fast"
+msgstr "Fast"
+
+#: 
+msgid "Very Fast"
+msgstr "Very Fast"
+
+#: 
+msgid "White list"
+msgstr "White list"
+
+#: 
+msgid "Include the usernames that you don't want to unfollow"
+msgstr "Include the usernames that you don't want to unfollow"
+
+#: 
+msgid "Don't unfollow my followers"
+msgstr "Don't unfollow my followers"
+
+#: 
+msgid "Source"
+msgstr "Source"
+
+#: 
+msgid "All Followings"
+msgstr "All Followings"
+
+#: 
+msgid "Followed via Auto Follow Module"
+msgstr "Followed via Auto Follow Module"
+
+#: 
+msgid "Pause actions everyday"
+msgstr "Pause actions everyday"
+
+#: 
+msgid "To"
+msgstr "To"
+
+#: 
+msgid "Save"
+msgstr "Save"
+
+#: 
+msgid "Speeds"
+msgstr "Speeds"
+
+#: 
+msgid "%s request/hour"
+msgid_plural "%s requests/hour"
+msgstr[0] "%s request/hour"
+msgstr[1] "%s requests/hour"
+
+#: 
+msgid "These values indicates maximum amount of the requests per hour. They are not exact values. Depending on the server overload and delays between the requests, actual number of the requests might be less than these values."
+msgstr "These values indicates maximum amount of the requests per hour. They are not exact values. Depending on the server overload and delays between the requests, actual number of the requests might be less than these values."
+
+#: 
+msgid "High speeds might be risky"
+msgstr "High speeds might be risky"
+
+#: 
+msgid "Developers are not responsible for any issues related to the Instagram accounts."
+msgstr "Developers are not responsible for any issues related to the Instagram accounts."
+
+#: 
+msgid "Enable Random Delays"
+msgstr "Enable Random Delays"
+
+#: 
+msgid "If you enable this option, script will add random delays automatically between each requests."
+msgstr "If you enable this option, script will add random delays automatically between each requests."
+
+#: 
+msgid "Delays could be up to 5 minutes."
+msgstr "Delays could be up to 5 minutes."
+
+#: 
+msgid "Auto Unfollow Module Settings"
+msgstr "Auto Unfollow Module Settings"
+
+#: 
+msgid "Activity has been stopped"
+msgstr "Activity has been stopped"
+
+#: 
+msgid "Re-login is required for the account."
+msgstr "Re-login is required for the account."
+
+#: 
+msgid "User account is either disabled or expred."
+msgstr "User account is either disabled or expred."
+
+#: 
+msgid "Couldn't get the followed accounts"
+msgstr "Couldn't get the followed accounts"
+
+#: 
+msgid "Couldn't find any user to unfollow"
+msgstr "Couldn't find any user to unfollow"
+
+#: 
+msgid "There is not any user to unfollow"
+msgstr "There is not any user to unfollow"
+
+#: 
+msgid "Couldn't get the followers"
+msgstr "Couldn't get the followers"
+
+#: 
+msgid "There is not any user to unfollow according to the task settings"
+msgstr "There is not any user to unfollow according to the task settings"
+
+#: 
+msgid "Couldn't unfollow the user"
+msgstr "Couldn't unfollow the user"
+
+#: 
+msgid "Something went wrong"
+msgstr "Something went wrong"
+

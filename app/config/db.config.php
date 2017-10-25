@@ -2,17 +2,17 @@
 /**
  * Define database credentials
  */
-define("DB_HOST", "NP_DB_HOST"); 
-define("DB_NAME", "NP_DB_NAME"); 
-define("DB_USER", "NP_DB_USER"); 
-define("DB_PASS", "NP_DB_PASS"); 
+define("DB_HOST", "localhost"); 
+define("DB_NAME", "teredtech"); 
+define("DB_USER", "teredtech"); 
+define("DB_PASS", "WhMX5y%*3]B4"); 
 define("DB_ENCODING", "utf8"); // DB connnection charset
 
 
 /**
  * Define DB tables
  */
-define("TABLE_PREFIX", "NP_TABLE_PREFIX");
+define("TABLE_PREFIX", "np_");
 
 // Set table names without prefix
 define("TABLE_USERS", "users");

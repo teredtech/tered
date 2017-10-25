@@ -12,30 +12,29 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'ebf8799635f67b5d7248946fe2154f4a' => __DIR__ . '/..' . '/ringcentral/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '35d1e42abf4d8c181ae544a92d8f3f6a' => __DIR__ . '/..' . '/kint-php/kint/Kint.class.php',
-        '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
+        '3f8bdd3b35094c73a26f0106e3c0f8b2' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/SendGrid.php',
+        '9dda55337a76a24e949fbcc5d905a2c7' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/helpers/mail/Mail.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
             'Stripe\\' => 7,
+            'SendGrid\\' => 9,
         ),
         'R' => 
         array (
             'RingCentral\\Psr7\\' => 17,
             'React\\Stream\\' => 13,
             'React\\Socket\\' => 13,
-            'React\\SocketClient\\' => 19,
             'React\\Promise\\Timer\\' => 20,
             'React\\Promise\\' => 14,
             'React\\EventLoop\\' => 16,
             'React\\Dns\\' => 10,
             'React\\Cache\\' => 12,
-            'Ratchet\\RFC6455\\' => 16,
-            'Ratchet\\Client\\' => 15,
         ),
         'P' => 
         array (
@@ -45,6 +44,10 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         'M' => 
         array (
             'Moment\\' => 7,
+        ),
+        'L' => 
+        array (
+            'LazyJsonMapper\\' => 15,
         ),
         'I' => 
         array (
@@ -57,10 +60,19 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
             'GuzzleHttp\\' => 11,
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
+            'GetOptionKit\\' => 13,
+        ),
+        'F' => 
+        array (
+            'Fbns\\Client\\' => 12,
         ),
         'E' => 
         array (
             'Emojione\\' => 9,
+        ),
+        'D' => 
+        array (
+            'Defuse\\Crypto\\' => 14,
         ),
         'C' => 
         array (
@@ -79,6 +91,10 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
+        'SendGrid\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sendgrid/php-http-client/lib',
+        ),
         'RingCentral\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/ringcentral/psr7/src',
@@ -90,10 +106,6 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         'React\\Socket\\' => 
         array (
             0 => __DIR__ . '/..' . '/react/socket/src',
-        ),
-        'React\\SocketClient\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/socket-client/src',
         ),
         'React\\Promise\\Timer\\' => 
         array (
@@ -115,14 +127,6 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         array (
             0 => __DIR__ . '/..' . '/react/cache/src',
         ),
-        'Ratchet\\RFC6455\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ratchet/rfc6455/src',
-        ),
-        'Ratchet\\Client\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ratchet/pawl/src',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -134,6 +138,10 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         'Moment\\' => 
         array (
             0 => __DIR__ . '/..' . '/fightbulc/moment/src',
+        ),
+        'LazyJsonMapper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lazyjsonmapper/lazyjsonmapper/src',
         ),
         'InstagramAPI\\' => 
         array (
@@ -159,9 +167,21 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
         array (
             0 => __DIR__ . '/..' . '/gettext/gettext/src',
         ),
+        'GetOptionKit\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/corneltek/getoptionkit/src',
+        ),
+        'Fbns\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/valga/fbns-react/src',
+        ),
         'Emojione\\' => 
         array (
             0 => __DIR__ . '/..' . '/emojione/emojione/lib/php/src',
+        ),
+        'Defuse\\Crypto\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
         'Clue\\React\\Socks\\' => 
         array (
@@ -211,13 +231,6 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
                 0 => __DIR__ . '/..' . '/paypal/rest-api-sdk-php/lib',
             ),
         ),
-        'J' => 
-        array (
-            'JsonMapper' => 
-            array (
-                0 => __DIR__ . '/..' . '/netresearch/jsonmapper/src',
-            ),
-        ),
         'E' => 
         array (
             'Evenement' => 
@@ -229,20 +242,6 @@ class ComposerStaticInit01aa2a3b93f3203b07ec5bbafdd16f78
 
     public static $classMap = array (
         'AltoRouter' => __DIR__ . '/..' . '/altorouter/altorouter/AltoRouter.php',
-        'Defuse\\Crypto\\Core' => __DIR__ . '/..' . '/defuse/php-encryption/src/Core.php',
-        'Defuse\\Crypto\\Crypto' => __DIR__ . '/..' . '/defuse/php-encryption/src/Crypto.php',
-        'Defuse\\Crypto\\DerivedKeys' => __DIR__ . '/..' . '/defuse/php-encryption/src/DerivedKeys.php',
-        'Defuse\\Crypto\\Encoding' => __DIR__ . '/..' . '/defuse/php-encryption/src/Encoding.php',
-        'Defuse\\Crypto\\Exception\\BadFormatException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/BadFormatException.php',
-        'Defuse\\Crypto\\Exception\\CryptoException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/CryptoException.php',
-        'Defuse\\Crypto\\Exception\\EnvironmentIsBrokenException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/EnvironmentIsBrokenException.php',
-        'Defuse\\Crypto\\Exception\\IOException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/IOException.php',
-        'Defuse\\Crypto\\Exception\\WrongKeyOrModifiedCiphertextException' => __DIR__ . '/..' . '/defuse/php-encryption/src/Exception/WrongKeyOrModifiedCiphertextException.php',
-        'Defuse\\Crypto\\File' => __DIR__ . '/..' . '/defuse/php-encryption/src/File.php',
-        'Defuse\\Crypto\\Key' => __DIR__ . '/..' . '/defuse/php-encryption/src/Key.php',
-        'Defuse\\Crypto\\KeyOrPassword' => __DIR__ . '/..' . '/defuse/php-encryption/src/KeyOrPassword.php',
-        'Defuse\\Crypto\\KeyProtectedByPassword' => __DIR__ . '/..' . '/defuse/php-encryption/src/KeyProtectedByPassword.php',
-        'Defuse\\Crypto\\RuntimeTests' => __DIR__ . '/..' . '/defuse/php-encryption/src/RuntimeTests.php',
         'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
         'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
         'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',

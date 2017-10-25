@@ -2,39 +2,51 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * DirectInboxResponse.
+ *
  * @method Model\DirectInbox getInbox()
+ * @method Model\Megaphone getMegaphone()
+ * @method mixed getMessage()
  * @method mixed getPendingRequestsTotal()
  * @method Model\User[] getPendingRequestsUsers()
  * @method string getSeqId()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
  * @method bool isInbox()
+ * @method bool isMegaphone()
+ * @method bool isMessage()
  * @method bool isPendingRequestsTotal()
  * @method bool isPendingRequestsUsers()
  * @method bool isSeqId()
- * @method setInbox(Model\DirectInbox $value)
- * @method setPendingRequestsTotal(mixed $value)
- * @method setPendingRequestsUsers(Model\User[] $value)
- * @method setSeqId(string $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setInbox(Model\DirectInbox $value)
+ * @method $this setMegaphone(Model\Megaphone $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setPendingRequestsTotal(mixed $value)
+ * @method $this setPendingRequestsUsers(Model\User[] $value)
+ * @method $this setSeqId(string $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetInbox()
+ * @method $this unsetMegaphone()
+ * @method $this unsetMessage()
+ * @method $this unsetPendingRequestsTotal()
+ * @method $this unsetPendingRequestsUsers()
+ * @method $this unsetSeqId()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class DirectInboxResponse extends AutoPropertyHandler implements ResponseInterface
+class DirectInboxResponse extends Response
 {
-    use ResponseTrait;
-
-    public $pending_requests_total;
-    /**
-     * @var string
-     */
-    public $seq_id;
-    /**
-     * @var Model\User[]
-     */
-    public $pending_requests_users;
-    /**
-     * @var Model\DirectInbox
-     */
-    public $inbox;
+    const JSON_PROPERTY_MAP = [
+        'pending_requests_total' => '',
+        'seq_id'                 => 'string',
+        'pending_requests_users' => 'Model\User[]',
+        'inbox'                  => 'Model\DirectInbox',
+        'megaphone'              => 'Model\Megaphone',
+    ];
 }

@@ -1,0 +1,210 @@
+@import "../../../../../assets/scss/variables";
+@import "../../../../../assets/scss/mixins";
+
+.au-tab-heads {
+    padding: 0 25px;
+
+    font-size: 14px;
+    line-height: 17px;
+    
+    background-color: $color-primary;
+    color: #fff;
+
+    a {
+        float: left;
+        margin-top: 15px;
+        margin-right: 40px;
+        padding: 10px 0;
+        position: relative;
+
+        color: inherit;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    a.active:after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+
+        background-color: $color-danger;
+
+        content: "";
+    }
+}
+
+
+
+/* Log list */
+.au-log-list {}
+
+.au-log-list-item {
+    position: relative;
+
+    padding: 12px 44px 12px 128px;
+    border-bottom: 1px solid $section-border-color;
+
+    @include transition($transition);
+
+    &:hover {
+        background-color: rgba($color-primary, 0.1);
+    }
+}
+
+.au-log-list-item .circle {
+    position: absolute;
+    top: 12px;
+    left: 44px;
+    
+    width: 60px;
+    height: 60px;
+
+    background-color: $section-border-color;
+    border-radius: 50%;
+    overflow: hidden;
+
+    @include transition($transition);
+
+    .img {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        
+        border-radius: inherit;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .text {
+        position: absolute;
+        top: 50%;
+        left: 0;
+
+        width: 100%;
+        height: 18px;
+        margin-top: -9px;
+
+        font-size: 18px;
+        line-height: 18px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+}
+
+.au-log-list-item.error .circle {
+    color: #fff;
+    background-color: $color-danger;
+}
+
+.au-log-list-item .inner { 
+    position: relative;
+    padding-right: 256px;
+    min-height: 60px;
+
+    font-size: 14px;
+    line-height: 17px;
+    color: $color-dark;
+}
+
+.au-log-list-item .action {
+    margin-top: 9px;
+
+    line-height: 22px;
+
+    a {
+        font-weight: 500;
+        color: inherit;
+
+        &:hover {
+            color: $color-primary;
+        }
+    }
+
+    .date {
+        margin-left: 5px;
+
+        font-size: 12px;
+        color: $color-mid;
+    }
+
+    .error-details {
+        margin: 3px 0 10px;
+
+        font-size: 12px;
+        line-height: 16px;
+        font-family: monospace;
+    }
+}
+
+.au-log-list-item .meta {
+    margin-top: 3px;
+
+    font-size: 12px;
+    color: $color-mid;
+
+    .icon {
+        color: $color-primary;
+    }
+
+    &:hover {
+        color: $color-dark;
+    }
+}
+
+
+.au-log-list-item .buttons {
+    position: absolute;
+    top: 9px;
+    right: 0;
+
+    .button {
+        float: left;
+        margin-right: 12px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .au-log-list-item {
+        padding: 12px 26px 12px 110px;
+    }
+
+    .au-log-list-item .circle {
+        left: 28px;
+    }
+
+    .au-log-list-item .inner { 
+        padding-right: 0;
+    }
+
+    .au-log-list-item .buttons {
+        position: relative;
+        top: 0;
+
+        margin-top: 14px;
+    }
+}
+
+
+// 
+.au-next-schedule,
+.au-amount-of-action {
+    padding: 12px;
+
+    text-align: center;
+    font-size: 12px;
+    color: $color-mid;
+
+    border-bottom: 1px solid $section-border-color;
+}

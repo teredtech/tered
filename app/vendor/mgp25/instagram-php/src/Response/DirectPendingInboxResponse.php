@@ -2,32 +2,41 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * DirectPendingInboxResponse.
+ *
  * @method Model\DirectInbox getInbox()
+ * @method mixed getMessage()
  * @method mixed getPendingRequestsTotal()
  * @method string getSeqId()
+ * @method string getStatus()
+ * @method Model\_Message[] get_Messages()
  * @method bool isInbox()
+ * @method bool isMessage()
  * @method bool isPendingRequestsTotal()
  * @method bool isSeqId()
- * @method setInbox(Model\DirectInbox $value)
- * @method setPendingRequestsTotal(mixed $value)
- * @method setSeqId(string $value)
+ * @method bool isStatus()
+ * @method bool is_Messages()
+ * @method $this setInbox(Model\DirectInbox $value)
+ * @method $this setMessage(mixed $value)
+ * @method $this setPendingRequestsTotal(mixed $value)
+ * @method $this setSeqId(string $value)
+ * @method $this setStatus(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetInbox()
+ * @method $this unsetMessage()
+ * @method $this unsetPendingRequestsTotal()
+ * @method $this unsetSeqId()
+ * @method $this unsetStatus()
+ * @method $this unset_Messages()
  */
-class DirectPendingInboxResponse extends AutoPropertyHandler implements ResponseInterface
+class DirectPendingInboxResponse extends Response
 {
-    use ResponseTrait;
-
-    /**
-     * @var string
-     */
-    public $seq_id;
-    public $pending_requests_total;
-    /**
-     * @var Model\DirectInbox
-     */
-    public $inbox;
+    const JSON_PROPERTY_MAP = [
+        'seq_id'                 => 'string',
+        'pending_requests_total' => '',
+        'inbox'                  => 'Model\DirectInbox',
+    ];
 }

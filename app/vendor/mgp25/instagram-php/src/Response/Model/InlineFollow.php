@@ -2,25 +2,29 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * InlineFollow.
+ *
  * @method mixed getFollowing()
  * @method mixed getOutgoingRequest()
  * @method User getUserInfo()
  * @method bool isFollowing()
  * @method bool isOutgoingRequest()
  * @method bool isUserInfo()
- * @method setFollowing(mixed $value)
- * @method setOutgoingRequest(mixed $value)
- * @method setUserInfo(User $value)
+ * @method $this setFollowing(mixed $value)
+ * @method $this setOutgoingRequest(mixed $value)
+ * @method $this setUserInfo(User $value)
+ * @method $this unsetFollowing()
+ * @method $this unsetOutgoingRequest()
+ * @method $this unsetUserInfo()
  */
-class InlineFollow extends AutoPropertyHandler
+class InlineFollow extends AutoPropertyMapper
 {
-    /**
-     * @var User
-     */
-    public $user_info;
-    public $following;
-    public $outgoing_request;
+    const JSON_PROPERTY_MAP = [
+        'user_info'        => 'User',
+        'following'        => '',
+        'outgoing_request' => '',
+    ];
 }

@@ -54,12 +54,10 @@ class MomentLocale
 
         if (file_exists($pathFile) === false)
         {
-            self::$locale = "en_GB";
-            //throw new MomentException('Locale does not exist: ' . $pathFile);
-        } else {
-            self::$localeContent = require $pathFile;
+            throw new MomentException('Locale does not exist: ' . $pathFile);
         }
 
+        self::$localeContent = require $pathFile;
     }
 
     /**

@@ -2,22 +2,24 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
- * @method \InstagramAPI\Response\Model\ActionBadge getActionBadge()
+ * DirectThread.
+ *
+ * @method ActionBadge getActionBadge()
  * @method mixed getCanonical()
- * @method mixed getHasNewer()
- * @method mixed getHasOlder()
- * @method \InstagramAPI\Response\Model\User getInviter()
+ * @method bool getHasNewer()
+ * @method bool getHasOlder()
+ * @method User getInviter()
  * @method mixed getIsPin()
  * @method mixed getIsSpam()
- * @method \InstagramAPI\Response\Model\DirectThreadItem[] getItems()
+ * @method DirectThreadItem[] getItems()
  * @method mixed getLastActivityAt()
  * @method mixed getLastActivityAtSecs()
- * @method \InstagramAPI\Response\Model\PermanentItem getLastPermanentItem()
- * @method \InstagramAPI\Response\Model\DirectThreadLastSeenAt[] getLastSeenAt()
- * @method \InstagramAPI\Response\Model\User[] getLeftUsers()
+ * @method PermanentItem getLastPermanentItem()
+ * @method UnpredictableKeys\DirectThreadLastSeenAtUnpredictableContainer getLastSeenAt()
+ * @method User[] getLeftUsers()
  * @method mixed getMuted()
  * @method mixed getNamed()
  * @method mixed getNewestCursor()
@@ -27,7 +29,7 @@ use InstagramAPI\AutoPropertyHandler;
  * @method mixed getThreadTitle()
  * @method mixed getThreadType()
  * @method mixed getUnseenCount()
- * @method \InstagramAPI\Response\Model\User[] getUsers()
+ * @method User[] getUsers()
  * @method string getViewerId()
  * @method bool isActionBadge()
  * @method bool isCanonical()
@@ -53,86 +55,81 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isUnseenCount()
  * @method bool isUsers()
  * @method bool isViewerId()
- * @method setActionBadge(\InstagramAPI\Response\Model\ActionBadge $value)
- * @method setCanonical(mixed $value)
- * @method setHasNewer(mixed $value)
- * @method setHasOlder(mixed $value)
- * @method setInviter(\InstagramAPI\Response\Model\User $value)
- * @method setIsPin(mixed $value)
- * @method setIsSpam(mixed $value)
- * @method setItems(\InstagramAPI\Response\Model\DirectThreadItem[] $value)
- * @method setLastActivityAt(mixed $value)
- * @method setLastActivityAtSecs(mixed $value)
- * @method setLastPermanentItem(\InstagramAPI\Response\Model\PermanentItem $value)
- * @method setLastSeenAt(\InstagramAPI\Response\Model\DirectThreadLastSeenAt[] $value)
- * @method setLeftUsers(\InstagramAPI\Response\Model\User[] $value)
- * @method setMuted(mixed $value)
- * @method setNamed(mixed $value)
- * @method setNewestCursor(mixed $value)
- * @method setOldestCursor(mixed $value)
- * @method setPending(mixed $value)
- * @method setThreadId(string $value)
- * @method setThreadTitle(mixed $value)
- * @method setThreadType(mixed $value)
- * @method setUnseenCount(mixed $value)
- * @method setUsers(\InstagramAPI\Response\Model\User[] $value)
- * @method setViewerId(string $value)
+ * @method $this setActionBadge(ActionBadge $value)
+ * @method $this setCanonical(mixed $value)
+ * @method $this setHasNewer(bool $value)
+ * @method $this setHasOlder(bool $value)
+ * @method $this setInviter(User $value)
+ * @method $this setIsPin(mixed $value)
+ * @method $this setIsSpam(mixed $value)
+ * @method $this setItems(DirectThreadItem[] $value)
+ * @method $this setLastActivityAt(mixed $value)
+ * @method $this setLastActivityAtSecs(mixed $value)
+ * @method $this setLastPermanentItem(PermanentItem $value)
+ * @method $this setLastSeenAt(UnpredictableKeys\DirectThreadLastSeenAtUnpredictableContainer $value)
+ * @method $this setLeftUsers(User[] $value)
+ * @method $this setMuted(mixed $value)
+ * @method $this setNamed(mixed $value)
+ * @method $this setNewestCursor(mixed $value)
+ * @method $this setOldestCursor(mixed $value)
+ * @method $this setPending(mixed $value)
+ * @method $this setThreadId(string $value)
+ * @method $this setThreadTitle(mixed $value)
+ * @method $this setThreadType(mixed $value)
+ * @method $this setUnseenCount(mixed $value)
+ * @method $this setUsers(User[] $value)
+ * @method $this setViewerId(string $value)
+ * @method $this unsetActionBadge()
+ * @method $this unsetCanonical()
+ * @method $this unsetHasNewer()
+ * @method $this unsetHasOlder()
+ * @method $this unsetInviter()
+ * @method $this unsetIsPin()
+ * @method $this unsetIsSpam()
+ * @method $this unsetItems()
+ * @method $this unsetLastActivityAt()
+ * @method $this unsetLastActivityAtSecs()
+ * @method $this unsetLastPermanentItem()
+ * @method $this unsetLastSeenAt()
+ * @method $this unsetLeftUsers()
+ * @method $this unsetMuted()
+ * @method $this unsetNamed()
+ * @method $this unsetNewestCursor()
+ * @method $this unsetOldestCursor()
+ * @method $this unsetPending()
+ * @method $this unsetThreadId()
+ * @method $this unsetThreadTitle()
+ * @method $this unsetThreadType()
+ * @method $this unsetUnseenCount()
+ * @method $this unsetUsers()
+ * @method $this unsetViewerId()
  */
-class DirectThread extends AutoPropertyHandler
+class DirectThread extends AutoPropertyMapper
 {
-    // NOTE: We must use full paths to all model objects in THIS class, because
-    // "DirectVisualThreadResponse" re-uses this object and JSONMapper won't be
-    // able to find these sub-objects if the paths aren't absolute!
-
-    public $named;
-    /**
-     * @var \InstagramAPI\Response\Model\User[]
-     */
-    public $users;
-    public $has_newer;
-    /**
-     * @var string
-     */
-    public $viewer_id;
-    /**
-     * @var string
-     */
-    public $thread_id;
-    public $last_activity_at;
-    public $newest_cursor;
-    public $is_spam;
-    public $has_older;
-    public $oldest_cursor;
-    /**
-     * @var \InstagramAPI\Response\Model\User[]
-     */
-    public $left_users;
-    public $muted;
-    /**
-     * @var \InstagramAPI\Response\Model\DirectThreadItem[]
-     */
-    public $items;
-    public $thread_type;
-    public $thread_title;
-    public $canonical;
-    /**
-     * @var \InstagramAPI\Response\Model\User
-     */
-    public $inviter;
-    public $pending;
-    /**
-     * @var \InstagramAPI\Response\Model\DirectThreadLastSeenAt[]
-     */
-    public $last_seen_at;
-    public $unseen_count;
-    /**
-     * @var \InstagramAPI\Response\Model\ActionBadge
-     */
-    public $action_badge;
-    public $last_activity_at_secs;
-    /**
-     * @var \InstagramAPI\Response\Model\PermanentItem
-     */
-    public $last_permanent_item;
-    public $is_pin;
+    const JSON_PROPERTY_MAP = [
+        'named'                 => '',
+        'users'                 => 'User[]',
+        'has_newer'             => 'bool',
+        'viewer_id'             => 'string',
+        'thread_id'             => 'string',
+        'last_activity_at'      => '',
+        'newest_cursor'         => '',
+        'is_spam'               => '',
+        'has_older'             => 'bool',
+        'oldest_cursor'         => '',
+        'left_users'            => 'User[]',
+        'muted'                 => '',
+        'items'                 => 'DirectThreadItem[]',
+        'thread_type'           => '',
+        'thread_title'          => '',
+        'canonical'             => '',
+        'inviter'               => 'User',
+        'pending'               => '',
+        'last_seen_at'          => 'UnpredictableKeys\DirectThreadLastSeenAtUnpredictableContainer',
+        'unseen_count'          => '',
+        'action_badge'          => 'ActionBadge',
+        'last_activity_at_secs' => '',
+        'last_permanent_item'   => 'PermanentItem',
+        'is_pin'                => '',
+    ];
 }

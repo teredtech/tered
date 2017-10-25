@@ -2,25 +2,36 @@
 
 namespace InstagramAPI\Response;
 
-use InstagramAPI\AutoPropertyHandler;
-use InstagramAPI\ResponseInterface;
-use InstagramAPI\ResponseTrait;
+use InstagramAPI\Response;
 
 /**
+ * MsisdnHeaderResponse.
+ *
+ * @method mixed getMessage()
  * @method string getPhoneNumber()
+ * @method string getStatus()
  * @method string getUrl()
+ * @method Model\_Message[] get_Messages()
+ * @method bool isMessage()
  * @method bool isPhoneNumber()
+ * @method bool isStatus()
  * @method bool isUrl()
- * @method setPhoneNumber(string $value)
- * @method setUrl(string $value)
+ * @method bool is_Messages()
+ * @method $this setMessage(mixed $value)
+ * @method $this setPhoneNumber(string $value)
+ * @method $this setStatus(string $value)
+ * @method $this setUrl(string $value)
+ * @method $this set_Messages(Model\_Message[] $value)
+ * @method $this unsetMessage()
+ * @method $this unsetPhoneNumber()
+ * @method $this unsetStatus()
+ * @method $this unsetUrl()
+ * @method $this unset_Messages()
  */
-class MsisdnHeaderResponse extends AutoPropertyHandler implements ResponseInterface
+class MsisdnHeaderResponse extends Response
 {
-    use ResponseTrait;
-
-    /** @var string */
-    public $phone_number;
-
-    /** @var string */
-    public $url;
+    const JSON_PROPERTY_MAP = [
+        'phone_number' => 'string',
+        'url'          => 'string',
+    ];
 }

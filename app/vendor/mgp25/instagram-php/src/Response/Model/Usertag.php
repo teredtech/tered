@@ -2,21 +2,24 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Usertag.
+ *
  * @method In[] getIn()
  * @method mixed getPhotoOfYou()
  * @method bool isIn()
  * @method bool isPhotoOfYou()
- * @method setIn(In[] $value)
- * @method setPhotoOfYou(mixed $value)
+ * @method $this setIn(In[] $value)
+ * @method $this setPhotoOfYou(mixed $value)
+ * @method $this unsetIn()
+ * @method $this unsetPhotoOfYou()
  */
-class Usertag extends AutoPropertyHandler
+class Usertag extends AutoPropertyMapper
 {
-    /**
-     * @var In[]
-     */
-    public $in;
-    public $photo_of_you;
+    const JSON_PROPERTY_MAP = [
+        'in'           => 'In[]',
+        'photo_of_you' => '',
+    ];
 }

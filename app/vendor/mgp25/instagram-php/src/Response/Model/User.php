@@ -2,61 +2,65 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
- * @method mixed getAddressStreet()
+ * User.
+ *
+ * @method string getAddressStreet()
  * @method mixed getAggregatePromoteEngagement()
  * @method mixed getAllowContactsSync()
+ * @method mixed getAllowedCommenterType()
  * @method mixed getAutoExpandChaining()
- * @method mixed getBiography()
+ * @method string getBiography()
  * @method mixed getBirthday()
  * @method mixed getBlockAt()
- * @method mixed getBusinessContactMethod()
+ * @method string getBusinessContactMethod()
  * @method mixed getByline()
  * @method mixed getCanBoostPost()
  * @method mixed getCanConvertToBusiness()
  * @method mixed getCanCreateSponsorTags()
  * @method mixed getCanSeeOrganicInsights()
- * @method mixed getCategory()
+ * @method string getCategory()
  * @method string getCityId()
- * @method mixed getCityName()
+ * @method string getCityName()
  * @method mixed getCoeffWeight()
- * @method mixed getContactPhoneNumber()
+ * @method string getContactPhoneNumber()
  * @method mixed getConvertFromPages()
  * @method mixed getCountryCode()
- * @method mixed getDirectMessaging()
+ * @method string getDirectMessaging()
  * @method mixed getEmail()
- * @method mixed getExternalLynxUrl()
- * @method mixed getExternalUrl()
+ * @method string getExternalLynxUrl()
+ * @method string getExternalUrl()
  * @method string getFbPageCallToActionId()
  * @method mixed getFbuid()
- * @method mixed getFollowerCount()
- * @method mixed getFollowingCount()
+ * @method int getFollowerCount()
+ * @method int getFollowingCount()
  * @method FriendshipStatus getFriendshipStatus()
- * @method mixed getFullName()
+ * @method string getFullName()
  * @method mixed getGender()
- * @method mixed getGeoMediaCount()
- * @method mixed getHasAnonymousProfilePicture()
- * @method mixed getHasBiographyTranslation()
- * @method mixed getHasChaining()
+ * @method int getGeoMediaCount()
+ * @method bool getHasAnonymousProfilePicture()
+ * @method bool getHasBiographyTranslation()
+ * @method bool getHasChaining()
+ * @method bool getHasUnseenBestiesMedia()
  * @method ImageCandidate getHdProfilePicUrlInfo()
  * @method ImageCandidate[] getHdProfilePicVersions()
  * @method string getId()
  * @method mixed getIncludeDirectBlacklistStatus()
- * @method mixed getIsActive()
- * @method mixed getIsBusiness()
- * @method mixed getIsCallToActionEnabled()
- * @method mixed getIsFavorite()
- * @method mixed getIsNeedy()
- * @method mixed getIsPrivate()
- * @method mixed getIsProfileActionNeeded()
- * @method mixed getIsUnpublished()
- * @method mixed getIsVerified()
+ * @method bool getIsActive()
+ * @method bool getIsBusiness()
+ * @method bool getIsCallToActionEnabled()
+ * @method bool getIsFavorite()
+ * @method bool getIsNeedy()
+ * @method bool getIsPrivate()
+ * @method bool getIsProfileActionNeeded()
+ * @method bool getIsUnpublished()
+ * @method bool getIsVerified()
  * @method string getLatestReelMedia()
  * @method float getLatitude()
  * @method float getLongitude()
- * @method mixed getMediaCount()
+ * @method int getMediaCount()
  * @method mixed getMutualFollowersCount()
  * @method mixed getNationalNumber()
  * @method mixed getNeedsEmailConfirm()
@@ -68,10 +72,10 @@ use InstagramAPI\AutoPropertyHandler;
  * @method Link[] getProfileContextLinksWithUserIds()
  * @method string[] getProfileContextMutualFollowIds()
  * @method string getProfilePicId()
- * @method mixed getProfilePicUrl()
- * @method mixed getPublicEmail()
- * @method mixed getPublicPhoneCountryCode()
- * @method mixed getPublicPhoneNumber()
+ * @method string getProfilePicUrl()
+ * @method string getPublicEmail()
+ * @method string getPublicPhoneCountryCode()
+ * @method string getPublicPhoneNumber()
  * @method mixed getSearchSocialContext()
  * @method mixed getShowBusinessConversionIcon()
  * @method mixed getShowConversionEditEntry()
@@ -80,13 +84,14 @@ use InstagramAPI\AutoPropertyHandler;
  * @method mixed getSocialContext()
  * @method mixed getUnseenCount()
  * @method string getUserId()
- * @method mixed getUsername()
+ * @method string getUsername()
  * @method mixed getUsertagReviewEnabled()
- * @method mixed getUsertagsCount()
- * @method mixed getZip()
+ * @method int getUsertagsCount()
+ * @method string getZip()
  * @method bool isAddressStreet()
  * @method bool isAggregatePromoteEngagement()
  * @method bool isAllowContactsSync()
+ * @method bool isAllowedCommenterType()
  * @method bool isAutoExpandChaining()
  * @method bool isBiography()
  * @method bool isBirthday()
@@ -119,6 +124,7 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isHasAnonymousProfilePicture()
  * @method bool isHasBiographyTranslation()
  * @method bool isHasChaining()
+ * @method bool isHasUnseenBestiesMedia()
  * @method bool isHdProfilePicUrlInfo()
  * @method bool isHdProfilePicVersions()
  * @method bool isId()
@@ -163,210 +169,258 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isUsertagReviewEnabled()
  * @method bool isUsertagsCount()
  * @method bool isZip()
- * @method setAddressStreet(mixed $value)
- * @method setAggregatePromoteEngagement(mixed $value)
- * @method setAllowContactsSync(mixed $value)
- * @method setAutoExpandChaining(mixed $value)
- * @method setBiography(mixed $value)
- * @method setBirthday(mixed $value)
- * @method setBlockAt(mixed $value)
- * @method setBusinessContactMethod(mixed $value)
- * @method setByline(mixed $value)
- * @method setCanBoostPost(mixed $value)
- * @method setCanConvertToBusiness(mixed $value)
- * @method setCanCreateSponsorTags(mixed $value)
- * @method setCanSeeOrganicInsights(mixed $value)
- * @method setCategory(mixed $value)
- * @method setCityId(string $value)
- * @method setCityName(mixed $value)
- * @method setCoeffWeight(mixed $value)
- * @method setContactPhoneNumber(mixed $value)
- * @method setConvertFromPages(mixed $value)
- * @method setCountryCode(mixed $value)
- * @method setDirectMessaging(mixed $value)
- * @method setEmail(mixed $value)
- * @method setExternalLynxUrl(mixed $value)
- * @method setExternalUrl(mixed $value)
- * @method setFbPageCallToActionId(string $value)
- * @method setFbuid(mixed $value)
- * @method setFollowerCount(mixed $value)
- * @method setFollowingCount(mixed $value)
- * @method setFriendshipStatus(FriendshipStatus $value)
- * @method setFullName(mixed $value)
- * @method setGender(mixed $value)
- * @method setGeoMediaCount(mixed $value)
- * @method setHasAnonymousProfilePicture(mixed $value)
- * @method setHasBiographyTranslation(mixed $value)
- * @method setHasChaining(mixed $value)
- * @method setHdProfilePicUrlInfo(ImageCandidate $value)
- * @method setHdProfilePicVersions(ImageCandidate[] $value)
- * @method setId(string $value)
- * @method setIncludeDirectBlacklistStatus(mixed $value)
- * @method setIsActive(mixed $value)
- * @method setIsBusiness(mixed $value)
- * @method setIsCallToActionEnabled(mixed $value)
- * @method setIsFavorite(mixed $value)
- * @method setIsNeedy(mixed $value)
- * @method setIsPrivate(mixed $value)
- * @method setIsProfileActionNeeded(mixed $value)
- * @method setIsUnpublished(mixed $value)
- * @method setIsVerified(mixed $value)
- * @method setLatestReelMedia(string $value)
- * @method setLatitude(float $value)
- * @method setLongitude(float $value)
- * @method setMediaCount(mixed $value)
- * @method setMutualFollowersCount(mixed $value)
- * @method setNationalNumber(mixed $value)
- * @method setNeedsEmailConfirm(mixed $value)
- * @method setPageId(string $value)
- * @method setPageName(mixed $value)
- * @method setPhoneNumber(mixed $value)
- * @method setPk(string $value)
- * @method setProfileContext(mixed $value)
- * @method setProfileContextLinksWithUserIds(Link[] $value)
- * @method setProfileContextMutualFollowIds(string[] $value)
- * @method setProfilePicId(string $value)
- * @method setProfilePicUrl(mixed $value)
- * @method setPublicEmail(mixed $value)
- * @method setPublicPhoneCountryCode(mixed $value)
- * @method setPublicPhoneNumber(mixed $value)
- * @method setSearchSocialContext(mixed $value)
- * @method setShowBusinessConversionIcon(mixed $value)
- * @method setShowConversionEditEntry(mixed $value)
- * @method setShowFeedBizConversionIcon(mixed $value)
- * @method setShowInsightsTerms(mixed $value)
- * @method setSocialContext(mixed $value)
- * @method setUnseenCount(mixed $value)
- * @method setUserId(string $value)
- * @method setUsername(mixed $value)
- * @method setUsertagReviewEnabled(mixed $value)
- * @method setUsertagsCount(mixed $value)
- * @method setZip(mixed $value)
+ * @method $this setAddressStreet(string $value)
+ * @method $this setAggregatePromoteEngagement(mixed $value)
+ * @method $this setAllowContactsSync(mixed $value)
+ * @method $this setAllowedCommenterType(mixed $value)
+ * @method $this setAutoExpandChaining(mixed $value)
+ * @method $this setBiography(string $value)
+ * @method $this setBirthday(mixed $value)
+ * @method $this setBlockAt(mixed $value)
+ * @method $this setBusinessContactMethod(string $value)
+ * @method $this setByline(mixed $value)
+ * @method $this setCanBoostPost(mixed $value)
+ * @method $this setCanConvertToBusiness(mixed $value)
+ * @method $this setCanCreateSponsorTags(mixed $value)
+ * @method $this setCanSeeOrganicInsights(mixed $value)
+ * @method $this setCategory(string $value)
+ * @method $this setCityId(string $value)
+ * @method $this setCityName(string $value)
+ * @method $this setCoeffWeight(mixed $value)
+ * @method $this setContactPhoneNumber(string $value)
+ * @method $this setConvertFromPages(mixed $value)
+ * @method $this setCountryCode(mixed $value)
+ * @method $this setDirectMessaging(string $value)
+ * @method $this setEmail(mixed $value)
+ * @method $this setExternalLynxUrl(string $value)
+ * @method $this setExternalUrl(string $value)
+ * @method $this setFbPageCallToActionId(string $value)
+ * @method $this setFbuid(mixed $value)
+ * @method $this setFollowerCount(int $value)
+ * @method $this setFollowingCount(int $value)
+ * @method $this setFriendshipStatus(FriendshipStatus $value)
+ * @method $this setFullName(string $value)
+ * @method $this setGender(mixed $value)
+ * @method $this setGeoMediaCount(int $value)
+ * @method $this setHasAnonymousProfilePicture(bool $value)
+ * @method $this setHasBiographyTranslation(bool $value)
+ * @method $this setHasChaining(bool $value)
+ * @method $this setHasUnseenBestiesMedia(bool $value)
+ * @method $this setHdProfilePicUrlInfo(ImageCandidate $value)
+ * @method $this setHdProfilePicVersions(ImageCandidate[] $value)
+ * @method $this setId(string $value)
+ * @method $this setIncludeDirectBlacklistStatus(mixed $value)
+ * @method $this setIsActive(bool $value)
+ * @method $this setIsBusiness(bool $value)
+ * @method $this setIsCallToActionEnabled(bool $value)
+ * @method $this setIsFavorite(bool $value)
+ * @method $this setIsNeedy(bool $value)
+ * @method $this setIsPrivate(bool $value)
+ * @method $this setIsProfileActionNeeded(bool $value)
+ * @method $this setIsUnpublished(bool $value)
+ * @method $this setIsVerified(bool $value)
+ * @method $this setLatestReelMedia(string $value)
+ * @method $this setLatitude(float $value)
+ * @method $this setLongitude(float $value)
+ * @method $this setMediaCount(int $value)
+ * @method $this setMutualFollowersCount(mixed $value)
+ * @method $this setNationalNumber(mixed $value)
+ * @method $this setNeedsEmailConfirm(mixed $value)
+ * @method $this setPageId(string $value)
+ * @method $this setPageName(mixed $value)
+ * @method $this setPhoneNumber(mixed $value)
+ * @method $this setPk(string $value)
+ * @method $this setProfileContext(mixed $value)
+ * @method $this setProfileContextLinksWithUserIds(Link[] $value)
+ * @method $this setProfileContextMutualFollowIds(string[] $value)
+ * @method $this setProfilePicId(string $value)
+ * @method $this setProfilePicUrl(string $value)
+ * @method $this setPublicEmail(string $value)
+ * @method $this setPublicPhoneCountryCode(string $value)
+ * @method $this setPublicPhoneNumber(string $value)
+ * @method $this setSearchSocialContext(mixed $value)
+ * @method $this setShowBusinessConversionIcon(mixed $value)
+ * @method $this setShowConversionEditEntry(mixed $value)
+ * @method $this setShowFeedBizConversionIcon(mixed $value)
+ * @method $this setShowInsightsTerms(mixed $value)
+ * @method $this setSocialContext(mixed $value)
+ * @method $this setUnseenCount(mixed $value)
+ * @method $this setUserId(string $value)
+ * @method $this setUsername(string $value)
+ * @method $this setUsertagReviewEnabled(mixed $value)
+ * @method $this setUsertagsCount(int $value)
+ * @method $this setZip(string $value)
+ * @method $this unsetAddressStreet()
+ * @method $this unsetAggregatePromoteEngagement()
+ * @method $this unsetAllowContactsSync()
+ * @method $this unsetAllowedCommenterType()
+ * @method $this unsetAutoExpandChaining()
+ * @method $this unsetBiography()
+ * @method $this unsetBirthday()
+ * @method $this unsetBlockAt()
+ * @method $this unsetBusinessContactMethod()
+ * @method $this unsetByline()
+ * @method $this unsetCanBoostPost()
+ * @method $this unsetCanConvertToBusiness()
+ * @method $this unsetCanCreateSponsorTags()
+ * @method $this unsetCanSeeOrganicInsights()
+ * @method $this unsetCategory()
+ * @method $this unsetCityId()
+ * @method $this unsetCityName()
+ * @method $this unsetCoeffWeight()
+ * @method $this unsetContactPhoneNumber()
+ * @method $this unsetConvertFromPages()
+ * @method $this unsetCountryCode()
+ * @method $this unsetDirectMessaging()
+ * @method $this unsetEmail()
+ * @method $this unsetExternalLynxUrl()
+ * @method $this unsetExternalUrl()
+ * @method $this unsetFbPageCallToActionId()
+ * @method $this unsetFbuid()
+ * @method $this unsetFollowerCount()
+ * @method $this unsetFollowingCount()
+ * @method $this unsetFriendshipStatus()
+ * @method $this unsetFullName()
+ * @method $this unsetGender()
+ * @method $this unsetGeoMediaCount()
+ * @method $this unsetHasAnonymousProfilePicture()
+ * @method $this unsetHasBiographyTranslation()
+ * @method $this unsetHasChaining()
+ * @method $this unsetHasUnseenBestiesMedia()
+ * @method $this unsetHdProfilePicUrlInfo()
+ * @method $this unsetHdProfilePicVersions()
+ * @method $this unsetId()
+ * @method $this unsetIncludeDirectBlacklistStatus()
+ * @method $this unsetIsActive()
+ * @method $this unsetIsBusiness()
+ * @method $this unsetIsCallToActionEnabled()
+ * @method $this unsetIsFavorite()
+ * @method $this unsetIsNeedy()
+ * @method $this unsetIsPrivate()
+ * @method $this unsetIsProfileActionNeeded()
+ * @method $this unsetIsUnpublished()
+ * @method $this unsetIsVerified()
+ * @method $this unsetLatestReelMedia()
+ * @method $this unsetLatitude()
+ * @method $this unsetLongitude()
+ * @method $this unsetMediaCount()
+ * @method $this unsetMutualFollowersCount()
+ * @method $this unsetNationalNumber()
+ * @method $this unsetNeedsEmailConfirm()
+ * @method $this unsetPageId()
+ * @method $this unsetPageName()
+ * @method $this unsetPhoneNumber()
+ * @method $this unsetPk()
+ * @method $this unsetProfileContext()
+ * @method $this unsetProfileContextLinksWithUserIds()
+ * @method $this unsetProfileContextMutualFollowIds()
+ * @method $this unsetProfilePicId()
+ * @method $this unsetProfilePicUrl()
+ * @method $this unsetPublicEmail()
+ * @method $this unsetPublicPhoneCountryCode()
+ * @method $this unsetPublicPhoneNumber()
+ * @method $this unsetSearchSocialContext()
+ * @method $this unsetShowBusinessConversionIcon()
+ * @method $this unsetShowConversionEditEntry()
+ * @method $this unsetShowFeedBizConversionIcon()
+ * @method $this unsetShowInsightsTerms()
+ * @method $this unsetSocialContext()
+ * @method $this unsetUnseenCount()
+ * @method $this unsetUserId()
+ * @method $this unsetUsername()
+ * @method $this unsetUsertagReviewEnabled()
+ * @method $this unsetUsertagsCount()
+ * @method $this unsetZip()
  */
-class User extends AutoPropertyHandler
+class User extends AutoPropertyMapper
 {
-    public $username;
-    public $has_anonymous_profile_picture;
-    public $is_favorite;
-    public $profile_pic_url;
-    public $full_name;
-    /**
-     * @var string
-     */
-    public $user_id;
-    /**
-     * @var string
-     */
-    public $pk;
-    /**
-     * @var string
-     */
-    public $id;
-    public $is_verified;
-    public $is_private;
-    public $coeff_weight;
-    /**
-     * @var FriendshipStatus
-     */
-    public $friendship_status;
-    /**
-     * @var ImageCandidate[]
-     */
-    public $hd_profile_pic_versions;
-    public $byline;
-    public $search_social_context;
-    public $unseen_count;
-    public $mutual_followers_count;
-    public $follower_count;
-    public $social_context;
-    public $media_count;
-    public $following_count;
-    public $is_business;
-    public $usertags_count;
-    public $profile_context;
-    public $biography;
-    public $geo_media_count;
-    public $is_unpublished;
-    public $allow_contacts_sync; // login prop
-    public $show_feed_biz_conversion_icon; // login prop
-    /**
-     * @var string
-     */
-    public $profile_pic_id; // Ranked recipents response prop
-    public $auto_expand_chaining; // getInfoById prop
-    public $can_boost_post; // getInfoById prop
-    public $is_profile_action_needed; // getInfoById prop
-    public $has_chaining; // getInfoById prop
-    public $include_direct_blacklist_status; // getInfoById prop
-    public $can_see_organic_insights; // getInfoById prop
-    public $can_convert_to_business; // getInfoById prop
-    public $convert_from_pages; // getInfoById prop
-    public $show_business_conversion_icon; // getInfoById prop
-    public $show_conversion_edit_entry; // getInfoById prop
-    public $show_insights_terms; // getInfoById prop
-    public $can_create_sponsor_tags; // getInfoById prop
-    /**
-     * @var ImageCandidate
-     */
-    public $hd_profile_pic_url_info; // getInfoById prop
-    public $usertag_review_enabled; // getInfoById prop
-    /**
-     * @var string[]
-     */
-    public $profile_context_mutual_follow_ids; // getInfoById prop
-    /**
-     * @var Link[]
-     */
-    public $profile_context_links_with_user_ids; // getInfoById prop
-    public $has_biography_translation; // getInfoById prop
-    public $business_contact_method; // getInfoById prop
-    public $category; // getInfoById prop
-    public $direct_messaging; // getInfoById prop
-    public $page_name; //getInfoById prop
-    /**
-     * @var string
-     */
-    public $fb_page_call_to_action_id; // getInfoById prop
-    public $is_call_to_action_enabled; // getInfoById prop
-    public $public_phone_country_code; // getInfoById prop
-    public $public_phone_number; // getInfoById prop
-    public $contact_phone_number; // getInfoById prop
-    /**
-     * @var float
-     */
-    public $latitude; // getInfoById prop
-    /**
-     * @var float
-     */
-    public $longitude; // getInfoById prop
-    public $address_street; // getInfoById prop
-    public $zip; // getInfoById prop
-    /**
-     * @var string
-     */
-    public $city_id; // getInfoById prop
-    public $city_name; // getInfoById prop
-    public $public_email; // getInfoById prop
-    public $is_needy; // getInfoById prop
-    public $external_url; // getInfoById prop
-    public $external_lynx_url; // getInfoById prop
-    public $email; // getCurrentUser prop
-    public $country_code; // getCurrentUser prop
-    public $birthday; // getCurrentUser prop
-    public $national_number; // getCurrentUser prop
-    public $gender; // getCurrentUser prop
-    public $phone_number; // getCurrentUser prop
-    public $needs_email_confirm; // getCurrentUser prop
-    public $is_active;
-    public $block_at; // getBlockedList prop
-    public $aggregate_promote_engagement; // getSelfInfo prop
-    public $fbuid;
-    /**
-     * @var string
-     */
-    public $page_id;
-    /**
-     * @var string
-     */
-    public $latest_reel_media;
+    const JSON_PROPERTY_MAP = [
+        'username'                            => 'string',
+        'has_anonymous_profile_picture'       => 'bool',
+        'is_favorite'                         => 'bool',
+        'profile_pic_url'                     => 'string',
+        'full_name'                           => 'string',
+        'user_id'                             => 'string',
+        'pk'                                  => 'string',
+        'id'                                  => 'string',
+        'is_verified'                         => 'bool',
+        'is_private'                          => 'bool',
+        'coeff_weight'                        => '',
+        'friendship_status'                   => 'FriendshipStatus',
+        'hd_profile_pic_versions'             => 'ImageCandidate[]',
+        'byline'                              => '',
+        'search_social_context'               => '',
+        'unseen_count'                        => '',
+        'mutual_followers_count'              => '',
+        'follower_count'                      => 'int',
+        'social_context'                      => '',
+        'media_count'                         => 'int',
+        'following_count'                     => 'int',
+        'is_business'                         => 'bool',
+        'usertags_count'                      => 'int',
+        'profile_context'                     => '',
+        'biography'                           => 'string',
+        'geo_media_count'                     => 'int',
+        'is_unpublished'                      => 'bool',
+        'allow_contacts_sync'                 => '',
+        'show_feed_biz_conversion_icon'       => '',
+        'profile_pic_id'                      => 'string',
+        'auto_expand_chaining'                => '',
+        'can_boost_post'                      => '',
+        'is_profile_action_needed'            => 'bool',
+        'has_chaining'                        => 'bool',
+        'include_direct_blacklist_status'     => '',
+        'can_see_organic_insights'            => '',
+        'can_convert_to_business'             => '',
+        'convert_from_pages'                  => '',
+        'show_business_conversion_icon'       => '',
+        'show_conversion_edit_entry'          => '',
+        'show_insights_terms'                 => '',
+        'can_create_sponsor_tags'             => '',
+        'hd_profile_pic_url_info'             => 'ImageCandidate',
+        'usertag_review_enabled'              => '',
+        'profile_context_mutual_follow_ids'   => 'string[]',
+        'profile_context_links_with_user_ids' => 'Link[]',
+        'has_biography_translation'           => 'bool',
+        'business_contact_method'             => 'string',
+        /*
+         * Business category.
+         */
+        'category'                            => 'string',
+        'direct_messaging'                    => 'string',
+        'page_name'                           => '',
+        'fb_page_call_to_action_id'           => 'string',
+        'is_call_to_action_enabled'           => 'bool',
+        'public_phone_country_code'           => 'string',
+        'public_phone_number'                 => 'string',
+        'contact_phone_number'                => 'string',
+        'latitude'                            => 'float',
+        'longitude'                           => 'float',
+        'address_street'                      => 'string',
+        'zip'                                 => 'string',
+        'city_id'                             => 'string', // 64-bit number.
+        'city_name'                           => 'string',
+        'public_email'                        => 'string',
+        'is_needy'                            => 'bool',
+        'external_url'                        => 'string',
+        'external_lynx_url'                   => 'string',
+        'email'                               => '',
+        'country_code'                        => '',
+        'birthday'                            => '',
+        'national_number'                     => '',
+        'gender'                              => '',
+        'phone_number'                        => '',
+        'needs_email_confirm'                 => '',
+        'is_active'                           => 'bool',
+        'block_at'                            => '',
+        'aggregate_promote_engagement'        => '',
+        'fbuid'                               => '',
+        'page_id'                             => 'string',
+        /*
+         * Unix "taken_at" timestamp of the newest item in their story reel.
+         */
+        'latest_reel_media'                   => 'string',
+        'has_unseen_besties_media'            => 'bool',
+        'allowed_commenter_type'              => '',
+    ];
 }

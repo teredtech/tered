@@ -2,12 +2,14 @@
 
 namespace InstagramAPI\Response\Model;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Stickers.
+ *
  * @method string getId()
  * @method mixed getImageHeight()
- * @method mixed getImageUrl()
+ * @method string getImageUrl()
  * @method mixed getImageWidth()
  * @method mixed getImageWidthRatio()
  * @method mixed getName()
@@ -21,26 +23,33 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isName()
  * @method bool isTrayImageWidthRatio()
  * @method bool isType()
- * @method setId(string $value)
- * @method setImageHeight(mixed $value)
- * @method setImageUrl(mixed $value)
- * @method setImageWidth(mixed $value)
- * @method setImageWidthRatio(mixed $value)
- * @method setName(mixed $value)
- * @method setTrayImageWidthRatio(mixed $value)
- * @method setType(mixed $value)
+ * @method $this setId(string $value)
+ * @method $this setImageHeight(mixed $value)
+ * @method $this setImageUrl(string $value)
+ * @method $this setImageWidth(mixed $value)
+ * @method $this setImageWidthRatio(mixed $value)
+ * @method $this setName(mixed $value)
+ * @method $this setTrayImageWidthRatio(mixed $value)
+ * @method $this setType(mixed $value)
+ * @method $this unsetId()
+ * @method $this unsetImageHeight()
+ * @method $this unsetImageUrl()
+ * @method $this unsetImageWidth()
+ * @method $this unsetImageWidthRatio()
+ * @method $this unsetName()
+ * @method $this unsetTrayImageWidthRatio()
+ * @method $this unsetType()
  */
-class Stickers extends AutoPropertyHandler
+class Stickers extends AutoPropertyMapper
 {
-    /**
-     * @var string
-     */
-    public $id;
-    public $tray_image_width_ratio;
-    public $image_height;
-    public $image_width_ratio;
-    public $type;
-    public $image_width;
-    public $name;
-    public $image_url;
+    const JSON_PROPERTY_MAP = [
+        'id'                     => 'string',
+        'tray_image_width_ratio' => '',
+        'image_height'           => '',
+        'image_width_ratio'      => '',
+        'type'                   => '',
+        'image_width'            => '',
+        'name'                   => '',
+        'image_url'              => 'string',
+    ];
 }

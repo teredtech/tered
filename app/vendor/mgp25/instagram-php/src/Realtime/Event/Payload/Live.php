@@ -2,9 +2,11 @@
 
 namespace InstagramAPI\Realtime\Event\Payload;
 
-use InstagramAPI\AutoPropertyHandler;
+use InstagramAPI\AutoPropertyMapper;
 
 /**
+ * Live.
+ *
  * @method string getBroadcastId()
  * @method mixed getBroadcastMessage()
  * @method mixed getDisplayNotification()
@@ -15,19 +17,24 @@ use InstagramAPI\AutoPropertyHandler;
  * @method bool isDisplayNotification()
  * @method bool isIsPeriodic()
  * @method bool isUser()
- * @method setBroadcastId(string $value)
- * @method setBroadcastMessage(mixed $value)
- * @method setDisplayNotification(mixed $value)
- * @method setIsPeriodic(mixed $value)
- * @method setUser(\InstagramAPI\Response\Model\User $value)
+ * @method $this setBroadcastId(string $value)
+ * @method $this setBroadcastMessage(mixed $value)
+ * @method $this setDisplayNotification(mixed $value)
+ * @method $this setIsPeriodic(mixed $value)
+ * @method $this setUser(\InstagramAPI\Response\Model\User $value)
+ * @method $this unsetBroadcastId()
+ * @method $this unsetBroadcastMessage()
+ * @method $this unsetDisplayNotification()
+ * @method $this unsetIsPeriodic()
+ * @method $this unsetUser()
  */
-class Live extends AutoPropertyHandler
+class Live extends AutoPropertyMapper
 {
-    /** @var \InstagramAPI\Response\Model\User */
-    public $user;
-    /** @var string */
-    public $broadcast_id;
-    public $is_periodic;
-    public $broadcast_message;
-    public $display_notification;
+    const JSON_PROPERTY_MAP = [
+        'user'                 => '\InstagramAPI\Response\Model\User',
+        'broadcast_id'         => 'string',
+        'is_periodic'          => '',
+        'broadcast_message'    => '',
+        'display_notification' => '',
+    ];
 }

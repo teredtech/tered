@@ -2,10 +2,9 @@
 
 namespace InstagramAPI\Realtime\Event\Patch;
 
-use InstagramAPI\AutoPropertyHandler;
+use Evenement\EventEmitterInterface;
+use InstagramAPI\AutoPropertyMapper;
 use InstagramAPI\Client as HttpClient;
-use InstagramAPI\Realtime;
-use InstagramAPI\Realtime\Client;
 use InstagramAPI\Realtime\Event\Payload as EventPayload;
 use InstagramAPI\Response\Model\ActionBadge;
 use InstagramAPI\Response\Model\DirectInbox;
@@ -13,8 +12,11 @@ use InstagramAPI\Response\Model\DirectSeenItemPayload;
 use InstagramAPI\Response\Model\DirectThread;
 use InstagramAPI\Response\Model\DirectThreadItem;
 use InstagramAPI\Response\Model\DirectThreadLastSeenAt;
+use Psr\Log\LoggerInterface;
 
 /**
+ * Op.
+ *
  * @method mixed getDoublePublish()
  * @method mixed getOp()
  * @method mixed getPath()
@@ -25,57 +27,81 @@ use InstagramAPI\Response\Model\DirectThreadLastSeenAt;
  * @method bool isPath()
  * @method bool isTs()
  * @method bool isValue()
- * @method setDoublePublish(mixed $value)
- * @method setOp(mixed $value)
- * @method setPath(mixed $value)
- * @method setTs(mixed $value)
- * @method setValue(mixed $value)
+ * @method $this setDoublePublish(mixed $value)
+ * @method $this setOp(mixed $value)
+ * @method $this setPath(mixed $value)
+ * @method $this setTs(mixed $value)
+ * @method $this setValue(mixed $value)
+ * @method $this unsetDoublePublish()
+ * @method $this unsetOp()
+ * @method $this unsetPath()
+ * @method $this unsetTs()
+ * @method $this unsetValue()
  */
-class Op extends AutoPropertyHandler
+class Op extends AutoPropertyMapper
 {
     const ADD = 'add';
     const REMOVE = 'remove';
     const REPLACE = 'replace';
     const NOTIFY = 'notify';
 
-    public $op;
-    public $path;
-    public $value;
-    public $ts;
-    public $doublePublish;
+    const JSON_PROPERTY_MAP = [
+        'op'            => '',
+        'path'          => '',
+        'value'         => '',
+        'ts'            => '',
+        'doublePublish' => '',
+    ];
 
-    /** @var Realtime */
-    protected $_rtc;
+    /** @var EventEmitterInterface */
+    protected $_target;
 
-    /** @var Client */
-    protected $_client;
+    /** @var LoggerInterface */
+    protected $_logger;
 
     /**
      * Checks if $path starts with specified substring.
      *
+     * @param string $path
      * @param string $string
      *
      * @return bool
      */
     protected function _isPathStartsWith(
+        $path,
         $string)
     {
-        return strncmp($this->path, $string, strlen($string)) === 0;
+        return strncmp($path, $string, strlen($string)) === 0;
     }
 
     /**
      * Checks if $path ends with specified substring.
      *
+     * @param string $path
      * @param string $string
      *
      * @return bool
      */
     protected function _isPathEndsWith(
+        $path,
         $string)
     {
         $length = strlen($string);
 
-        return substr_compare($this->path, $string, strlen($this->path) - $length, $length) === 0;
+        return substr_compare($path, $string, strlen($path) - $length, $length) === 0;
+    }
+
+    /**
+     * Checks if target has at least one listener for specific event.
+     *
+     * @param string $event
+     *
+     * @return bool
+     */
+    protected function _hasListeners(
+        $event)
+    {
+        return (bool) count($this->_target->listeners($event));
     }
 
     /**
@@ -83,30 +109,41 @@ class Op extends AutoPropertyHandler
      */
     protected function _upsertThreadItem()
     {
-        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread item regexp', $this->path);
+        $hasListeners = false;
+        $op = $this->_getProperty('op');
+        switch ($op) {
+            case self::ADD:
+                $hasListeners = $this->_hasListeners('thread-item-created');
+                break;
+            case self::REPLACE:
+                $hasListeners = $this->_hasListeners('thread-item-updated');
+                break;
+            default:
+                $this->_logger->warning(sprintf('Unsupported thread item op: "%s"', $op));
+        }
+        if (!$hasListeners) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread item regexp', $path));
 
             return;
         }
-        list($path, $threadId, $threadItemId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread item JSON: %s', json_last_error_msg());
+        list($path, $threadId, $threadItemId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread item JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var DirectThreadItem $threadItem */
-        $threadItem = $this->_client->mapToJson($json, new DirectThreadItem());
-        switch ($this->op) {
-            case self::ADD:
-                $this->_rtc->emit('thread-item-created', [$threadId, $threadItemId, $threadItem]);
-                break;
-            case self::REPLACE:
-                $this->_rtc->emit('thread-item-updated', [$threadId, $threadItemId, $threadItem]);
-                break;
-            default:
-                $this->_client->debug('Unsupported thread item op: "%s"', $this->op);
-        }
+        $threadItem = new DirectThreadItem($json);
+        $this->_target->emit(
+            $op === self::ADD ? 'thread-item-created' : 'thread-item-updated',
+            [$threadId, $threadItemId, $threadItem]
+        );
     }
 
     /**
@@ -114,30 +151,41 @@ class Op extends AutoPropertyHandler
      */
     protected function _upsertThread()
     {
-        if (!preg_match('#^/direct_v2/inbox/threads/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread regexp', $this->path);
+        $hasListeners = false;
+        $op = $this->_getProperty('op');
+        switch ($op) {
+            case self::ADD:
+                $hasListeners = $this->_hasListeners('thread-created');
+                break;
+            case self::REPLACE:
+                $hasListeners = $this->_hasListeners('thread-updated');
+                break;
+            default:
+                $this->_logger->warning(sprintf('Unsupported thread op: "%s"', $op));
+        }
+        if (!$hasListeners) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/inbox/threads/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread regexp', $path));
 
             return;
         }
-        list($path, $threadId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread JSON: %s', json_last_error_msg());
+        list($path, $threadId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var DirectThread $thread */
-        $thread = $this->_client->mapToJson($json, new DirectThread());
-        switch ($this->op) {
-            case self::ADD:
-                $this->_rtc->emit('thread-created', [$threadId, $thread]);
-                break;
-            case self::REPLACE:
-                $this->_rtc->emit('thread-updated', [$threadId, $thread]);
-                break;
-            default:
-                $this->_client->debug('Unsupported thread op: "%s"', $this->op);
-        }
+        $thread = new DirectThread($json);
+        $this->_target->emit(
+            $op === self::ADD ? 'thread-created' : 'thread-updated',
+            [$threadId, $thread]
+        );
     }
 
     /**
@@ -145,24 +193,34 @@ class Op extends AutoPropertyHandler
      */
     protected function _handleLiveBroadcast()
     {
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode live broadcast JSON: %s', json_last_error_msg());
+        $hasListeners = false;
+        $op = $this->_getProperty('op');
+        switch ($op) {
+            case self::ADD:
+                $hasListeners = $this->_hasListeners('live-started');
+                break;
+            case self::REMOVE:
+                $hasListeners = $this->_hasListeners('live-stopped');
+                break;
+            default:
+                $this->_logger->warning(sprintf('Unsupported live broadcast op: "%s"', $op));
+        }
+        if (!$hasListeners) {
+            return;
+        }
+
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode live broadcast JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var EventPayload\Live $livePayload */
-        $livePayload = $this->_client->mapToJson($json, new EventPayload\Live());
-        switch ($this->op) {
-            case self::ADD:
-                $this->_rtc->emit('live-started', [$livePayload]);
-                break;
-            case self::REMOVE:
-                $this->_rtc->emit('live-stopped', [$livePayload]);
-                break;
-            default:
-                $this->_client->debug('Unsupported live broadcast op: "%s"', $this->op);
-        }
+        $livePayload = new EventPayload\Live($json);
+        $this->_target->emit(
+            $op === self::ADD ? 'live-started' : 'live-stopped',
+            [$livePayload]
+        );
     }
 
     /**
@@ -170,21 +228,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _upsertThreadActivity()
     {
-        if (!preg_match('#^/direct_v2/threads/([^/]+)/activity_indicator_id/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread activity regexp', $this->path);
+        if (!$this->_hasListeners('thread-activity')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/threads/([^/]+)/activity_indicator_id/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread activity regexp', $path));
 
             return;
         }
-        list($path, $threadId, $indicatorId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread activity JSON: %s', json_last_error_msg());
+        list($path, $threadId, $indicatorId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread activity JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var EventPayload\Activity $activity */
-        $activity = $this->_client->mapToJson($json, new EventPayload\Activity());
-        $this->_rtc->emit('thread-activity', [$threadId, $activity]);
+        $activity = new EventPayload\Activity($json);
+        $this->_target->emit('thread-activity', [$threadId, $activity]);
     }
 
     /**
@@ -192,21 +255,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _updateDirectStory()
     {
-        if (!preg_match('#^/direct_v2/visual_threads/([^/]+)/items/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match story item regexp', $this->path);
+        if (!$this->_hasListeners('direct-story-updated')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/visual_threads/([^/]+)/items/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match story item regexp', $path));
 
             return;
         }
-        list($path, $threadId, $threadItemId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread item JSON: %s', json_last_error_msg());
+        list($path, $threadId, $threadItemId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread item JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var DirectThreadItem $threadItem */
-        $threadItem = $this->_client->mapToJson($json, new DirectThreadItem());
-        $this->_rtc->emit('direct-story-updated', [$threadId, $threadItemId, $threadItem]);
+        $threadItem = new DirectThreadItem($json);
+        $this->_target->emit('direct-story-updated', [$threadId, $threadItemId, $threadItem]);
     }
 
     /**
@@ -214,20 +282,29 @@ class Op extends AutoPropertyHandler
      */
     protected function _handleAdd()
     {
-        if ($this->_isPathStartsWith('/direct_v2/threads')) {
-            if (strpos($this->path, 'activity_indicator_id') === false) {
+        $handled = false;
+        $path = $this->_getProperty('path');
+        if ($this->_isPathStartsWith($path, '/direct_v2/threads')) {
+            if (strpos($path, 'activity_indicator_id') === false) {
                 $this->_upsertThreadItem();
+                $handled = true;
             } else {
                 $this->_upsertThreadActivity();
+                $handled = true;
             }
-        } elseif ($this->_isPathStartsWith('/direct_v2/inbox/threads')) {
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/inbox/threads')) {
             $this->_upsertThread();
-        } elseif ($this->_isPathStartsWith('/broadcast')) {
+            $handled = true;
+        } elseif ($this->_isPathStartsWith($path, '/broadcast')) {
             $this->_handleLiveBroadcast();
-        } elseif ($this->_isPathStartsWith('/direct_v2/visual_threads')) {
+            $handled = true;
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/visual_threads')) {
             $this->_updateDirectStory();
-        } else {
-            $this->_client->debug('Unsupported ADD path "%s"', $this->path);
+            $handled = true;
+        }
+
+        if (!$handled) {
+            $this->_logger->warning(sprintf('Unsupported ADD path "%s"', $path));
         }
     }
 
@@ -236,10 +313,15 @@ class Op extends AutoPropertyHandler
      */
     protected function _updateUnseenCount()
     {
-        $payload = new DirectSeenItemPayload();
-        $payload->count = (int) $this->value;
-        $payload->timestamp = $this->ts;
-        $this->_rtc->emit('unseen-count-update', [$payload]);
+        if (!$this->_hasListeners('unseen-count-update')) {
+            return;
+        }
+
+        $payload = new DirectSeenItemPayload([
+            'count'     => (int) $this->_getProperty('value'),
+            'timestamp' => $this->_getProperty('ts'),
+        ]);
+        $this->_target->emit('unseen-count-update', [$payload]);
     }
 
     /**
@@ -247,21 +329,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _updateSeen()
     {
-        if (!preg_match('#^/direct_v2/threads/([^/]+)/participants/([^/]+)/has_seen$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread seen regexp', $this->path);
+        if (!$this->_hasListeners('thread-seen')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/threads/([^/]+)/participants/([^/]+)/has_seen$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread seen regexp', $path));
 
             return;
         }
-        list($path, $threadId, $userId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread seen JSON: %s', json_last_error_msg());
+        list($path, $threadId, $userId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread seen JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var DirectThreadLastSeenAt $lastSeenAt */
-        $lastSeenAt = $this->_client->mapToJson($json, new DirectThreadLastSeenAt());
-        $this->_rtc->emit('thread-seen', [$threadId, $userId, $lastSeenAt]);
+        $lastSeenAt = new DirectThreadLastSeenAt($json);
+        $this->_target->emit('thread-seen', [$threadId, $userId, $lastSeenAt]);
     }
 
     /**
@@ -269,21 +356,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _notifyDirectStoryScreenshot()
     {
-        if (!preg_match('#^/direct_v2/visual_thread/([^/]+)/screenshot$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread screenshot regexp', $this->path);
+        if (!$this->_hasListeners('direct-story-screenshot')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/visual_thread/([^/]+)/screenshot$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread screenshot regexp', $path));
 
             return;
         }
-        list($path, $threadId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread JSON: %s', json_last_error_msg());
+        list($path, $threadId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var EventPayload\Screenshot $screenshot */
-        $screenshot = $this->_client->mapToJson($json, new EventPayload\Screenshot());
-        $this->_rtc->emit('direct-story-screenshot', [$threadId, $screenshot]);
+        $screenshot = new EventPayload\Screenshot($json);
+        $this->_target->emit('direct-story-screenshot', [$threadId, $screenshot]);
     }
 
     /**
@@ -291,25 +383,31 @@ class Op extends AutoPropertyHandler
      */
     protected function _createDirectStory()
     {
-        if ($this->path !== '/direct_v2/visual_thread/create') {
-            $this->_client->debug('Path %s does not match story create path', $this->path);
+        if (!$this->_hasListeners('direct-story-created')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if ($path !== '/direct_v2/visual_thread/create') {
+            $this->_logger->warning(sprintf('Path %s does not match story create path', $path));
 
             return;
         }
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode inbox JSON: %s', json_last_error_msg());
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode inbox JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var DirectInbox $inbox */
-        $inbox = $this->_client->mapToJson($json, new DirectInbox());
-        if (!isset($inbox->threads) || !count($inbox->threads)) {
+        $inbox = new DirectInbox($json);
+        $allThreads = $inbox->getThreads();
+        if (!isset($allThreads) || !count($allThreads)) {
             return;
         }
         /** @var DirectThread $thread */
-        $thread = reset($inbox->threads);
-        $this->_rtc->emit('direct-story-created', [$thread]);
+        $thread = reset($allThreads); // Get first thread.
+        $this->_target->emit('direct-story-created', [$thread]);
     }
 
     /**
@@ -317,21 +415,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _directStoryAction()
     {
-        if (!preg_match('#^/direct_v2/visual_action_badge/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match story action regexp', $this->path);
+        if (!$this->_hasListeners('direct-story-action')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/visual_action_badge/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match story action regexp', $path));
 
             return;
         }
-        list($path, $threadId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode story action JSON: %s', json_last_error_msg());
+        list($path, $threadId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode story action JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var ActionBadge $storyAction */
-        $storyAction = $this->_client->mapToJson($json, new ActionBadge());
-        $this->_rtc->emit('direct-story-action', [$threadId, $storyAction]);
+        $storyAction = new ActionBadge($json);
+        $this->_target->emit('direct-story-action', [$threadId, $storyAction]);
     }
 
     /**
@@ -339,28 +442,39 @@ class Op extends AutoPropertyHandler
      */
     protected function _handleReplace()
     {
-        if ($this->_isPathStartsWith('/direct_v2/threads')) {
-            if ($this->_isPathEndsWith('has_seen')) {
+        $handled = false;
+        $path = $this->_getProperty('path');
+        if ($this->_isPathStartsWith($path, '/direct_v2/threads')) {
+            if ($this->_isPathEndsWith($path, 'has_seen')) {
                 $this->_updateSeen();
+                $handled = true;
             } else {
                 $this->_upsertThreadItem();
+                $handled = true;
             }
-        } elseif ($this->_isPathStartsWith('/direct_v2/inbox/threads')) {
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/inbox/threads')) {
             $this->_upsertThread();
-        } elseif ($this->_isPathStartsWith('/direct_v2/inbox') || $this->_isPathStartsWith('/direct_v2/visual_inbox')) {
-            if ($this->_isPathEndsWith('unseen_count')) {
+            $handled = true;
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/inbox') || $this->_isPathStartsWith($path, '/direct_v2/visual_inbox')) {
+            if ($this->_isPathEndsWith($path, 'unseen_count')) {
                 $this->_updateUnseenCount();
+                $handled = true;
             }
-        } elseif ($this->_isPathStartsWith('/direct_v2/visual_action_badge')) {
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/visual_action_badge')) {
             $this->_directStoryAction();
-        } elseif ($this->_isPathStartsWith('/direct_v2/visual_thread')) {
-            if ($this->_isPathEndsWith('screenshot')) {
+            $handled = true;
+        } elseif ($this->_isPathStartsWith($path, '/direct_v2/visual_thread')) {
+            if ($this->_isPathEndsWith($path, 'screenshot')) {
                 $this->_notifyDirectStoryScreenshot();
-            } elseif ($this->_isPathEndsWith('create')) {
+                $handled = true;
+            } elseif ($this->_isPathEndsWith($path, 'create')) {
                 $this->_createDirectStory();
+                $handled = true;
             }
-        } else {
-            $this->_client->debug('Unsupported REPLACE path "%s"', $this->path);
+        }
+
+        if (!$handled) {
+            $this->_logger->warning(sprintf('Unsupported REPLACE path "%s"', $path));
         }
     }
 
@@ -369,13 +483,18 @@ class Op extends AutoPropertyHandler
      */
     protected function _removeThreadItem()
     {
-        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread item regexp', $this->path);
+        if (!$this->_hasListeners('thread-item-removed')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread item regexp', $path));
 
             return;
         }
-        list($path, $threadId, $threadItemId) = $matches;
-        $this->_rtc->emit('thread-item-removed', [$threadId, $threadItemId]);
+        list($path, $threadId, $threadItemId) = $matches; // NOTE: Changes $path.
+        $this->_target->emit('thread-item-removed', [$threadId, $threadItemId]);
     }
 
     /**
@@ -383,12 +502,18 @@ class Op extends AutoPropertyHandler
      */
     protected function _handleRemove()
     {
-        if ($this->_isPathStartsWith('/direct_v2')) {
+        $handled = false;
+        $path = $this->_getProperty('path');
+        if ($this->_isPathStartsWith($path, '/direct_v2')) {
             $this->_removeThreadItem();
-        } elseif ($this->_isPathStartsWith('/broadcast')) {
+            $handled = true;
+        } elseif ($this->_isPathStartsWith($path, '/broadcast')) {
             $this->_handleLiveBroadcast();
-        } else {
-            $this->_client->debug('Unsupported REMOVE path "%s"', $this->path);
+            $handled = true;
+        }
+
+        if (!$handled) {
+            $this->_logger->warning(sprintf('Unsupported REMOVE path "%s"', $path));
         }
     }
 
@@ -397,21 +522,26 @@ class Op extends AutoPropertyHandler
      */
     protected function _notifyThread()
     {
-        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $this->path, $matches)) {
-            $this->_client->debug('Path %s does not match thread item regexp', $this->path);
+        if (!$this->_hasListeners('thread-notify')) {
+            return;
+        }
+
+        $path = $this->_getProperty('path');
+        if (!preg_match('#^/direct_v2/threads/([^/]+)/items/(.+)$#D', $path, $matches)) {
+            $this->_logger->warning(sprintf('Path %s does not match thread item regexp', $path));
 
             return;
         }
-        list($path, $threadId, $threadItemId) = $matches;
-        $json = HttpClient::api_body_decode($this->value);
-        if (!is_object($json)) {
-            $this->_client->debug('Failed to decode thread item notify JSON: %s', json_last_error_msg());
+        list($path, $threadId, $threadItemId) = $matches; // NOTE: Changes $path.
+        $json = HttpClient::api_body_decode($this->_getProperty('value'));
+        if (!is_array($json)) {
+            $this->_logger->warning(sprintf('Failed to decode thread item notify JSON: %s', json_last_error_msg()));
 
             return;
         }
         /** @var EventPayload\Notify $notifyPayload */
-        $notifyPayload = $this->_client->mapToJson($json, new EventPayload\Notify());
-        $this->_rtc->emit('thread-notify', [$threadId, $threadItemId, $notifyPayload]);
+        $notifyPayload = new EventPayload\Notify($json);
+        $this->_target->emit('thread-notify', [$threadId, $threadItemId, $notifyPayload]);
     }
 
     /**
@@ -419,22 +549,32 @@ class Op extends AutoPropertyHandler
      */
     protected function _handleNotify()
     {
-        if ($this->_isPathStartsWith('/direct_v2/threads')) {
+        $handled = false;
+        $path = $this->_getProperty('path');
+        if ($this->_isPathStartsWith($path, '/direct_v2/threads')) {
             $this->_notifyThread();
-        } else {
-            $this->_client->debug('Unsupported NOTIFY path "%s"', $this->path);
+            $handled = true;
+        }
+
+        if (!$handled) {
+            $this->_logger->warning(sprintf('Unsupported NOTIFY path "%s"', $path));
         }
     }
 
     /**
-     * @param Client $client
+     * Event handler.
+     *
+     * @param EventEmitterInterface $target
+     * @param LoggerInterface       $logger
      */
     public function handle(
-        Client $client)
+        EventEmitterInterface $target,
+        LoggerInterface $logger)
     {
-        $this->_client = $client;
-        $this->_rtc = $client->getRtc();
-        switch ($this->op) {
+        $this->_target = $target;
+        $this->_logger = $logger;
+        $op = $this->_getProperty('op');
+        switch ($op) {
             case self::ADD:
                 $this->_handleAdd();
                 break;
@@ -448,7 +588,7 @@ class Op extends AutoPropertyHandler
                 $this->_handleNotify();
                 break;
             default:
-                $this->_client->debug('Unknown patch op "%s"', $this->op);
+                $this->_logger->warning(sprintf('Unknown patch op "%s"', $op));
         }
     }
 }

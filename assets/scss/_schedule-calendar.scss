@@ -1,0 +1,281 @@
+/* Schedule Calendar (Month) */
+#schedule-calendar-month{}
+
+.sc-month-switch {
+    margin-bottom: 27px;
+
+    text-align: center;
+
+    .month {
+        font-size: 18px;
+        line-height: 22px;
+    }
+
+    .year {
+        margin-top: 1px;
+
+        font-size: 13px;
+        line-height: 15px;
+        color: $color-mid;
+    }
+
+    .nav {
+        font-size: 14px;
+        color: $color-mid;
+
+        &:hover {
+            color: $color-dark;
+        }
+    }
+
+    .nav.left { margin-right: 5px; }
+    .nav.right { margin-left: 5px; }
+}
+
+
+.schedule-calendar {
+    border-style: solid;
+    border-color: $section-border-color;
+    border-width: 1px 0px 0px 1px;
+}
+
+.schedule-calendar .cell {
+    float: left;
+    width: 14.28%;
+
+    background-color: #fff;
+
+    @include box-sizing(border-box);
+    border-style: solid;
+    border-color: $section-border-color;
+    border-width: 0px 1px 1px 0px;
+
+    &.in-other-month {
+        background-color: $color-light;
+    }
+}
+
+.schedule-calendar .sc-head .cell {
+    padding: 24px 10px 22px;
+
+    font-size: 16px;
+    line-height: 19px;
+    color: $color-dark;
+    text-align: center;
+
+    @include ellipsis;
+}
+
+.schedule-calendar .cell-inner {
+    position: relative;
+
+    padding-top: 75.27%;
+}
+
+.schedule-calendar .day-name {
+    position: absolute;
+    top: 28px;
+    left: 50px;
+    display: none;
+
+    font-size: 10px;
+    line-height: 19px;
+    color: $color-mid;
+}
+
+.schedule-calendar .day-number {
+    position: absolute;
+    top: 22px;
+    right: 17px;
+
+    width: 28px;
+    height: 19px;
+    padding: 5px 0 4px;
+    
+    color: $color-mid;
+    text-align: center;
+    line-height: 19px;
+    font-size: 16px;
+
+    border-radius: 50%;
+}
+.schedule-calendar .cell.today .day-number {
+    color: #fff;
+    background-color: $color-danger;
+}
+
+.schedule-calendar .add-post {
+    position: absolute;
+    top: 27px;
+    left: 17px;
+
+    color: $color-mid;
+    font-size: 10px;
+    line-height: 19px;
+    
+    opacity: 0;
+    visibility: hidden;
+    @include transition($transition);
+    @include transform(translateY(5px));
+
+    .icon {
+        font-size: 14px;
+        vertical-align: -2px;
+    }
+
+    &:hover {
+        color: $color-dark;
+    }
+}
+
+.schedule-calendar .cell:hover .add-post {
+    opacity: 1;
+    visibility: visible;
+
+    @include transform(translateY(0px));
+}
+
+
+.schedule-calendar .count {
+    position: absolute;
+    top: 50%;
+    left: 0;
+
+    margin-top: 0px;
+    width: 100%;
+
+    text-align: center;
+    font-size: 12px;
+    line-height: 14px;
+
+    a {
+        display: block;
+        height: 14px;
+        margin: 0 22px;
+        padding: 9px 10px 9px;
+
+        color: #fff;
+
+        background-color: #47F15A;
+        background: linear-gradient(134.72deg, #47F15A 0%, #0DE8E8 100%);
+        border-radius: 100px;
+        @include ellipsis;
+
+        @include transition($transition);
+        @include transform(rotateX(0deg));
+
+        &:hover {
+            background: linear-gradient(72.72deg, #47F15A 0%, #0DE8E8 100%);
+            box-shadow: $section-box-shadow;
+        }
+    }
+
+    &.medium a {
+        background-color: #00EAF8;
+        background: linear-gradient(134.72deg, #00EAF8 0%, #6D42EF 100%);
+
+        &:hover {
+            background: linear-gradient(72.72deg, #00EAF8 0%, #6D42EF 100%);
+        }
+    }
+
+    &.high a {
+        background-color: #EB4B92;
+        background: linear-gradient(134.72deg, #EB4B92 0%, #CA76E3 100%);
+
+        &:hover {
+            background: linear-gradient(72.72deg, #EB4B92 0%, #CA76E3 100%);
+        }
+    }
+}
+
+
+@media screen and (max-width: 992px) {
+    .sc-month-switch {
+        margin-bottom: 20px;
+    }
+
+    .schedule-calendar .sc-head {
+        display: none;
+    }
+
+    .schedule-calendar .cell {
+        width: 20%;
+
+        &.in-other-month {
+            display: none;
+        }
+    }
+
+    .schedule-calendar .day-name {
+        display: block;
+    }
+
+    .schedule-calendar .day-number {
+        left: 17px;
+        right: auto;
+    }
+
+    .schedule-calendar .add-post {
+        left: auto;
+        right: 17px;
+    }
+
+    .schedule-calendar .add-post {
+        opacity: 1;
+        visibility: visible;
+
+        @include transform(translateY(0px));
+
+        .icon {
+            font-size: 20px;
+            vertical-align: 0;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .schedule-calendar .cell { width: 33.33%; }
+}
+
+@media screen and (max-width: 600px) {
+    .schedule-calendar .cell { width: 50%; }
+}
+
+@media screen and (max-width: 425px) {
+    .schedule-calendar .cell { 
+        float: none;
+        width: auto;
+    }
+}
+
+
+
+/* Schedule Calendar (Day) */
+#schedule-calendar-day .account-selector {
+    position: absolute;
+    top: -5px;
+    right: 0;
+}
+
+#schedule-calendar-day .page-secondary-title {
+    margin-bottom: 36px;
+
+    .badge {
+        margin-left: 13px;
+        
+        vertical-align: 1px;
+    }
+}
+
+
+@media screen and (max-width: 992px) {
+    #schedule-calendar-day .account-selector {
+        position: static;
+        margin-bottom: 30px;
+    }
+
+    #schedule-calendar-day .page-secondary-title {
+        margin-bottom: 20px;
+    }
+}

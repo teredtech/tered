@@ -1,0 +1,118 @@
+/* Renew */
+#renew {
+    margin: 80px 0;
+}
+#renew .header {
+    margin-bottom: 53px;
+    
+    text-align: center;
+
+    p {
+        max-width: 413px;
+        margin: 14px auto;
+        
+        color: $color-mid;
+        font-size: 18px;
+        line-height: 25px;
+        font-weight: 300;
+    }
+}
+
+#renew sup {
+    font-size: 60%;
+    top: -0.5em;
+}
+
+#renew .options {
+    padding: 49px 91px;
+
+    color: $color-mid;
+    font-size: 18px;
+    line-height: 24px;
+
+    background-color: #fff;
+    border: 1px solid $section-border-color;
+    border-radius: 8px;
+}
+
+#renew .option-group {
+    margin-bottom: 60px;
+}
+
+#renew .option-group-item {
+    float: left;
+    width: 31.33%;
+    margin: 0 3% 3% -0px;
+
+    &:nth-child(3n) {
+        margin-right: 0;
+    }
+}
+
+#renew .group-label {
+    position: relative;
+    margin-bottom: 34px;
+
+    display: block;
+
+    .icon {
+        position: absolute;
+        top: -2px;
+        left: -46px;
+        font-size: 24px;
+
+        color: $color-primary;
+    }
+}
+
+#renew .custom-radio { 
+    display: none;
+}
+
+#renew .custom-radio+div {
+    display: block;
+    
+    text-align: center;
+    border: 5px solid transparent;
+    border-radius: 13px;
+
+    cursor: pointer;
+    @include transition($transition);
+
+    &>div {
+        padding: 27px;
+
+        background-color: $color-light;
+
+        border: 1px solid $section-border-color;
+        border-radius: 8px;
+    }
+
+    .price {
+        margin-bottom: 10px;
+
+        color: $color-primary;
+        font-size: 40px;
+        line-height: 50px;
+        font-weight: 200;
+
+        .number {
+            display: block;
+
+            font-size: 28px;
+            line-height: 30px;
+            font-weight: normal;
+        }
+    }
+
+
+    img {
+        display: inline-block;
+        height: 36px;
+        width: auto;
+    }
+}
+#renew .custom-radio:checked+div{
+    color: $color-dark;
+    border-color: $color-primary;
+}

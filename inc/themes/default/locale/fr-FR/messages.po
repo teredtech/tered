@@ -1,0 +1,290 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Nextpost v3.0 - Default Theme\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: 
+msgid "About"
+msgstr ""
+
+#: 
+msgid "Features"
+msgstr ""
+
+#: 
+msgid "Prices"
+msgstr ""
+
+#: 
+msgid "Hi, %s"
+msgstr ""
+
+#: 
+msgid "Login"
+msgstr ""
+
+#: 
+msgid "Sign up"
+msgstr ""
+
+#: 
+msgid "A Smarter way to <br> Auto Post on Instagram"
+msgstr ""
+
+#: 
+msgid "Save time managing your Instagram accounts, publish and analyze all your posts in one panel."
+msgstr ""
+
+#: 
+msgid "Get started"
+msgstr ""
+
+#: 
+msgid "Free trial available"
+msgstr ""
+
+#: 
+msgid "%s day free trial"
+msgid_plural "%s days free trial"
+msgstr[0] ""
+msgstr[1] ""
+
+#: 
+msgid "Here is features for you"
+msgstr ""
+
+#: 
+msgid "Unique Design"
+msgstr ""
+
+#: 
+msgid "Multi Accounts"
+msgstr ""
+
+#: 
+msgid "Auto Post Content"
+msgstr ""
+
+#: 
+msgid "Schedule Calendar"
+msgstr ""
+
+#: 
+msgid "Free Trial"
+msgstr ""
+
+#: 
+msgid "Safe to use"
+msgstr ""
+
+#: 
+msgid "Mobile Responsive"
+msgstr ""
+
+#: 
+msgid "Could Import"
+msgstr ""
+
+#: 
+msgid "Relevant prices for you"
+msgstr ""
+
+#: 
+msgid "per month"
+msgstr ""
+
+#: 
+msgid "Annual Price"
+msgstr ""
+
+#: 
+msgid "You save %s"
+msgstr ""
+
+#: 
+msgid "Only 1 account"
+msgid_plural "Up to %s accounts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: 
+msgid "Unlimited accounts"
+msgstr ""
+
+#: 
+msgid "Zero accounts"
+msgstr ""
+
+#: 
+msgid "Post Types"
+msgstr ""
+
+#: 
+msgid "Photo"
+msgstr ""
+
+#: 
+msgid "Video"
+msgstr ""
+
+#: 
+msgid "Story"
+msgstr ""
+
+#: 
+msgid "Photo+Video"
+msgstr ""
+
+#: 
+msgid "Photo only"
+msgstr ""
+
+#: 
+msgid "Video only"
+msgstr ""
+
+#: 
+msgid "Album"
+msgstr ""
+
+#: 
+msgid "Cloud Import"
+msgstr ""
+
+#: 
+msgid "Not available"
+msgstr ""
+
+#: 
+msgid "Spintax Support"
+msgstr ""
+
+#: 
+msgid "Storage"
+msgstr ""
+
+#: 
+msgid "Copyright"
+msgstr ""
+
+#: 
+msgid "Login credentials didn't match!"
+msgstr ""
+
+#: 
+msgid "Login with Facebook"
+msgstr ""
+
+#: 
+msgid "Email address"
+msgstr ""
+
+#: 
+msgid "Password"
+msgstr ""
+
+#: 
+msgid "Remember me"
+msgstr ""
+
+#: 
+msgid "Forgot your password?"
+msgstr ""
+
+#: 
+msgid "Sign in"
+msgstr ""
+
+#: 
+msgid "Password Reset"
+msgstr ""
+
+#: 
+msgid "New Password"
+msgstr ""
+
+#: 
+msgid "Password confirm"
+msgstr ""
+
+#: 
+msgid "Reset Password"
+msgstr ""
+
+#: 
+msgid "Success!"
+msgstr ""
+
+#: 
+msgid "You've successfully reset your password!"
+msgstr ""
+
+#: 
+msgid "Password Recovery"
+msgstr ""
+
+#: 
+msgid "Your e-mail address"
+msgstr ""
+
+#: 
+msgid "Submit"
+msgstr ""
+
+#: 
+msgid "Enter your registration email address to receive password reset instructions."
+msgstr ""
+
+#: 
+msgid "Email Sent!"
+msgstr ""
+
+#: 
+msgid "Password reset instruction sent to your email address."
+msgstr ""
+
+#: 
+msgid "Signup"
+msgstr ""
+
+#: 
+msgid "Sign up to <br> managing Instagram!"
+msgstr ""
+
+#: 
+msgid "Firstname"
+msgstr ""
+
+#: 
+msgid "Lastname"
+msgstr ""
+
+#: 
+msgid "Email"
+msgstr ""
+
+#: 
+msgid "Confirm password"
+msgstr ""
+
+#: 
+msgid "Select your timezone"
+msgstr ""
+
+#: 
+msgid "Get Started"
+msgstr ""
+
+#: 
+msgid "By creating an acount you agree to our terms of service."
+msgstr ""
+
+#: 
+msgid "Already have an account?"
+msgstr ""
+

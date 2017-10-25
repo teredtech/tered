@@ -1,0 +1,81 @@
+/* Skeleton */
+.skeleton{
+    position: relative;
+    margin: 90px 10px 30px 80px;
+}
+
+.skeleton--full {
+    display: none; // will be faded in after height calculation
+    margin: 61px 0 0 70px;
+}
+
+.skeleton-aside,
+.skeleton-content {
+    position: relative;
+
+    @include box-sizing(border-box);
+
+    background-color: #fff;
+    box-shadow: $section-box-shadow;
+
+    overflow: auto;
+}
+.skeleton-aside {
+    float: left;
+    width: 30%;
+}
+.skeleton-content {
+    float: right;
+    width: 67%;
+}
+
+.skeleton-aside.onprogress:after,
+.skeleton-content.onprogress:after {
+    content: ""; 
+    
+    position: absolute; 
+    z-index: 9999;
+    top: 0; 
+    left: 0; 
+
+    width: 100%; 
+    height: 100%;
+    
+    background: rgba(255,255,255,0.95) url("../img/round-loading.svg") center no-repeat;
+    -webkit-background-size: 32px auto;
+    background-size: 32px auto;
+}
+
+
+.skeleton-aside::-webkit-scrollbar-thumb,
+.skeleton-content::-webkit-scrollbar-thumb{
+    background-color: transparent;
+}
+
+.skeleton-aside:hover::-webkit-scrollbar-thumb,
+.skeleton-content:hover::-webkit-scrollbar-thumb{
+    background-color: #b7b7b7;
+}
+
+
+.skeleton-content .section-content {
+    max-width: 900px;
+}
+
+
+@media screen and (max-width: 992px) {
+    .skeleton {
+        margin: 80px 0 20px;
+    }
+
+    .skeleton--full {
+        margin: 61px 0 0px;
+    }
+
+    .skeleton-aside,
+    .skeleton-content {
+        width: auto;
+        height: auto !important;
+        float: none;
+    }
+}

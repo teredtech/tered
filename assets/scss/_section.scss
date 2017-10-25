@@ -1,0 +1,48 @@
+/* Section */
+.section {
+    background-color: #fff;
+    box-shadow: $section-box-shadow;
+}
+
+.section-header {
+    padding: 25px;
+    border-bottom: 1px solid $field-border-color;
+}
+
+.section-title {
+    float: left;
+    margin:0;
+    height: 20px;
+
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: normal;
+}
+
+.section-actions {
+    float: right;
+    height: 20px;
+
+    .icon {
+        float: left;
+        margin-left: 10px;
+        margin-top: -3px;
+
+        font-size: 24px;
+        height: 24px;
+        color: $color-mid;
+
+        @include transition($transition);
+
+        &:hover {
+            color: $color-dark;
+        }
+    }
+}
+
+.section-content {
+    padding: 25px;
+
+    font-size: 14px;
+    line-height: 20px;
+}

@@ -1,0 +1,1946 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Nextpost Main\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: 
+msgid "Missing some of required data."
+msgstr "Missing some of required data."
+
+#: 
+msgid "Account is already exists!"
+msgstr "Account is already exists!"
+
+#: 
+msgid "Proxy is not valid or active!"
+msgstr "Proxy is not valid or active!"
+
+#: 
+msgid "Please goto <a href='http://instagram.com' target='_blank'>instagram.com</a> and pass checkpoint!"
+msgstr "Please goto <a href='http://instagram.com' target='_blank'>instagram.com</a> and pass checkpoint!"
+
+#: 
+msgid "The password you entered is incorrect. Please try again."
+msgstr "The password you entered is incorrect. Please try again."
+
+#: 
+msgid "The username you entered doesn't appear to belong to an account. Please check your username and try again."
+msgstr "The username you entered doesn't appear to belong to an account. Please check your username and try again."
+
+#: 
+msgid "Oops! Something went wrong. Please try again later!"
+msgstr "Oops! Something went wrong. Please try again later!"
+
+#: 
+msgid "Changes saved!"
+msgstr "Changes saved!"
+
+#: 
+msgid "ID is requred!"
+msgstr "ID is requred!"
+
+#: 
+msgid "Invalid ID"
+msgstr "Invalid ID"
+
+#: 
+msgid "Post is not available!"
+msgstr "Post is not available!"
+
+#: 
+msgid "Post status is not valid!"
+msgstr "Post status is not valid!"
+
+#: 
+msgid "Post type is not valid!"
+msgstr "Post type is not valid!"
+
+#: 
+msgid "Your access to the script has been disabled!"
+msgstr "Your access to the script has been disabled!"
+
+#: 
+msgid "Account is not available."
+msgstr "Account is not available."
+
+#: 
+msgid "Re-login required for %s"
+msgstr "Re-login required for %s"
+
+#: 
+msgid "At least 2 photo or video is required for the album post."
+msgstr "At least 2 photo or video is required for the album post."
+
+#: 
+msgid "Couldn't find selected media for the story"
+msgstr "Couldn't find selected media for the story"
+
+#: 
+msgid "Couldn't find selected media for the post"
+msgstr "Couldn't find selected media for the post"
+
+#: 
+msgid "It's not possible to post video files right now!"
+msgstr "It's not possible to post video files right now!"
+
+#: 
+msgid "Oops! An error occured. Please try again later!"
+msgstr "Oops! An error occured. Please try again later!"
+
+#: 
+msgid "You don't have a permission for video posts."
+msgstr "You don't have a permission for video posts."
+
+#: 
+msgid "You don't have a permission for story videos."
+msgstr "You don't have a permission for story videos."
+
+#: 
+msgid "You don't have a permission for videos in album."
+msgstr "You don't have a permission for videos in album."
+
+#: 
+msgid "You don't have a permission for photo posts."
+msgstr "You don't have a permission for photo posts."
+
+#: 
+msgid "You don't have a permission for story photos."
+msgstr "You don't have a permission for story photos."
+
+#: 
+msgid "You don't have a permission for photos in album."
+msgstr "You don't have a permission for photos in album."
+
+#: 
+msgid "You don't have a permission for this kind of post."
+msgstr "You don't have a permission for this kind of post."
+
+#: 
+msgid "It's not possible to post video files!"
+msgstr "It's not possible to post video files!"
+
+#: 
+msgid "Encryption error"
+msgstr "Encryption error"
+
+#: 
+msgid "Email is not valid."
+msgstr "Email is not valid."
+
+#: 
+msgid "Invalid token"
+msgstr "Invalid token"
+
+#: 
+msgid "Account is not active"
+msgstr "Account is not active"
+
+#: 
+msgid "Package added successfully! Please refresh the page."
+msgstr "Package added successfully! Please refresh the page."
+
+#: 
+msgid "Changes saved and subscribers updated!"
+msgstr "Changes saved and subscribers updated!"
+
+#: 
+msgid "Package doesn't exist!"
+msgstr "Package doesn't exist!"
+
+#: 
+msgid "Password must be at least 6 character length!"
+msgstr "Password must be at least 6 character length!"
+
+#: 
+msgid "Password confirmation didn't match!"
+msgstr "Password confirmation didn't match!"
+
+#: 
+msgid "All fields are required!"
+msgstr "All fields are required!"
+
+#: 
+msgid "File not received!"
+msgstr "File not received!"
+
+#: 
+msgid "Only zip files are allowed"
+msgstr "Only zip files are allowed"
+
+#: 
+msgid "Please enable PHP ZIP extension (ZipArchive) and try again!"
+msgstr "Please enable PHP ZIP extension (ZipArchive) and try again!"
+
+#: 
+msgid "Plugin is not valid for installation."
+msgstr "Plugin is not valid for installation."
+
+#: 
+msgid "Plugin idname is not valid."
+msgstr "Plugin idname is not valid."
+
+#: 
+msgid "Plugin with same idname is already exists."
+msgstr "Plugin with same idname is already exists."
+
+#: 
+msgid "Plugin is already active!"
+msgstr "Plugin is already active!"
+
+#: 
+msgid "Success!"
+msgstr "Успешно"
+
+#: 
+msgid "Plugin activated!"
+msgstr "Plugin activated!"
+
+#: 
+msgid "Plugin is already deactive!"
+msgstr "Plugin is already deactive!"
+
+#: 
+msgid "Plugin deactivated!"
+msgstr "Plugin deactivated!"
+
+#: 
+msgid "Please select at least 2 media this album post."
+msgstr "Please select at least 2 media this album post."
+
+#: 
+msgid "Please select one media for this story post."
+msgstr "Please select one media for this story post."
+
+#: 
+msgid "Please select one media for this post."
+msgstr "Please select one media for this post."
+
+#: 
+msgid "Please select at least one Instagram account."
+msgstr "Please select at least one Instagram account."
+
+#: 
+msgid "Post has been scheduled to %s"
+msgstr "Post has been scheduled to %s"
+
+#: 
+msgid "Post has been re-scheduled to %s"
+msgstr "Post has been re-scheduled to %s"
+
+#: 
+msgid "Post published successfully! Click on the usernames to view the published posts."
+msgstr "Post published successfully! Click on the usernames to view the published posts."
+
+#: 
+msgid "Post published successfully! <a href='%s'>View post</a>"
+msgstr "Post published successfully! <a href='%s'>View post</a>"
+
+#: 
+msgid "Failed to publish the post! Click on the usernames to view the failed posts."
+msgstr "Failed to publish the post! Click on the usernames to view the failed posts."
+
+#: 
+msgid "Post successfully published only for some accounts."
+msgstr "Post successfully published only for some accounts."
+
+#: 
+msgid "Email is not available."
+msgstr "Email is not available."
+
+#: 
+msgid "Proxy doesn't exist!"
+msgstr "Proxy doesn't exist!"
+
+#: 
+msgid "Proxy added successfully! Please refresh the page."
+msgstr "Proxy added successfully! Please refresh the page."
+
+#: 
+msgid "Couldn't send recovery email. Please try again later."
+msgstr "Couldn't send recovery email. Please try again later."
+
+#: 
+msgid "We couldn't find your account"
+msgstr "We couldn't find your account"
+
+#: 
+msgid "Invalid package"
+msgstr "Invalid package"
+
+#: 
+msgid "Invalid plan"
+msgstr "Invalid plan"
+
+#: 
+msgid "Invalid payment gateway"
+msgstr "Invalid payment gateway"
+
+#: 
+msgid "Invalid port number"
+msgstr "Invalid port number"
+
+#: 
+msgid "From email is not valid"
+msgstr "From email is not valid"
+
+#: 
+msgid "Connection failed"
+msgstr "Connection failed"
+
+#: 
+msgid "Failed to start encryption"
+msgstr "Failed to start encryption"
+
+#: 
+msgid "Encryption failed"
+msgstr "Encryption failed"
+
+#: 
+msgid "Authentication failed"
+msgstr "Authentication failed"
+
+#: 
+msgid "All fields are required"
+msgstr "All fields are required"
+
+#: 
+msgid "Email is not valid!"
+msgstr "Email is not valid!"
+
+#: 
+msgid "Email is not available!"
+msgstr "Email is not available!"
+
+#: 
+msgid "Jan"
+msgstr "Jan"
+
+#: 
+msgid "Feb"
+msgstr "Feb"
+
+#: 
+msgid "Mar"
+msgstr "Mar"
+
+#: 
+msgid "Apr"
+msgstr "Apr"
+
+#: 
+msgid "May"
+msgstr "May"
+
+#: 
+msgid "Jun"
+msgstr "Jun"
+
+#: 
+msgid "Jul"
+msgstr "Jul"
+
+#: 
+msgid "Aug"
+msgstr "Aug"
+
+#: 
+msgid "Sep"
+msgstr "Sep"
+
+#: 
+msgid "Oct"
+msgstr "Oct"
+
+#: 
+msgid "Nov"
+msgstr "Nov"
+
+#: 
+msgid "Dec"
+msgstr "Dec"
+
+#: 
+msgid "User added successfully! Please refresh the page."
+msgstr "User added successfully! Please refresh the page."
+
+#: 
+msgid "User doesn't exist!"
+msgstr "User doesn't exist!"
+
+#: 
+msgid "You don't have a privilage to modify this user's data!"
+msgstr "You don't have a privilage to modify this user's data!"
+
+#: 
+msgid "You can not delete your own account!"
+msgstr "You can not delete your own account!"
+
+#: 
+msgid "Thanks for using %s."
+msgstr "Thanks for using %s."
+
+#: 
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+#: 
+msgid "Password Recovery"
+msgstr "Password Recovery"
+
+#: 
+msgid "Hi %s"
+msgstr "Hi %s"
+
+#: 
+msgid "Someone requested password reset instructions for your account on %s. If this was you, click the button below to set new password for your account. Otherwise you can forget about this email. Your account is still safe."
+msgstr "Someone requested password reset instructions for your account on %s. If this was you, click the button below to set new password for your account. Otherwise you can forget about this email. Your account is still safe."
+
+#: 
+msgid "Reset Password"
+msgstr "Reset Password"
+
+#: 
+msgid "Annual Plan"
+msgstr "Годовой план"
+
+#: 
+msgid "Monthly Plan"
+msgstr "Месяцный план"
+
+#: 
+msgid "Payment for Order #%s"
+msgstr "Payment for Order #%s"
+
+#: 
+msgid "System detected logical error"
+msgstr "System detected logical error"
+
+#: 
+msgid "Couldn't get payment information"
+msgstr "Couldn't get payment information"
+
+#: 
+msgid "Couldn't complete the payment!"
+msgstr "Couldn't complete the payment!"
+
+#: 
+msgid "Couldn't approve the payment!"
+msgstr "Couldn't approve the payment!"
+
+#: 
+msgid "You must have FFprobe to analyze video details."
+msgstr "У вас должен быть FFprobe для анализа деталей видео."
+
+#: 
+msgid "The video file \"%s\" does not exist on disk."
+msgstr "Видеофайл  из \"%s\" не существует на диске."
+
+#: 
+msgid "FFprobe failed to analyze your video file \"%s\"."
+msgstr "FFprobe не смог проанализировать ваш видеофайл \"%s\"."
+
+#: 
+msgid "FFprobe gave us invalid JSON for \"%s\"."
+msgstr "FFprobe дал нам недействительный JSON для  \"%s\"."
+
+#: 
+msgid "FFprobe failed to detect any video format details. Is \"%s\" a valid video file?"
+msgstr "FFprobe не удалось обнаружить какие-либо данные в формате видео. Является ли \"%s\" действительным видеофайлом?"
+
+#: 
+msgid "Instagram only accepts story videos that are between 3 and 15 seconds long. Your story video \"%s\" is %.3f seconds long."
+msgstr "Instagram принимает  видеоистории только длиной от 3 до 15 секунд. Ваше видео в сюжете \"%s\" равно %.3f секунд.\n"
+""
+
+#: 
+msgid "Instagram only accepts direct videos that are between 0.1 and 15 seconds long. Your direct video \"%s\" is %.3f seconds long."
+msgstr "Instagram принимает только сюжетные видеоролики длиной от 3 до 15 секунд. Ваше видео в сюжете \"%s\" равно %.3f секунд.\n"
+""
+
+#: 
+msgid "Instagram only accepts videos that are between 3 and 60 seconds long. Your video \"%s\" is %.3f seconds long."
+msgstr "Instagram принимает только видео длиной от 3 до 60 секунд. Ваше видео \"%s\" равно %.3f секунд."
+
+#: 
+msgid "You must have FFmpeg to generate video thumbnails."
+msgstr "У вас должно быть FFmpeg для создания миниатюр видео."
+
+#: 
+msgid "FFmpeg failed to generate a video thumbnail."
+msgstr "FFmpeg не удалось создать миниатюру видео."
+
+#: 
+msgid "New Account"
+msgstr "Новый учетный запись"
+
+#: 
+msgid "Saved Accounts"
+msgstr "Сохраненные аккаунты"
+
+#: 
+msgid "New Caption"
+msgstr "Новый заголовок"
+
+#: 
+msgid "Caption Templates"
+msgstr "Шаблоны заголовок"
+
+#: 
+msgid "Add new"
+msgstr "Добавьте новый"
+
+#: 
+msgid "Checkout Result"
+msgstr "Проверьте результаты"
+
+#: 
+msgid "Account Expired"
+msgstr "Аккаунт истек"
+
+#: 
+msgid "Username"
+msgstr "Имя пользавателя"
+
+#: 
+msgid "Enter username"
+msgstr "Введите имя пользавателя"
+
+#: 
+msgid "Password"
+msgstr "Пароль"
+
+#: 
+msgid "Enter password"
+msgstr "Введите пароль"
+
+#: 
+msgid "Proxy"
+msgstr "Прокси"
+
+#: 
+msgid "Proxy for your country"
+msgstr "Прокси для вашей страны"
+
+#: 
+msgid "Proxy should match following pattern: http://ip:port OR http://username:password@ip:port"
+msgstr "Прокси должен совпадать со следующим образцом:\n"
+"http://ip:port OR http://username:password@ip:port"
+
+#: 
+msgid "It's recommended to to use a proxy belongs to the country where you've logged in this acount in Instagram's official app or website."
+msgstr "Рекомендуется использовать прокси-сервер, принадлежащий стране, в которой вы вошли в этот аккаунт в официальном приложении или веб-сайте Instagram."
+
+#: 
+msgid "Save changes"
+msgstr "Сохранить изменения"
+
+#: 
+msgid "Add account"
+msgstr "Добавьте аккаунт"
+
+#: 
+msgid "Added on %s"
+msgstr "Добавлен как %s"
+
+#: 
+msgid "Re-login required!"
+msgstr "Требуется повторный вход"
+
+#: 
+msgid "Edit"
+msgstr "Редактировать"
+
+#: 
+msgid "Delete"
+msgstr "Удалите"
+
+#: 
+msgid "View timeline"
+msgstr "Вид таймлайна"
+
+#: 
+msgid "Load More"
+msgstr "Скачай больше"
+
+#: 
+msgid "You haven't add any Instagram account yet. Click the button below to add your first account."
+msgstr "Вы ещё не добавили какой нибудь учетный запись Instagram.\n"
+"Щелкните кнопку ниже, чтоб добавить ваш первый аккаунт."
+
+#: 
+msgid "You don't have a permission to add any Instagram account."
+msgstr "У вас нет разрешения чтоб добавить аккаунта инстаграм ."
+
+#: 
+msgid "Title"
+msgstr "Заглавие"
+
+#: 
+msgid "Enter caption title"
+msgstr "Введите заголовок."
+
+#: 
+msgid "Caption"
+msgstr "Заголовок"
+
+#: 
+msgid "Write a caption"
+msgstr "Пишите заголовок"
+
+#: 
+msgid "Save caption"
+msgstr "Сохраните заголовок"
+
+#: 
+msgid "Use caption"
+msgstr "Используйте заголовок"
+
+#: 
+msgid "You haven't add any caption template yet. Click the button below to create your first caption template."
+msgstr "Вы ещё не добавили шаблоны заголовка. Щелкните кнопку ниже для создание вашего первого шаблона заголовка"
+
+#: 
+msgid "Add New"
+msgstr "Добавьте новый"
+
+#: 
+msgid "Payment Error!"
+msgstr "Ошибка оплаты"
+
+#: 
+msgid "An error occured during the payment process! Please try again later!"
+msgstr "Ошибка появился при процессе оплаты. Пожалуйста, попытайтесь потом ещё раз."
+
+#: 
+msgid "Try Again"
+msgstr "Попытайтесь ещё раз"
+
+#: 
+msgid "Go to Home"
+msgstr "Перейти на главную страницу"
+
+#: 
+msgid "Payment accepted successfully! Your account will be active until %s"
+msgstr "Оплата успешно принята. Ваш аккунт будет активным до %s"
+
+#: 
+msgid "Add post"
+msgstr "Добавьте пост"
+
+#: 
+msgid "Go to Account"
+msgstr "Перейти в аккаунт"
+
+#: 
+msgid "Get Started"
+msgstr "Начать"
+
+#: 
+msgid "Please click \"View Plans\" button to view pricing packages. After choosing appropriate package you can start to use the app."
+msgstr "Пожалуйста, щелкните кнопку \"Планы Просмотра\" для смотра пакета цен. После выбора подходящего пакета, можете начать использовать программу."
+
+#: 
+msgid "View Plans"
+msgstr "Планы Просмотра"
+
+#: 
+msgid "Your account has been expired! <br> Please renew your account to use the app."
+msgstr "Ваш аккаунт истек! <br> Пожалуйста, возобновите ваш аккаунт для использование программы."
+
+#: 
+msgid "Renew Account"
+msgstr "Возобновите аккаунт"
+
+#: 
+msgid "Logout"
+msgstr "Выйти"
+
+#: 
+msgid "Upload Media"
+msgstr "Загрузить медиа"
+
+#: 
+msgid "Your PC"
+msgstr "Ваш компютер"
+
+#: 
+msgid "URL"
+msgstr "URL"
+
+#: 
+msgid "Submit"
+msgstr "Подтвердить"
+
+#: 
+msgid "Cancel"
+msgstr "Отменить"
+
+#: 
+msgid "Add Post"
+msgstr "Добавьте пост"
+
+#: 
+msgid "Scheduled Posts"
+msgstr "Запланированные публикации"
+
+#: 
+msgid "Captions"
+msgstr "Заголовки"
+
+#: 
+msgid "Accounts"
+msgstr "Аккаунты"
+
+#: 
+msgid "Statistics"
+msgstr "Статистика"
+
+#: 
+msgid "Modules"
+msgstr "Модулы"
+
+#: 
+msgid "Packages"
+msgstr "Пакеты"
+
+#: 
+msgid "Users"
+msgstr "Пользователи"
+
+#: 
+msgid "Settings"
+msgstr "Настройки"
+
+#: 
+msgid "Trial Package"
+msgstr "Пробный пакет"
+
+#: 
+msgid "Size (days)"
+msgstr "Количество (дней)"
+
+#: 
+msgid "Possible values: -1, 0 and any positive integer"
+msgstr "возможные стоимости: -1, 0 и любое положительное число"
+
+#: 
+msgid "Include -1 for unlimited, 0 to completely disable trial mode"
+msgstr "Включить -1 для неограниченного, 0, чтобы полностью отключить пробный режим"
+
+#: 
+msgid "Max. storage size (MB)"
+msgstr "Макс.объём памяти (MB)"
+
+#: 
+msgid "Max. file size (MB)"
+msgstr "Макс.объём файла (MB)"
+
+#: 
+msgid "Include -1 for unlimted"
+msgstr "Включить -1 для неограниченного"
+
+#: 
+msgid "Number of accounts"
+msgstr "Число учетных записей"
+
+#: 
+msgid "Include -1 for unlimited"
+msgstr "Включить -1 для неограниченного"
+
+#: 
+msgid "File Pickers"
+msgstr "Выбор файлов"
+
+#: 
+msgid "Dropbox"
+msgstr "Dropbox"
+
+#: 
+msgid "OneDrive"
+msgstr "OneDrive"
+
+#: 
+msgid "Google Drive"
+msgstr "Google Диск"
+
+#: 
+msgid "Post Types"
+msgstr "Типы поста"
+
+#: 
+msgid "Photo Post"
+msgstr "Фотопост"
+
+#: 
+msgid "Video Post"
+msgstr "Видеопост"
+
+#: 
+msgid "Story Photo"
+msgstr "Фото истории"
+
+#: 
+msgid "Story Video"
+msgstr "Видео истории"
+
+#: 
+msgid "Album"
+msgstr "Альбом"
+
+#: 
+msgid "Album (video)"
+msgstr "Альбом (видео)"
+
+#: 
+msgid "Spintax"
+msgstr "Spintax"
+
+#: 
+msgid "Subscribers with this option enabled, can use spintax syntax in post captions."
+msgstr "Подписчики с этими параметрами могут использовать Spintax syntax в заголовках публикации."
+
+#: 
+msgid "Save"
+msgstr "Сохранить"
+
+#: 
+msgid "Save and update subscribers"
+msgstr "Сохранить и обновить подписчиков"
+
+#: 
+msgid "New Package"
+msgstr "Новый пакет"
+
+#: 
+msgid "Package Name"
+msgstr "Имя пакета"
+
+#: 
+msgid "Monthly Price"
+msgstr "Помесяцная цена"
+
+#: 
+msgid "Annual Price"
+msgstr "Годовая цена"
+
+#: 
+msgid "Invisible Package"
+msgstr "Невидимый пакет"
+
+#: 
+msgid "Will be visible only by admins inside the app"
+msgstr "Будет видна только администраторами внутри приложения"
+
+#: 
+msgid "Free Trial"
+msgstr "Бесплатная пробная версия"
+
+#: 
+msgid "Trial package for new users"
+msgstr "Пробный пакет для новых пользователей"
+
+#: 
+msgid "Public Package"
+msgstr "Публичный пакет"
+
+#: 
+msgid "Package for admins only"
+msgstr "Пакет только для администраторов"
+
+#: 
+msgid "Please select a package from left side list to view or modify it's details."
+msgstr "Пожалуйста, выберите пакет из левой стороны списка, чтобы просмотреть или изменить его детали."
+
+#: 
+msgid "Choose your module and click \"Install\" button"
+msgstr "Choose your module and click \"Install\" button"
+
+#: 
+msgid "Choose Zip Archive"
+msgstr "Choose Zip Archive"
+
+#: 
+msgid "Install"
+msgstr "Install"
+
+#: 
+msgid "Module has been installed successfully!"
+msgstr "Module has been installed successfully!"
+
+#: 
+msgid "View Modules"
+msgstr "View Modules"
+
+#: 
+msgid "Error!"
+msgstr "Error!"
+
+#: 
+msgid "An error occured during the installation process! Please try again later!"
+msgstr "An error occured during the installation process! Please try again later!"
+
+#: 
+msgid "Version %s"
+msgstr "Version %s"
+
+#: 
+msgid "By %s"
+msgstr "By %s"
+
+#: 
+msgid "Deactivate"
+msgstr "Deactivate"
+
+#: 
+msgid "Activate"
+msgstr "Activate"
+
+#: 
+msgid "Invalid module"
+msgstr "Invalid module"
+
+#: 
+msgid "You haven't installed any module yet. Click the button below to install first module."
+msgstr "You haven't installed any module yet. Click the button below to install first module."
+
+#: 
+msgid "This post has been failed to publish previously because of the following reason:"
+msgstr "Эта публикация не была опубликована ранее по следующей причине:"
+
+#: 
+msgid "Video"
+msgstr "Видео"
+
+#: 
+msgid "Photo"
+msgstr "Фото"
+
+#: 
+msgid "Post"
+msgstr "Post"
+
+#: 
+msgid "Add Story"
+msgstr "Добавьте историю"
+
+#: 
+msgid "Story"
+msgstr "История"
+
+#: 
+msgid "Add Album"
+msgstr "Добавьте альбом"
+
+#: 
+msgid "Pick a file from your device"
+msgstr "Pick a file from your device"
+
+#: 
+msgid "Drop here"
+msgstr "Отбросить"
+
+#: 
+msgid "Drag media here to post"
+msgstr "Перетащите медиа суда, чтобы опубликовать"
+
+#: 
+msgid "Choose Accounts"
+msgstr "Выберите аккаунты"
+
+#: 
+msgid "Schedule"
+msgstr "Запланировать"
+
+#: 
+msgid "Post now"
+msgstr "Публиковать сейчас"
+
+#: 
+msgid "Schedule the post"
+msgstr "Запланировать пост"
+
+#: 
+msgid "Firstname"
+msgstr "Имя"
+
+#: 
+msgid "Lastname"
+msgstr "Фамилия"
+
+#: 
+msgid "Language"
+msgstr "Язык"
+
+#: 
+msgid "Timezone"
+msgstr "Часовой пояс"
+
+#: 
+msgid "Date format"
+msgstr "Формат даты"
+
+#: 
+msgid "01 November, 2017"
+msgstr "01 Ноябрь, 2017"
+
+#: 
+msgid "November 01, 2017"
+msgstr "Ноябрь 01, 2017"
+
+#: 
+msgid "03 Nov, 2017"
+msgstr "03 Нояб, 2017"
+
+#: 
+msgid "Nov 03, 2017"
+msgstr "Нояб 03, 2017"
+
+#: 
+msgid "Time format"
+msgstr "Формат времени"
+
+#: 
+msgid "24 hours"
+msgstr "24 часа"
+
+#: 
+msgid "12 hours"
+msgstr "12 часов"
+
+#: 
+msgid "Email"
+msgstr "Электронный почт"
+
+#: 
+msgid "New Password"
+msgstr "Новый пароль"
+
+#: 
+msgid "Confirm Password"
+msgstr "Подтвердить пароль"
+
+#: 
+msgid "If you don't want to change password then leave these password fields empty!"
+msgstr "Если не хотите изменить пароль, оставьте это поле пароля пустым."
+
+#: 
+msgid "Your account is subscribed to %s and will be expired on %s at %s"
+msgstr "Ваш аккаунт подписан на %s и будет истек %s в %s"
+
+#: 
+msgid "Your account is in trial mode and will be expired on %s at %s"
+msgstr "Ваш аккаунт в пробном режиме и будет истек %s в %s"
+
+#: 
+msgid "Upgrade Account"
+msgstr "Обновить аккаунт"
+
+#: 
+msgid "Your account will be expired on %s at %s"
+msgstr "Ваш аккаунт будет истек %s в %s"
+
+#: 
+msgid "Used once"
+msgid_plural "Used %s times"
+msgstr[0] "Использован один раз"
+msgstr[1] "Использован %s раза"
+msgstr[2] "Использован %s раз"
+msgstr[3] "Использован %s раз"
+
+#: 
+msgid "There is not any proxy address yet. Click the button below to add your first proxy address."
+msgstr "Ещё нет прокси адреса. Щелкните ниже, чтобы добавить ваш первый прокси адрес."
+
+#: 
+msgid "Please select a proxy from left side list to view or modify it's details."
+msgstr "Пожалуйста, выберите прокси из левой стороны списка, чтобы просмотреть или изменить его детали."
+
+#: 
+msgid "New Proxy"
+msgstr "Новый Прокси"
+
+#: 
+msgid "Country"
+msgstr "Страна"
+
+#: 
+msgid "Unknown"
+msgstr "Неизвестен"
+
+#: 
+msgid "You've already subscribed to %s. <br> Please select package options and payment gateway to renew your account!"
+msgstr "Вы уже подписались на %s. <br>, пожалуйста, выберите пакет вариантов и платежный шлюз, чтобы возобновить ваш аккаунт!"
+
+#: 
+msgid "Great! You've selected %s. <br> Now please select package options and payment gateway to renew your account!"
+msgstr "Отличьно! Вы выбрали %s.  <br>, пожалуйста, выберите пакет вариантов и платежный шлюз, чтобы возобновить ваш аккаунт! "
+
+#: 
+msgid "Pay {{amount}}"
+msgstr "Платите {{amount}}"
+
+#: 
+msgid "Please select your plan"
+msgstr "Пожалуйста, выберите ваш план."
+
+#: 
+msgid "Monthly plan"
+msgstr "Месяцный план"
+
+#: 
+msgid "Annual plan"
+msgstr "Годовой план"
+
+#: 
+msgid "Choose a payment method"
+msgstr "Выберите метод платежа."
+
+#: 
+msgid "Place Order"
+msgstr "Разместить заказ"
+
+#: 
+msgid "Please select one of the packages listed below to subscribe!"
+msgstr "Пожалуйста, выберите одного из пакетов перечисленных ниже, чтобы подписаться."
+
+#: 
+msgid "per month"
+msgstr "Помесяцно"
+
+#: 
+msgid "You save %s"
+msgstr "Вы экономили %s"
+
+#: 
+msgid "Only 1 account"
+msgid_plural "Up to %s accounts"
+msgstr[0] "Только один аккаунт"
+msgstr[1] "До %s учетных записей"
+msgstr[2] "До %s учетных записей"
+msgstr[3] "До %s учетных записей"
+
+#: 
+msgid "Unlimited accounts"
+msgstr "Неограниченные аккаунты"
+
+#: 
+msgid "Zero accounts"
+msgstr "Нулевые аккаунты"
+
+#: 
+msgid "Photo+Video"
+msgstr "Фото+видео"
+
+#: 
+msgid "Photo only"
+msgstr "Только фото"
+
+#: 
+msgid "Video only"
+msgstr "Только видео"
+
+#: 
+msgid "Cloud Import"
+msgstr "Cloud Import"
+
+#: 
+msgid "Not available"
+msgstr "Невозможно"
+
+#: 
+msgid "Spintax Support"
+msgstr "Spintax помощь"
+
+#: 
+msgid "Storage"
+msgstr "Памят"
+
+#: 
+msgid "Select"
+msgstr "Выбирать"
+
+#: 
+msgid "Select Account"
+msgstr "Выбирать аккаунт"
+
+#: 
+msgid "In Progress"
+msgstr "Выполняется"
+
+#: 
+msgid "Processing now..."
+msgstr "Обработка"
+
+#: 
+msgid "In a few moments"
+msgstr "Осталось несколько минут"
+
+#: 
+msgid "System task error"
+msgstr "Ошибка системной задачи"
+
+#: 
+msgid "Regular Post"
+msgstr "Обычный пост"
+
+#: 
+msgid "Completed"
+msgstr "Завершено"
+
+#: 
+msgid "View on Instagram"
+msgstr "Просмотр на инстаграм"
+
+#: 
+msgid "Published"
+msgstr "Публикован"
+
+#: 
+msgid "Failed"
+msgstr "Неудача"
+
+#: 
+msgid "You don't have any Instagram account."
+msgstr "У вас нет учетной записи Instagram."
+
+#: 
+msgid "Mon"
+msgstr "Пн"
+
+#: 
+msgid "Tue"
+msgstr "Вт"
+
+#: 
+msgid "Wed"
+msgstr "Ср"
+
+#: 
+msgid "Thu"
+msgstr "Чт"
+
+#: 
+msgid "Fri"
+msgstr "Пт"
+
+#: 
+msgid "Sat"
+msgstr "Сб"
+
+#: 
+msgid "Sun"
+msgstr "Вск"
+
+#: 
+msgid "%s scheduled post"
+msgid_plural "%s scheduled posts"
+msgstr[0] "Одна запланированная публикация"
+msgstr[1] "%s публикации"
+msgstr[2] "%s публикации"
+msgstr[3] "%s публикации"
+
+#: 
+msgid "Dropbox Chooser"
+msgstr "Dropbox Chooser"
+
+#: 
+msgid "Dropbox API Key"
+msgstr "Dropbox API ключ"
+
+#: 
+msgid "Leave this field empty if you don't want to enable Dropbox Chooser."
+msgstr "Оставьте это поле пустым, если вы не хотите включать Dropbox Chooser."
+
+#: 
+msgid "Facebook Login"
+msgstr "Войти через Facebook"
+
+#: 
+msgid "App ID"
+msgstr "App ID"
+
+#: 
+msgid "App Secret"
+msgstr "App Secret"
+
+#: 
+msgid "Google Analytics"
+msgstr "Google Analytics"
+
+#: 
+msgid "Google Analytics Property ID"
+msgstr "Google Analytics Property ID"
+
+#: 
+msgid "Leave this field empty if you don't want to enable Google Analytics"
+msgstr "Оставьте это поле пустым, если вы не хотите включать Google Analytics"
+
+#: 
+msgid "Google Drive Picker"
+msgstr "Google Диск сборщик"
+
+#: 
+msgid "Leave both of these fields empty if you don't want to enable Google Drive file picker."
+msgstr "Оставьте оба этих поля пустыми, если вы не хотите включать сборщик файлов Google Диска."
+
+#: 
+msgid "Google API Key"
+msgstr "Google API ключ"
+
+#: 
+msgid "Google Client ID"
+msgstr "Google Client ID"
+
+#: 
+msgid "Logotype"
+msgstr "Логотип"
+
+#: 
+msgid "Logo"
+msgstr "Лого"
+
+#: 
+msgid "Logomark"
+msgstr "Логомарк"
+
+#: 
+msgid "Will be used as minimized menu and favicon"
+msgstr "Будет использоваться как минимизированное меню и фаворитные значки"
+
+#: 
+msgid "128px x 128px PNG image is recomended"
+msgstr "128 пк x 128 пк PNG изображение рекомендуется"
+
+#: 
+msgid "General Settings"
+msgstr "Общие настройки"
+
+#: 
+msgid "Site Settings"
+msgstr "Настройки сайта"
+
+#: 
+msgid "Other Settings"
+msgstr "Другие настройки"
+
+#: 
+msgid "Proxy Addresses"
+msgstr "Прокси адресы"
+
+#: 
+msgid "SMTP"
+msgstr "SMTP"
+
+#: 
+msgid "Email Notifications"
+msgstr "Уведомления электронного почта"
+
+#: 
+msgid "Integrations"
+msgstr "Интеграции"
+
+#: 
+msgid "OneDrive File Picker"
+msgstr "OneDrive файл сборщик"
+
+#: 
+msgid "PayPal Integration"
+msgstr "PayPal Интеграция"
+
+#: 
+msgid "Stripe Integration"
+msgstr "Stripe Интеграция"
+
+#: 
+msgid "Email Addresses"
+msgstr "Электронные адреса"
+
+#: 
+msgid "Notification emails will be sent to these email addresses. Separate emails with comma sign."
+msgstr "Письма об  уведомлениях будут отправляться на эти  электронные адреса. Отделяйте электронные письма с запятой."
+
+#: 
+msgid "New User"
+msgstr "Новый пользователь"
+
+#: 
+msgid "Receive notification when a new user registers to the site"
+msgstr "Получать уведомление, когда новый пользователь регистрируется на сайте"
+
+#: 
+msgid "Account Renew (New payment)"
+msgstr "Обновления аккаунта (Новый платеж)"
+
+#: 
+msgid "Receive notification when new payment received successfully to renew the user account."
+msgstr "Получать уведомления об успешной получения нового платежа для обновления аккаунта пользователя."
+
+#: 
+msgid "OneDrive Client ID"
+msgstr "OneDrive Client ID"
+
+#: 
+msgid "Leave this field empty if you don't want to enable OneDrive file picker."
+msgstr "Оставьте это поле пустым, если не хотите вклучить OneDrive файл сборщик."
+
+#: 
+msgid "SSL certificate is required for OneDrive interation"
+msgstr "Сертификат SSL необходим для интеграции OneDrive"
+
+#: 
+msgid "Default Currency"
+msgstr "Валюта по умолчанию"
+
+#: 
+msgid "Geonames Username"
+msgstr "Имя пользователя geonames"
+
+#: 
+msgid "Enter your geonames.org username"
+msgstr "Введите ваш имя пользователя в geonames.org"
+
+#: 
+msgid "Required for getting correct data for user's location to use in proxy and timezones detection"
+msgstr "Требуется для получения правильных данных о местоположения пользователя  чтобы использовать в прокси и обнаружении часовых поясов."
+
+#: 
+msgid "Environment"
+msgstr "Окружающая среда"
+
+#: 
+msgid "Sandbox (Test mode)"
+msgstr "Sandbox (Тестовый режим)"
+
+#: 
+msgid "Live"
+msgstr "Live"
+
+#: 
+msgid "PayPal Client ID"
+msgstr "PayPal Client ID"
+
+#: 
+msgid "PayPal Client Secret"
+msgstr "PayPal Client Secret"
+
+#: 
+msgid "Proxy Settings"
+msgstr "Настройки Прокси"
+
+#: 
+msgid "Enable System Proxy"
+msgstr "Включить прокси систем"
+
+#: 
+msgid "If you enable this option, system will try use most appropriate proxy from your proxy list while new acount is being added."
+msgstr "Если вы включите этот параметр, система попытается использовать наиболее подходящий прокси-сервер из списка прокси-сервера, пока добавляется новый аккаунт."
+
+#: 
+msgid "Users can add their own proxy address."
+msgstr "Ползователи могут добавить свои личные прокси-адреса."
+
+#: 
+msgid "Site name"
+msgstr "Имя сайта"
+
+#: 
+msgid "Enter site name here"
+msgstr "Введите имя сайта здесь"
+
+#: 
+msgid "Site description"
+msgstr "Описание сайта"
+
+#: 
+msgid "Recommended length of the description is 150-160 characters"
+msgstr "Рекомендуемая длина описания 150-160 символов."
+
+#: 
+msgid "Keywords"
+msgstr "Ключевые слова"
+
+#: 
+msgid "SMTP Settings"
+msgstr "Настройки SMTP"
+
+#: 
+msgid "SMTP Server"
+msgstr "SMTP Server"
+
+#: 
+msgid "If you left this field empty then other field values will be ignored and server's default configuration will be used."
+msgstr "Если вы оставите это поле пустым, другие значения полей будут проигнорированы и будет использоваться конфигурация сервера по умолчанию."
+
+#: 
+msgid "Port"
+msgstr "Порт"
+
+#: 
+msgid "Encryption"
+msgstr "Шифрование"
+
+#: 
+msgid "None"
+msgstr "Никакой"
+
+#: 
+msgid "SMTP Auth"
+msgstr "SMTP Auth"
+
+#: 
+msgid "Auth. username"
+msgstr "Auth. имя поьзователя"
+
+#: 
+msgid "Auth. password"
+msgstr "Auth. пароль"
+
+#: 
+msgid "From"
+msgstr "Из"
+
+#: 
+msgid "All emails will be sent from this email address."
+msgstr "Все письма будут отправляться из этого электронного адреса."
+
+#: 
+msgid "Publishable Key"
+msgstr "Опубликованный ключ"
+
+#: 
+msgid "Secret Key"
+msgstr "Secret ключ"
+
+#: 
+msgid "Account Summary"
+msgstr "Сводка учетной записи"
+
+#: 
+msgid "Post Summary"
+msgstr "Сводка публикации"
+
+#: 
+msgid "Last 30 days"
+msgstr "Последние 30 дней"
+
+#: 
+msgid "Posts"
+msgstr "Публикации"
+
+#: 
+msgid "Search Modules"
+msgstr "Поисковые режимы"
+
+#: 
+msgid "Search"
+msgstr "Поиск"
+
+#: 
+msgid "Hi, %s!"
+msgstr "Привет, %s"
+
+#: 
+msgid "Profile"
+msgstr "Профиль"
+
+#: 
+msgid "Account Type"
+msgstr "Типы аккаунта"
+
+#: 
+msgid "Regular User"
+msgstr "Обычный пользователь"
+
+#: 
+msgid "Admin"
+msgstr "Администратор"
+
+#: 
+msgid "Status"
+msgstr "Статус"
+
+#: 
+msgid "Active"
+msgstr "Активировать"
+
+#: 
+msgid "Deactive"
+msgstr "Деактивировать"
+
+#: 
+msgid "Expire date"
+msgstr "Дата истека"
+
+#: 
+msgid "Package"
+msgstr "Пакет"
+
+#: 
+msgid "Subscribe to changes in package settings"
+msgstr "Подписаться на изменения в настройках пакета"
+
+#: 
+msgid "Users with this option enabled, can use spintax syntax in post captions."
+msgstr "Пользователи с этими параметрами могут использовать Spintax syntax в заголовках публикации."
+
+#: 
+msgid "Your account"
+msgstr "Ваш аккаунт"
+
+#: 
+msgid "Expire date: %s"
+msgstr "Дата окончания срока: %s"
+
+#: 
+msgid "Regular user"
+msgstr "Обычный пользовател"
+
+#: 
+msgid "Expired"
+msgstr "Истек"
+
+#: 
+msgid "Please select a user from left side list to view or modify it's details."
+msgstr "Пожалуйста, выберите пользователя из списка слева, чтобы просмотреть или изменить его детали."
+
+#: 
+msgid "Install Module"
+msgstr "Install Module"
+
+#: 
+msgid "Edit Post"
+msgstr "Редактировать публикацию"
+
+#: 
+msgid "New Post"
+msgstr "Новый пост"
+
+#: 
+msgid "Dashboard"
+msgstr "Панель приборов"
+
+#: 
+msgid "Proxies"
+msgstr "Прокси"
+
+#: 
+msgid "Account Renewal"
+msgstr "Продление учетной записи"
+
+#: 
+msgid "Schedule Calendar"
+msgstr "Календарь запланированных публикации"
+
+#: 
+msgid "File size exceeds max allowed file size."
+msgstr "File size exceeds max allowed file size."
+
+#: 
+msgid "There is not enough storage to upload this file"
+msgstr "There is not enough storage to upload this file"
+
+#: 
+msgid "File type is not allowed."
+msgstr "File type is not allowed."
+
+#: 
+msgid "Couldn't save uploaded file."
+msgstr "Couldn't save uploaded file."
+
+#: 
+msgid "Image is to small!"
+msgstr "Image is to small!"
+
+#: 
+msgid "Couldn't save uploaded file data."
+msgstr "Couldn't save uploaded file data."
+
+#: 
+msgid "Couldn't find the image!"
+msgstr "Couldn't find the image!"
+
+#: 
+msgid "Couldn't get file type!"
+msgstr "Couldn't get file type!"
+
+#: 
+msgid "Couldn't detect file extension!"
+msgstr "Couldn't detect file extension!"
+
+#: 
+msgid "Missing meta data"
+msgstr "Missing meta data"
+
+#: 
+msgid "Invalid meta data"
+msgstr "Invalid meta data"
+
+#: 
+msgid "Couldn't get the file"
+msgstr "Couldn't get the file"
+
+#: 
+msgid "Couldn't download the file"
+msgstr "Couldn't download the file"
+
+#: 
+msgid "The photo file \"%s\" does not exist on disk."
+msgstr "The photo file \"%s\" does not exist on disk."
+
+#: 
+msgid "The photo file \"%s\" is empty."
+msgstr "The photo file \"%s\" is empty."
+
+#: 
+msgid "The photo file \"%s\" is not a valid image."
+msgstr "The photo file \"%s\" is not a valid image."
+
+#: 
+msgid "The video \"%s\" is empty."
+msgstr "The video \"%s\" is empty."
+
+#: 
+msgid "Instagram only accepts photos that are between 320 and %d pixels wide. Your file \"%s\" is %d pixels wide."
+msgstr "Instagram only accepts photos that are between 320 and %d pixels wide. Your file \"%s\" is %d pixels wide."
+
+#: 
+msgid "Instagram only accepts videos that are between 480 and 720 pixels wide. Your file \"%s\" is %d pixels wide."
+msgstr "Instagram only accepts videos that are between 480 and 720 pixels wide. Your file \"%s\" is %d pixels wide."
+
+#: 
+msgid "Instagram only accepts story media with aspect ratios between %.3f and %.3f. Your file \"%s\" has a %.4f aspect ratio."
+msgstr "Instagram only accepts story media with aspect ratios between %.3f and %.3f. Your file \"%s\" has a %.4f aspect ratio."
+
+#: 
+msgid "Instagram only accepts media with aspect ratios between %.3f and %.3f. Your file \"%s\" has a %.4f aspect ratio."
+msgstr "Instagram only accepts media with aspect ratios between %.3f and %.3f. Your file \"%s\" has a %.4f aspect ratio."
+
+#: 
+msgid "The photo file \"%s\" is not a JPEG file."
+msgstr "The photo file \"%s\" is not a JPEG file."
+
+#: 
+msgid "Invalid usertags array. The value for key \"%s\" must be an array."
+msgstr "Invalid usertags array. The value for key \"%s\" must be an array."
+
+#: 
+msgid "Invalid user ID in usertags \"removed\" array."
+msgstr "Invalid user ID in usertags \"removed\" array."
+
+#: 
+msgid "Invalid user entry in usertags array."
+msgstr "Invalid user entry in usertags array."
+
+#: 
+msgid "Invalid caption for hashtag."
+msgstr "Invalid caption for hashtag."
+
+#: 
+msgid "Tag name \"%s\" does not exist in the caption text."
+msgstr "Tag name \"%s\" does not exist in the caption text."
+
+#: 
+msgid "Invalid key \"%s\" for hashtag."
+msgstr "Invalid key \"%s\" for hashtag."
+
+#: 
+msgid "Invalid value \"%s\" for hashtag \"%s\"."
+msgstr "Invalid value \"%s\" for hashtag \"%s\"."
+
+#: 
+msgid "\"%s\" is not a valid media type."
+msgstr "\"%s\" is not a valid media type."
+
+#: 
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+#: 
+msgid "It is not possible to get back removed data!"
+msgstr "It is not possible to get back removed data!"
+
+#: 
+msgid "Yes, Delete"
+msgstr "Yes, Delete"
+
+#: 
+msgid "Fill required fields."
+msgstr "Fill required fields."
+
+#: 
+msgid "Please select at least 2 media album post."
+msgstr "Please select at least 2 media album post."
+
+#: 
+msgid "Please select one media for story post."
+msgstr "Please select one media for story post."
+
+#: 
+msgid "Please select one media for post."
+msgstr "Please select one media for post."
+
+#: 
+msgid "Use the TAB key to insert emoji faster"
+msgstr "Use the TAB key to insert emoji faster"
+
+#: 
+msgid "Total Posts"
+msgstr "Total Posts"
+
+#: 
+msgid "Followers"
+msgstr "Followers"
+
+#: 
+msgid "Following"
+msgstr "Following"
+
+#: 
+msgid "Uploading..."
+msgstr "Uploading..."
+
+#: 
+msgid "Sunday"
+msgstr "Sunday"
+
+#: 
+msgid "Monday"
+msgstr "Monday"
+
+#: 
+msgid "Tuesday"
+msgstr "Tuesday"
+
+#: 
+msgid "Wednesday"
+msgstr "Wednesday"
+
+#: 
+msgid "Thursday"
+msgstr "Thursday"
+
+#: 
+msgid "Friday"
+msgstr "Friday"
+
+#: 
+msgid "Saturday"
+msgstr "Saturday"
+
+#: 
+msgid "Su"
+msgstr "Su"
+
+#: 
+msgid "Mo"
+msgstr "Mo"
+
+#: 
+msgid "Tu"
+msgstr "Tu"
+
+#: 
+msgid "We"
+msgstr "We"
+
+#: 
+msgid "Th"
+msgstr "Th"
+
+#: 
+msgid "Fr"
+msgstr "Fr"
+
+#: 
+msgid "Sa"
+msgstr "Sa"
+
+#: 
+msgid "January"
+msgstr "January"
+
+#: 
+msgid "February"
+msgstr "February"
+
+#: 
+msgid "March"
+msgstr "March"
+
+#: 
+msgid "April"
+msgstr "April"
+
+#: 
+msgid "June"
+msgstr "June"
+
+#: 
+msgid "July"
+msgstr "July"
+
+#: 
+msgid "August"
+msgstr "August"
+
+#: 
+msgid "September"
+msgstr "September"
+
+#: 
+msgid "October"
+msgstr "October"
+
+#: 
+msgid "November"
+msgstr "November"
+
+#: 
+msgid "December"
+msgstr "December"
+
+#: 
+msgid "Today"
+msgstr "Today"
+
+#: 
+msgid "Clear"
+msgstr "Clear"
+
+#: 
+msgid "Select files"
+msgstr "Select files"
+
+#: 
+msgid "Load more"
+msgstr "Load more"
+
+#: 
+msgid "View"
+msgstr "View"
+
+#: 
+msgid "Paste your link here..."
+msgstr "Paste your link here..."
+
+#: 
+msgid "Your media volume is empty. <br /> Drag some files here."
+msgstr "Your media volume is empty. <br /> Drag some files here."
+
+#: 
+msgid "Drop files here to upload"
+msgstr "Drop files here to upload"
+
+#: 
+msgid "This file and all uncompleted posts which this file is assigned to will be removed. This process cannot be undone. Do you want to proceed?"
+msgstr "This file and all uncompleted posts which this file is assigned to will be removed. This process cannot be undone. Do you want to proceed?"
+
+#: 
+msgid "There are so many files in upload queue. Please try again after current upload queue finishes."
+msgstr "There are so many files in upload queue. Please try again after current upload queue finishes."
+
